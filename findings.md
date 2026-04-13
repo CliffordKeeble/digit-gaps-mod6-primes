@@ -160,4 +160,59 @@ The pair fraction is steeply sensitive to threshold width: from 17.4% at [0.90, 
 
 ---
 
-*Mr Code, April 13 2026*
+## 6. Power-Law Fit at Full Scale (follow-up pass, April 13 2026)
+
+### Method
+
+Same log-log OLS regression as paper Section 5.2: log(gap) regressed on log(centre), where gap is the distance between consecutive synchronisation-cluster centres. Fitted at 200k (paper's scale, 13 clusters, 12 data points) and at full 3.25M-digit scale (48 clusters, 47 data points). Null model: 20 pseudo-prime trials at full scale with same cluster-detection parameters.
+
+### Results
+
+| Scale | n | beta | se(beta) | R-squared | alpha |
+|---|---|---|---|---|---|
+| 200k (paper) | 12 | 0.6371 | 0.0293 | 0.9792 | 15.85 |
+| Full 3.25M (real) | 47 | 0.3906 | 0.1076 | 0.2264 | 185.75 |
+| Full 3.25M (null mean) | — | 0.3871 | 0.0872 | 0.3068 | — |
+| ln(2)/ln(3) | — | 0.6309 | — | — | — |
+
+z-scores (real vs null at full scale): z(beta) = 0.04, z(R-squared) = -0.51.
+
+### What happened
+
+The first 12 cluster gaps (up to digit ~200k) follow an exceptionally clean power law. Beyond 200k, the inter-cluster gaps become wildly variable — ranging from 860 to 244,795 at the same scale — and the power-law relationship collapses. Residuals at full scale are an order of magnitude larger than the fit: predicted gaps of ~60k alongside actual gaps from 860 to 244,795.
+
+The full-scale fit is statistically indistinguishable from null: beta = 0.391 (real) vs 0.387 (null mean), z = 0.04. The null model achieves comparable or better R-squared (0.307 vs 0.226). The clean power law at 200k is not a general property of primes at all scales.
+
+### Sensitivity
+
+| Trim | n | beta | se(beta) | R-squared |
+|---|---|---|---|---|
+| No trim | 47 | 0.3906 | 0.1076 | 0.2264 |
+| Drop first 2 | 45 | 0.3321 | 0.1352 | 0.1230 |
+| Drop last 2 | 45 | 0.4060 | 0.1079 | 0.2478 |
+| Drop first 5 | 42 | 0.2631 | 0.1830 | 0.0491 |
+| Drop last 5 | 42 | 0.4761 | 0.0979 | 0.3718 |
+| Drop first 5 + last 5 | 37 | 0.4191 | 0.1744 | 0.1416 |
+
+Beta ranges from 0.26 to 0.48 depending on trim. No trim choice recovers the 200k-scale exponent or R-squared. The best R-squared from any trim (0.372, dropping last 5) is still far below the paper's 0.979. The fit is not steeply sensitive to trim — it is uniformly poor. This is Pattern 75 compliant: no trim choice is being cherry-picked; none of them work.
+
+### Verdict
+
+**DEGRADES.** The power-law beta = 0.637 (R-squared = 0.979) is a real and robust property of the first 200,000 digits. It does not extend to 3.25 million digits. At full scale, the fit collapses (R-squared = 0.226) and becomes indistinguishable from the null model (z = 0.04).
+
+Classification:
+- beta = 0.637 at 200k scale: **OBSERVED** (real, robust, scoped to 200k, prime-specific at that scale per existing z = -2.04 cluster count)
+- beta at full scale: **NULL-INDISTINGUISHABLE** (no prime-specific structure in the power-law exponent beyond 200k)
+- beta approximately equals ln(2)/ln(3): **OPEN QUESTION, now weakened** (the coincidence holds at 200k; the full-scale exponent is 0.39, nowhere near 0.631)
+
+### Recommended edit to Section 5.2 for v2.4
+
+The paper currently states: "The gap between consecutive cluster centres follows a power law: gap approximately equals 18.2 times centre^beta with beta = 0.637 +/- 0.029 and R-squared = 0.979 (first 200,000 digits; see Section 6 for robustness)."
+
+The qualification "(first 200,000 digits)" is already present and accurate. Recommended addition for v2.4: a sentence noting that the power law does not extend beyond 200k digits. At full scale (3.25M digits), the inter-cluster gaps become highly variable and the fit degrades to R-squared = 0.23, indistinguishable from the null model. The beta approximately equals ln(2)/ln(3) coincidence should be noted as holding only at the 200k scale.
+
+Open Question 1 ("Does beta converge to ln(2)/ln(3) exactly?") should be updated to note that the question is now less well-posed: the exponent is not stable across scales, so convergence in the usual sense may not apply.
+
+---
+
+*Mr Code, April 13 2026 (updated with Section 6, same date)*
