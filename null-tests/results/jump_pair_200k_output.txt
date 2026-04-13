@@ -1,0 +1,51 @@
+========================================================================
+JUMP/PAIR NULL TEST AT 200k SCALE (Adversary follow-up)
+50 null trials, cluster detection at 200,000 digits
+========================================================================
+
+[1] Sieving primes...
+
+[2] Real primes at 200k...
+  Clusters: 13
+
+  Real-prime 200k JUMP/PAIR:
+  Pair range          Pair%   n_pair   n_ratios     Alt%
+  [0.90, 1.10]      27.3%        3         11    30.0%
+  [0.95, 1.05]      18.2%        2         11    30.0%
+  [0.97, 1.03]      18.2%        2         11    30.0%
+  [0.99, 1.01]       9.1%        1         11    10.0%
+
+[3] Running 50 null trials at 200k scale...
+  Trial  0: 29 clusters [3.6s]
+  Trial 10: 23 clusters [3.6s]
+  Trial 20: 31 clusters [3.6s]
+  Trial 30: 42 clusters [3.7s]
+  Trial 40: 21 clusters [3.6s]
+  Trial 49: 24 clusters [3.7s]
+
+========================================================================
+COMPARISON: REAL PRIMES vs NULL AT 200k SCALE
+========================================================================
+
+  Null cluster counts at 200k: mean=24.0
+  Null clusters (from 50 valid trials): mean=28.9 +/- 10.2, range=[16, 60]
+  Null n_ratios: mean=26.9 +/- 10.2
+
+  Pair range       Real pair%  Null mean%  Null std%  z(pair)   Real alt%  Null alt mean%   z(alt)
+  [0.90, 1.10]        27.3%       27.6%      14.1%    -0.02       30.0%           10.2%     2.22
+  [0.95, 1.05]        18.2%       13.5%       9.1%     0.51       30.0%            4.7%     4.75
+  [0.97, 1.03]        18.2%        8.0%       6.3%     1.63       30.0%            2.6%     7.28
+  [0.99, 1.01]         9.1%        2.6%       3.6%     1.81       10.0%            1.1%     4.31
+
+  Null pair-fraction distribution at [0.90, 1.10]:
+    N trials with valid data: 50
+    Min: 6.2%
+    Q1:  16.0%
+    Median: 27.8%
+    Q3:  37.0%
+    Max: 72.5%
+    Null trials with pair% >= real (27.3%): 25/50 = 50.0%
+
+  Results saved to C:\Dev\digit-gaps-mod6-primes\null-tests\results\jump_pair_200k_results.csv
+
+Total runtime: 186.1s

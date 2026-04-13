@@ -1,0 +1,117 @@
+========================================================================
+CLUSTER COUNT + R² NULL DISTRIBUTION (Adversary follow-up)
+100 null trials at 200,000 digits
+========================================================================
+
+[1] Sieving primes...
+
+[2] Real primes at 200k...
+  Clusters: 13
+  beta = 0.6371 +/- 0.0293
+  R2 = 0.9792
+
+[3] Running 100 null trials...
+  Trial   0: 29 clusters, beta=0.4883, R2=0.6584 [3.6s]
+  Trial  20: 31 clusters, beta=0.3231, R2=0.3039 [3.5s]
+  Trial  40: 21 clusters, beta=1.0636, R2=0.7305 [3.6s]
+  Trial  60: 47 clusters, beta=0.4785, R2=0.6631 [3.8s]
+  Trial  80: 24 clusters, beta=0.5074, R2=0.7338 [3.7s]
+  Trial  99: 54 clusters, beta=0.2365, R2=0.3555 [3.8s]
+
+========================================================================
+TASK 2: CLUSTER COUNT DISTRIBUTION (100 trials)
+========================================================================
+
+  Real-prime cluster count: 13
+  Null distribution (100 trials):
+    Mean:   28.12
+    Std:    11.02
+    Min:    7
+    Q1:     21
+    Median: 25
+    Q3:     33
+    Max:    60
+
+  z-score (real vs null): -1.37
+  (Paper's z with 10 trials: -2.04)
+  Null trials with count <= 13: 4/100 = 4.0%
+
+  Histogram of null cluster counts:
+      7: # (1)
+     12: ## (2)
+     13: # (1) <-- REAL
+     14: # (1)
+     16: # (1)
+     17: ## (2)
+     18: ####### (7)
+     19: #### (4)
+     20: ###### (6)
+     21: ##### (5)
+     22: #### (4)
+     23: ######### (9)
+     24: ##### (5)
+     25: ##### (5)
+     26: ### (3)
+     27: ### (3)
+     28: ## (2)
+     29: ### (3)
+     30: ### (3)
+     31: ### (3)
+     32: #### (4)
+     33: ## (2)
+     34: ## (2)
+     35: ### (3)
+     37: # (1)
+     38: #### (4)
+     39: # (1)
+     40: # (1)
+     42: # (1)
+     44: # (1)
+     47: ### (3)
+     51: # (1)
+     53: # (1)
+     54: # (1)
+     56: # (1)
+     57: # (1)
+     59: # (1)
+     60: # (1)
+
+========================================================================
+TASK 3: NULL R² DISTRIBUTION AT 200k (power-law fit)
+========================================================================
+
+  Real-prime R²: 0.9792
+  Null R² distribution (100 trials with >= 4 clusters):
+    Mean:   0.5767
+    Std:    0.1833
+    Min:    0.0162
+    Q1:     0.4990
+    Median: 0.6145
+    Q3:     0.7034
+    Max:    0.8561
+
+  z-score (real R² vs null): 2.20
+  Null trials with R² >= 0.9792: 0/100 = 0.0%
+
+  Null beta distribution (for reference):
+    Mean:   0.5395
+    Std:    0.1852
+    Min:    0.0609
+    Median: 0.5373
+    Max:    1.0636
+    z(beta): 0.53
+
+========================================================================
+COMBINED SUMMARY
+========================================================================
+
+  Metric                          Real  Null mean   Null std        z
+  ---------------------------------------------------------------
+  Cluster count                     13      28.12      11.02    -1.37
+  Power-law beta                0.6371     0.5395     0.1852     0.53
+  Power-law R2                  0.9792     0.5767     0.1833     2.20
+
+  Per-trial data saved to C:\Dev\digit-gaps-mod6-primes\null-tests\results\cluster_count_100_trials.csv
+  Summary saved to C:\Dev\digit-gaps-mod6-primes\null-tests\results\cluster_r2_summary.csv
+
+Total runtime: 371.1s
