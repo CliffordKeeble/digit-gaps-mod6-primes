@@ -1,0 +1,93 @@
+========================================================================
+PHASE TRANSITION NULL TEST (Section 4.2)
+========================================================================
+
+[1] Sieving primes...
+  5-series: 485,503, 7-series: 485,199
+
+[2] Computing gap arrays for real primes...
+  Max digit: 3,254,959
+
+[3] Measuring synchronisation trajectory (real primes)...
+  Real prime transition points (digit where sync >= threshold sustained):
+    threshold=0.8:
+      window=  100: 4551
+      window=  200: 9101
+      window=  500: 55101
+      window= 1000: 127601
+    threshold=0.85:
+      window=  100: 4551
+      window=  200: 26401
+      window=  500: 73101
+      window= 1000: 183101
+    threshold=0.9:
+      window=  100: 15451
+      window=  200: 36601
+      window=  500: 126851
+      window= 1000: 385101
+    threshold=0.95:
+      window=  100: 36351
+      window=  200: 125901
+      window=  500: 536351
+      window= 1000: 1077601
+
+[4] Early-scale gap stagger analysis...
+  Real primes -- gap classification by band:
+  Band              Only-1   Only-2     Both   Stagger%
+  1-100              27       27       28      65.9%
+  1-500             133      135      192      58.3%
+  1-1000            204      206      480      46.1%
+  1-5000            962      966     2745      41.3%
+  1-10000          1718     1723     5885      36.9%
+
+[5] Running 10 null model trials...
+  Trial  0: [7.3s]
+  Trial  1: [7.2s]
+  Trial  2: [7.3s]
+  Trial  3: [7.3s]
+  Trial  4: [7.3s]
+  Trial  5: [7.3s]
+  Trial  6: [7.2s]
+  Trial  7: [7.3s]
+  Trial  8: [7.4s]
+  Trial  9: [7.2s]
+
+========================================================================
+TRANSITION POINT COMPARISON
+========================================================================
+  Window   Thresh         Real  Null mean   Null std        z
+  100      0.8           4,551     14,806      8,265    -1.24  (10/10 found)
+  100      0.85          4,551     17,386      9,276    -1.38  (10/10 found)
+  100      0.9          15,451     20,836     10,713    -0.50  (10/10 found)
+  100      0.95         36,351     60,761     57,104    -0.43  (10/10 found)
+  200      0.8           9,101     29,201     14,339    -1.40  (10/10 found)
+  200      0.85         26,401     39,081     24,839    -0.51  (10/10 found)
+  200      0.9          36,601     77,221     52,058    -0.78  (10/10 found)
+  200      0.95        125,901    129,041     68,990    -0.05  (10/10 found)
+  500      0.8          55,101     74,376     63,737    -0.30  (10/10 found)
+  500      0.85         73,101     94,226     83,415    -0.25  (10/10 found)
+  500      0.9         126,851    214,001    151,835    -0.57  (10/10 found)
+  500      0.95        536,351    398,801    217,403     0.63  (10/10 found)
+  1000     0.8         127,601    220,751    176,184    -0.53  (10/10 found)
+  1000     0.85        183,101    326,601    322,438    -0.45  (10/10 found)
+  1000     0.9         385,101    397,768    219,368    -0.06  (9/10 found)
+  1000     0.95      1,077,601    940,323    856,388     0.16  (9/10 found)
+
+========================================================================
+EARLY-SCALE STAGGER COMPARISON
+========================================================================
+  Band             Real stagger%   Null mean%  Null std%        z
+  1-100                    65.9%        56.6%       8.4%     1.11
+  1-500                    58.3%        47.3%       1.7%     6.37
+  1-1000                   46.1%        43.8%       3.3%     0.69
+  1-5000                   41.3%        39.2%       3.6%     0.58
+  1-10000                  36.9%        37.7%       2.1%    -0.36
+
+  Results saved to C:\Dev\digit-gaps-mod6-primes\null-tests\results\phase_transition_results.csv
+
+========================================================================
+SYNC FRACTION AT KEY SCALES
+========================================================================
+  Digit        Real sync%
+
+Total runtime: 80.3s
