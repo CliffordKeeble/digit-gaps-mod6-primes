@@ -312,4 +312,148 @@ The R-squared cleanness is the load-bearing prime-specific result. The cluster c
 
 ---
 
-*Mr Code, April 13 2026 (updated with Sections 6 and 7)*
+## 8. Paper A (First Boundary) Verification Pass (April 13 2026, evening)
+
+Five tasks for the in-depth structural analysis of the first digital boundary (Paper A v3.0). High-precision verification of the existing theorems plus the new chi5 regime analysis and three robustness tests.
+
+### 8.1 High-Precision Verification of Theorems 1-6
+
+All six theorems verified at 200-digit mpmath precision with cross-check (len(str(prod)) vs floor(log10(prod)) + 1).
+
+| Theorem | Product | Digits (str) | Digits (log10) | mod 3 | mod 5 | Status |
+|---|---|---|---|---|---|---|
+| 1 (5-series gap 60-61) | Pi_5(30) | 59 | 59 | 1 | 0 | VERIFIED |
+| 1 (continued) | Pi_5(31) | 62 | 62 | — | — | gap at 60, 61 |
+| 2 (7-series gap 62-63) | Pi_7(30) | 61 | 61 | 1 | 3 | VERIFIED |
+| 2 (continued) | Pi_7(31) | 64 | 64 | — | — | gap at 62, 63 |
+| 3 (factor 3 at 10^61) | Pi_5(30) mod 3 = 1 | — | — | 1 | — | VERIFIED |
+| 4 (coincident 80-81) | Pi_5(38)=79d, Pi_5(39)=82d | — | — | — | — | VERIFIED |
+| 4 (continued) | Pi_7(37)=79d, Pi_7(38)=82d | — | — | — | — | VERIFIED |
+| 5 (factor 3 at 10^80) | Pi_5(38) mod 3 = 1 | — | — | 1 | 0 | VERIFIED |
+| 6 (factor 15 at 10^80) | Pi_7(37) mod 3 = 1, mod 5 = 2 | — | — | 1 | 2 | VERIFIED |
+
+Additional data for draft Section 7:
+- 5-series first 30 primes: 14 split, 15 inert, 1 ramified (p=5)
+- 7-series first 30 primes: 13 split, 17 inert, 0 ramified
+- Pi_7(30) mod 5 = 3
+
+Pi_5(30) = 72251183559254646712892154220296432236377519679774785052215 (59 digits).
+ln Pi_5(30) = 135.52749900896194... (verified to 200-digit precision).
+
+### 8.2 Chi5 Regime Analysis
+
+**Placeholder values for draft (all confirmed against CinC's preliminary numbers):**
+
+| Placeholder | Value |
+|---|---|
+| [LIMIT] | 5000 |
+| [N_TIES_5] | 327 |
+| [N_TIES_7] | 2 |
+| [EXPECTED_TIES] | 56.4 |
+| [RATIO_5] | 5.8 |
+| [RATIO_7] | 28.2 |
+| [MAX_S_IN_FIRST_DESERT] | 4 (gap n=43 to n=61) |
+
+**Observation 6.1 confirmed.** S5(n) in [-2, +2] for n=1..33. 14 ties in this range (42.4% density). Ties at n = {1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 27, 31, 33}.
+
+**Observation 6.2 confirmed.** First tie-desert (gap >= 8): n=33 to n=41 (8-step gap, max |S| = 3). First tie-desert (gap >= 10): n=43 to n=61 (18-step gap, max |S| = 4). Tie density in n=34..66: 5/33 = 15.2%.
+
+**Observation 6.3 confirmed.** At n=31 (crossing the first digital boundary), S5(31) = 0 (a tie). The tight-oscillation regime ends between n=33 and n=43.
+
+**Observation 6.4 confirmed.** 7-series ties occur at exactly n=4 (p=31) and n=26 (p=271). S7 does not return to zero after n=26 within the first 5000 primes. S7 range: [0, -43]. S7(5000) = -30.
+
+**Observation 6.5 confirmed.** 5-series: 327 ties, 5.8x more than expected. 7-series: 2 ties, 28.2x fewer than expected. Opposite directions confirmed.
+
+### 8.3 Perturbation Test 1: Shuffle
+
+**Question:** Is the 14-tie tight oscillation in the first 33 positions about the natural prime ordering, or about the set of primes?
+
+**Result: NATURAL ORDER IS ANOMALOUS.** z = 3.42, empirical p = 0.001.
+
+| Metric | Natural order | Shuffle mean | Shuffle std | z-score |
+|---|---|---|---|---|
+| Ties in n=1..33 | 14 | 3.94 | 2.95 | 3.42 |
+| Ties in n=34..66 | 5 | 3.90 | 2.90 | 0.38 |
+
+Only 1 in 1000 random shuffles produce >= 14 ties in the first 33 positions. The tight-oscillation regime is about the *specific ordering by prime size*: the smallest 5-series primes happen to alternate split/inert with unusual regularity. This is the stronger of the two possible outcomes — the ordering matters, not just the composition.
+
+The n=34..66 window (5 ties) is unremarkable (z = 0.38), consistent with the regime-change interpretation: the anomalous balance is specific to the first ~33 primes, not a persistent feature of the set.
+
+**Status:** OBSERVED, prime-ordering-specific. The tight-oscillation regime is a real feature of the natural prime ordering, not a generic property of any arrangement of these primes.
+
+### 8.4 Perturbation Test 2: Comparable Residue Classes
+
+**Question:** Is the opposite-direction Chebyshev deviation specific to mod-6 filtering?
+
+**Result: NOT MOD-6 SPECIFIC.** The pattern is systematic across all filterings tested.
+
+| Class | N ties (of 5000) | Ratio | Direction |
+|---|---|---|---|
+| mod4=1 | 2 | 28.2 | FEWER |
+| mod4=3 | 189 | 3.3 | MORE |
+| mod8=1 | 3 | 18.8 | FEWER |
+| mod8=3 | 216 | 3.8 | MORE |
+| mod8=5 | 204 | 3.6 | MORE |
+| mod8=7 | 255 | 4.5 | MORE |
+| mod12=1 | 2 | 28.2 | FEWER |
+| mod12=5 | 272 | 4.8 | MORE |
+| mod12=7 | 266 | 4.7 | MORE |
+| mod12=11 | 152 | 2.7 | MORE |
+| mod6=5 (5-series) | 327 | 5.8 | MORE |
+| mod6=1 (7-series) | 2 | 28.2 | FEWER |
+
+The discriminating feature is **p === 1 (mod q)**: classes where p === 1 show extreme tie deficit (2-3 ties, ~28x fewer than expected). All other classes show tie surplus (2.7-5.8x more). The 7-series (p === 1 mod 6) is a specific instance of a general phenomenon.
+
+**Why p === 1 classes are different.** Primes p === 1 (mod q) are precisely the primes that split completely in the cyclotomic field Q(zeta_q). The Legendre symbol chi5 applied to these primes has a systematic inert bias (more p === 2, 3 (mod 5) than p === 1, 4 (mod 5) among small primes p === 1 (mod q)), producing persistent negative drift in the running sum. This connects to Chebyshev's bias in the standard sense: among small primes in a given residue class, quadratic non-residues are overrepresented.
+
+**Status:** OBSERVED, not mod-6 specific. The draft's Section 6.4 should be reframed: the opposite-direction deviations are a feature of the p === 1 (mod q) vs p !== 1 partition, not uniquely of mod-6. This weakens the claim that mod-6 filtering reveals special structure but strengthens the connection to known Chebyshev-bias phenomena.
+
+### 8.5 Perturbation Test 3: Higher-Scale Tie Density
+
+**Question:** Does 5-series tie density drop like 1/sqrt(n) or stabilise?
+
+**Result: SLOWER THAN RANDOM WALK, BUT STILL DECAYING.**
+
+Observed decay exponent: -0.263 (vs random-walk -0.500). R-squared of power-law fit: 0.066 (very poor — the decay is noisy, not clean power-law).
+
+Cumulative ratio (observed/expected) at key scales:
+
+| N | Observed ties | Expected (random walk) | Ratio |
+|---|---|---|---|
+| 100 | 29 | 8.0 | 3.63 |
+| 500 | 72 | 17.8 | 4.04 |
+| 1000 | 141 | 25.2 | 5.59 |
+| 5000 | 327 | 56.4 | 5.80 |
+| 10000 | 437 | 79.8 | 5.48 |
+| 20000 | 683 | 112.8 | 6.05 |
+| 50000 | 921 | 178.4 | 5.16 |
+
+The ratio is remarkably stable at 5-6x across four orders of magnitude (N = 100 to 50000). The 5-series is not converging to random-walk behaviour — it has a persistent systematic tie-generation excess that scales with sqrt(N) (i.e., the excess tie count grows as sqrt(N), same as the expected count, maintaining the ~5.5x ratio).
+
+The tie density within windows is highly variable (0% to 14% in successive 500-prime windows), consistent with a process that generates tie-rich and tie-desert patches rather than smooth decay. The R-squared of 0.066 for any simple decay model reflects this patchiness.
+
+**Status:** OBSERVED. The 5-series tie excess is not a finite-scale transient — it persists at 50,000 primes with a stable ~5-6x ratio over expected. This is consistent with a systematic mechanism (not random walk) but the mechanism is not identified. The draft's Section 6 should note this persistence.
+
+### 8.6 Corrections to CinC's Preliminary Numbers
+
+CinC's preliminary numbers were all correct:
+- 5-series: 327 ties, ratio 5.8x MORE -- confirmed exactly
+- 7-series: 2 ties, ratio 28.2x FEWER -- confirmed exactly
+- Tight oscillation n=1..33: 14 ties in [-2, +2] -- confirmed exactly
+- First desert (gap >= 10): n=43 to n=61 -- confirmed exactly
+
+No corrections needed.
+
+### 8.7 Flag for CinC
+
+**The comparable-moduli result (Task 4) materially affects the paper's framing.** The draft's Section 6.4 presents the opposite-direction Chebyshev deviation as potentially specific to mod-6 filtering ("We have not located this observation in the standard Chebyshev-bias literature... the double filtering may place the phenomenon outside the scope of work primarily concerned with primes unfiltered or filtered by a single modulus"). The comparable-moduli test shows the pattern is general: every p === 1 (mod q) class shows extreme tie deficit. This means:
+
+1. The observation is real but not special to mod-6.
+2. Open Question 2 in Section 9 ("Why do the 5-series and 7-series deviate in opposite directions? Is this a feature of the double-filtering mod-6 -> mod-5?") can be partially answered: the deviation is a feature of p === 1 classes generally, likely connected to Chebyshev's bias.
+3. The draft's framing should be adjusted from "we have not located this" to "this is consistent with known Chebyshev-bias phenomena applied to residue-class-restricted sequences."
+
+The shuffle result (Task 3) is the genuinely surprising finding: the natural ordering produces an anomalous tight-oscillation pattern (z = 3.42) that random arrangements of the same primes do not. This is the novel structural observation that Section 6 should foreground.
+
+---
+
+*Mr Code, April 13 2026 (updated with Section 8)*
