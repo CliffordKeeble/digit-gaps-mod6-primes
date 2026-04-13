@@ -1,0 +1,138 @@
+========================================================================
+BOUNDARY PREDICTIONS v3 — MULTI-DIGIT JUMPS
+========================================================================
+
+  5-series jumps >= 3 digits (first 20):
+      n   p_next   D_before    D_after   Jump Gap digits
+     18      167         31         34      3 [32, 33]
+     22      197         40         43      3 [41, 42]
+     25      239         47         50      3 [48, 49]
+     27      257         52         55      3 [53, 54]
+     30      281         59         62      3 [60, 61]
+     32      311         64         67      3 [65, 66]
+     34      347         69         72      3 [70, 71]
+     36      359         74         77      3 [75, 76]
+     38      389         79         82      3 [80, 81]
+     39      401         82         85      3 [83, 84]
+     41      431         87         90      3 [88, 89]
+     42      443         90         93      3 [91, 92]
+     44      461         95         98      3 [96, 97]
+     45      467         98        101      3 [99, 100]
+     47      491        103        106      3 [104, 105]
+     48      503        106        109      3 [107, 108]
+     50      521        111        114      3 [112, 113]
+     51      557        114        117      3 [115, 116]
+     52      563        117        120      3 [118, 119]
+     54      587        122        125      3 [123, 124]
+
+  7-series jumps >= 3 digits (first 20):
+     17      163         30         33      3 [31, 32]
+     20      199         37         40      3 [38, 39]
+     23      229         44         47      3 [45, 46]
+     26      277         51         54      3 [52, 53]
+     28      307         56         59      3 [57, 58]
+     30      331         61         64      3 [62, 63]
+     32      349         66         69      3 [67, 68]
+     34      373         71         74      3 [72, 73]
+     35      379         74         77      3 [75, 76]
+     37      409         79         82      3 [80, 81]
+     39      433         84         87      3 [85, 86]
+     40      439         87         90      3 [88, 89]
+     42      463         92         95      3 [93, 94]
+     43      487         95         98      3 [96, 97]
+     45      523        100        103      3 [101, 102]
+     46      541        103        106      3 [104, 105]
+     47      547        106        109      3 [107, 108]
+     49      577        111        114      3 [112, 113]
+     50      601        114        117      3 [115, 116]
+     51      607        117        120      3 [118, 119]
+
+  5-series: last jump >= 3 at n=499 (D=1691->1695)
+  7-series: last jump >= 3 at n=499 (D=1702->1706)
+
+  First run of 10 consecutive 1-digit jumps:
+    5-series: n=None, D=None
+    7-series: n=None, D=None
+
+========================================================================
+COMBINED BOUNDARY EVENTS
+========================================================================
+
+    #         D range Type          5-n_B     5-D jump  7-n_B     7-D jump
+    1           31-33 coincident       18       31->34     17       30->33
+    2           38-76 coincident       22       40->43     20       37->40 <-- BOUNDARY 1 (paper)
+    3          80-108 coincident       38       79->82     37       79->82 <-- BOUNDARY 2 (paper)
+    4         112-119 coincident       50     111->114     49     111->114
+    5        123-1705 coincident       54     122->125     53     122->125
+
+========================================================================
+MODULAR STATE AT KEY BOUNDARIES
+========================================================================
+
+  --- Boundary 1: coincident, D={38-76} ---
+  5-series: n_B=22, D=40->43
+    mod: 3=1, 5=0, 7=3, 11=0, 13=2, 17=0, 19=12, 23=0
+    Active (coprime): [3, 7, 13, 19]
+    Predicted min filler: 5187
+  7-series: n_B=20, D=37->40
+    mod: 3=1, 5=1, 7=0, 11=1, 13=0, 17=2, 19=0, 23=2
+    Active (coprime): [3, 5, 11, 17, 23]
+    Predicted min filler: 64515
+
+  --- Boundary 2: coincident, D={80-108} ---
+  5-series: n_B=38, D=79->82
+    mod: 3=1, 5=0, 7=5, 11=0, 13=9, 17=0, 19=9, 23=0
+    Active (coprime): [3, 7, 13, 19]
+    Predicted min filler: 5187
+  7-series: n_B=37, D=79->82
+    mod: 3=1, 5=2, 7=0, 11=2, 13=0, 17=9, 19=0, 23=10
+    Active (coprime): [3, 5, 11, 17, 23]
+    Predicted min filler: 64515
+
+  --- Boundary 3: coincident, D={112-119} ---
+  5-series: n_B=50, D=111->114
+    mod: 3=1, 5=0, 7=3, 11=0, 13=4, 17=0, 19=6, 23=0
+    Active (coprime): [3, 7, 13, 19]
+    Predicted min filler: 5187
+  7-series: n_B=49, D=111->114
+    mod: 3=1, 5=3, 7=0, 11=5, 13=0, 17=9, 19=0, 23=8
+    Active (coprime): [3, 5, 11, 17, 23]
+    Predicted min filler: 64515
+
+  --- Boundary 4: coincident, D={123-1705} ---
+  5-series: n_B=54, D=122->125
+    mod: 3=1, 5=0, 7=6, 11=0, 13=5, 17=0, 19=2, 23=0
+    Active (coprime): [3, 7, 13, 19]
+    Predicted min filler: 5187
+  7-series: n_B=53, D=122->125
+    mod: 3=1, 5=1, 7=0, 11=6, 13=0, 17=15, 19=0, 23=17
+    Active (coprime): [3, 5, 11, 17, 23]
+    Predicted min filler: 64515
+
+========================================================================
+CROSS-CHECK AGAINST PAPER
+========================================================================
+
+  Boundary 1 cross-check:
+    5-series mod3=1 (expect 1) mod5=0 (expect 0) -> observed factor: 3  predicted factor: 3
+    7-series mod3=1 (expect 1) mod5=1 (expect 3) -> observed factor: 3  active mod3? True
+
+  Boundary 2 cross-check:
+    5-series mod3=1 mod5=0 -> observed factor: 3  predicted: 3 (mod5=0 so 5 not active)
+    7-series mod3=1 mod5=2 -> observed factor: 15  predicted: 15 (both mod3,mod5 nonzero)
+
+========================================================================
+FINAL SUMMARY TABLE
+========================================================================
+
+  Bdy Type        Series   n_B    D gap  m3  m5  m7  m11  m13 Min filler  Paper obs
+    1 coincident  5-ser     22    38-76   1   0   3    0    2       5187          3
+    1 coincident  7-ser     20    38-76   1   1   0    1    0      64515          3
+    2 coincident  5-ser     38   80-108   1   0   5    0    9       5187          3
+    2 coincident  7-ser     37   80-108   1   2   0    2    0      64515         15
+    3 coincident  5-ser     50  112-119   1   0   3    0    4       5187       PRED
+    3 coincident  7-ser     49  112-119   1   3   0    5    0      64515       PRED
+    4 coincident  5-ser     54 123-1705   1   0   6    0    5       5187       PRED
+    4 coincident  7-ser     53 123-1705   1   1   0    6    0      64515       PRED
+
+  Saved: C:\Dev\digit-gaps-mod6-primes\boundary\results\boundary_predictions_final.csv

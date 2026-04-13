@@ -1,0 +1,2 @@
+boundary,type,series,n_before,gap_range,mod3,mod5,mod7,mod11,mod13,mod17,mod19,mod23,active_moduli,min_filler
+1,7-only,7-ser,248,761-766,1,4,0,3,0,12,0,5,"[3, 5, 11, 17, 23]",64515
