@@ -4,7 +4,11 @@ Full-Scale Null Model: Primes vs Pseudo-Primes
 ===============================================
 Optimised version: uses arrays and bisect for cluster detection.
 """
-import math, random, time
+import math, random, time, sys
+
+# Ensure UTF-8 output on Windows
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
 from collections import Counter
 from bisect import bisect_left, bisect_right
 
