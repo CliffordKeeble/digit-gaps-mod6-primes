@@ -516,28 +516,28 @@ The ramified n=1 step contributes ~0.3 to z (from 2.22 to 2.55). Under all three
 
 **Question:** Is "stable at approximately 5-6x" a quantitatively accurate description?
 
-From the 7 data points {3.63, 4.04, 5.59, 5.80, 5.48, 6.05, 5.16} at N = {100, 500, 1000, 2000, 5000, 10000, 20000}:
+**Correction (Cliff, April 14).** The initial computation used 7 ratios from CinC's brief {3.63, 4.04, 5.59, 5.80, 5.48, 6.05, 5.16} mapped to N = {100, 500, 1000, 2000, 5000, 10000, 20000}. This was wrong: the brief omitted the N=2000 row (ratio 6.50), so 5.80 is N=5000, not N=2000. Corrected computation uses all 8 data points from Section 8.5.
+
+From the full 8-point data at N = {100, 500, 1000, 2000, 5000, 10000, 20000, 50000} with ratios {3.63, 4.04, 5.59, 6.50, 5.80, 5.48, 6.05, 5.16}:
 
 | Statistic | Value |
 |---|---|
-| Mean | 5.107 |
-| Standard deviation | 0.919 |
-| Coefficient of variation | 18.0% |
-| 95% CI on mean | [4.257, 5.957] |
-| Linear fit slope (ratio vs log10 N) | 0.865 |
-| SE(slope) | 0.343 |
-| t(slope) | 2.523 |
-| df | 5 |
-| R-squared | 0.560 |
+| Mean | 5.281 |
+| Standard deviation | 0.983 |
+| Coefficient of variation | 18.6% |
+| 95% CI on mean (t, df=7) | [4.459, 6.103] |
+| Linear fit slope (ratio vs log10 N) | 0.677 |
+| SE(slope) | 0.357 |
+| t(slope) | 1.897 |
+| df | 6 |
+| R-squared | 0.375 |
 
-The slope is marginally significant: t = 2.52, just below the critical value of 2.571 at p = 0.05 (df = 5). The ratio is not constant — it drifts upward from ~3.6 at N=100 to ~5-6 at N=2000+, then stabilises. The initial ramp (N = 100-1000) accounts for most of the slope.
+The slope is **not significant** at p = 0.05 (t = 1.90, critical value 2.447 at df=6). The upward trend visible in the data (3.63 at N=100 rising to ~5-6 at N >= 1000) does not reach statistical significance over the full range.
 
-**Verdict:** "Stable at approximately 5-6x" is approximately correct for N >= 1000 but overstates the case for the full range N = 100-20000. More accurate description: "The ratio increases from ~3.6 at N = 100 to ~5-6 at N >= 1000, where it stabilises (mean 5.6, CV 6% for N >= 1000)."
+**Verdict:** "Stable at approximately 5-6x" is approximately correct for N >= 1000 but overstates the case for the full range N = 100-50000. The restricted statistics for N >= 1000 (ratios {5.59, 6.50, 5.80, 5.48, 6.05, 5.16}): mean = 5.763, std = 0.469, CV = 8.1%. This restricted set is genuinely stable.
 
-Computing the restricted statistics for N >= 1000: ratios {5.59, 5.80, 5.48, 6.05, 5.16}, mean = 5.616, std = 0.333, CV = 5.9%. This restricted set is genuinely stable.
-
-**Recommendation for v4:** Replace "stable at approximately 5-6x" with "stabilises at approximately 5.6x for N >= 1000 (CV = 6%), after an initial ramp from 3.6x at N = 100." This is honest and quantified.
+**Recommendation for v4:** Replace "stable at approximately 5-6x" with "stabilises at approximately 5.8x for N >= 1000 (CV = 8%), after an initial ramp from 3.6x at N = 100." The slope across the full range is not statistically significant (t = 1.90, p > 0.05).
 
 ---
 
-*Mr Code, April 14 2026 (updated with Section 9)*
+*Mr Code, April 14 2026 (updated with Section 9; Section 9.3 corrected same day per Cliff)*
