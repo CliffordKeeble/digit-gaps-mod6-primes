@@ -616,3 +616,120 @@ The question Conjecture 7.1 should be asking is: **at each 3-digit jump, what is
 ---
 
 *Mr Code, April 14 2026 (updated with Section 10)*
+
+---
+
+## 11. Crystallisation-Shadow Tests (April 14 2026)
+
+Three tests probing whether the digit-gap boundary structure connects to the Bootstrap crystallisation programme's scales (e^140 and e^184).
+
+### 11.1 Mod-q Boundary Scaling
+
+**Question:** Is the existence of boundaries at the e^140 and e^184 scales specific to mod-6 filtering?
+
+**Critical framing issue.** The paper's "boundaries" at D=60 (ln*D = 138.2) and D=80 (ln*D = 184.2) are NOT the first 3-digit jumps in the mod-6 series. They are specific 3-digit jumps that the paper selected for structural analysis. The first 3-digit jumps in the mod-6 series occur much earlier:
+
+- 5-series: first 3-digit jump at n=18, D=31->34 (ln*D = 71.4)
+- 7-series: first 3-digit jump at n=17, D=30->33 (ln*D = 69.1)
+
+Every residue class at every modulus tested has early 3-digit jumps, all at much smaller scales. No modulus places its first or second 3-digit jump near (140, 184). The mod-6 series don't either — their first gaps are at ln*D ~ 67-71.
+
+**The paper's D=60 boundary is the ~5th 3-digit jump for the 5-series (n=30), not the first.** The D=80 boundary is the ~9th (n=38). What makes these specific to the paper is the *combined* structure (staggered-then-coincident) and the factor-escalation analysis, not the digit-gap scale itself.
+
+**Summary table (first 3-digit jump per class):**
+
+| q | r | First gap D | ln*D | Second gap D | ln*D |
+|---|---|---|---|---|---|
+| 4 | 1 | 18-19 | 41.4 | 33-34 | 76.0 |
+| 4 | 3 | 35-36 | 80.6 | 44-45 | 101.3 |
+| 6 | 1 | 31-32 | 71.4 | 38-39 | 87.5 |
+| 6 | 5 | 29-30 | 66.8 | 38-39 | 87.5 |
+| 8 | 1 | 14-15 | 32.2 | 21-22 | 48.4 |
+| 12 | 1 | 16-17 | 36.8 | 23-24 | 53.0 |
+| 30 | 1 | 9-10 | 20.7 | 16-17 | 36.8 |
+
+None land near 140 or 184. All moduli show the same general pattern: early dense 3-digit jumps thinning with scale.
+
+**Verdict: neither (a) nor (b) — the question as posed does not have a clean answer.** The paper's boundaries at D=60/80 are not characterised by being "the first isolated boundaries" in any modulus-generic sense. They are the specific indices at which the *paper's* structural analysis (staggered/coincident classification, factor escalation) is carried out. The e^140/e^184 coincidence is between the paper's chosen analysis points and the physics scales, not between a generic prime-product feature and those scales.
+
+This does not invalidate the coincidence — but it means the null test framing ("do other moduli also land at 140/184?") is not the right question. The right question is: "why does the staggered-to-coincident transition happen specifically at D~60 and D~80 for mod-6?" That question requires a different kind of analysis.
+
+### 11.2 Sub-Structure Between Boundaries 1 and 2
+
+**Question:** Is the D=62..79 range structurally featureless or does it contain sub-features?
+
+**Result: outcome opposite to (a) — the range is maximally structured.** Every single step in D=62..79 is a 2-digit or 3-digit jump. There are zero 1-digit jumps in this range.
+
+5-series (D=62..79): 4 jumps of 2, 4 jumps of 3. Alternating 2-3-2-3-2-3-2-3 pattern.
+7-series (D=62..79): 3 jumps of 2, 4 jumps of 3.
+
+The "gap between boundaries" is not a filled region — it is itself a continuous stream of multi-digit jumps. The series does not settle into 1-digit-per-prime growth until much later (no run of 10 consecutive 1-digit jumps found within 500 primes, D < 1700).
+
+**Natural-log positions of all skip events:**
+
+| Series | D | ln*D | Jump |
+|---|---|---|---|
+| 5-series | 62 | 142.8 | 2 |
+| 5-series | 64 | 147.4 | 3 |
+| 5-series | 67 | 154.3 | 2 |
+| 5-series | 69 | 158.9 | 3 |
+| 5-series | 72 | 165.8 | 2 |
+| 5-series | 74 | 170.4 | 3 |
+| 5-series | 77 | 177.3 | 2 |
+| 5-series | 79 | 181.9 | 3 |
+
+These are reported without interpretation. CinC can check against icosahedral element-counts.
+
+**Verdict: (d) — sub-structure exists but is dense and uniform (alternating 2-3 jumps), not sparse/clustered.** The D=62..79 range is not a "gap between boundaries" in the structural sense — it is a continuation of the same multi-digit-jump regime. The two "boundaries" at D=60 and D=80 are not isolated features bracketing a featureless region; they are two specific points in a continuous stream that the paper selected for analysis.
+
+### 11.3 Tension-Ladder Shadows in Chi5
+
+**Question:** Do the ladder indices {41, 51, 53, 62} show systematic features in S_5(n) and S_7(n)?
+
+**Results:**
+
+5-series at ladder indices:
+
+| n | S(n) | Tie? | Extremum? | chi5 | Dist to tie | Type |
+|---|---|---|---|---|---|---|
+| 41 | 0 | TIE | | +1 | 0 | LADDER |
+| 51 | +4 | | MAX | +1 | 8 | LADDER |
+| 53 | +2 | | | -1 | 8 | LADDER |
+| 62 | +1 | | | +1 | 1 | LADDER |
+
+7-series at ladder indices:
+
+| n | S(n) | Tie? | Extremum? | chi5 | Dist to tie | Type |
+|---|---|---|---|---|---|---|
+| 41 | -3 | | | +1 | 15 | LADDER |
+| 51 | -5 | | | +1 | 25 | LADDER |
+| 53 | -7 | MIN | | -1 | 27 | LADDER |
+| 62 | -6 | MIN | | -1 | 36 | LADDER |
+
+Null distribution (100 random indices in [10, 100]):
+
+| Metric | 5-series null | 7-series null |
+|---|---|---|
+| Ties | 26.4% | 1.1% |
+| Extrema | 22.0% | 15.4% |
+| Near-tie (dist <= 1) | 62.6% | 3.3% |
+
+Ladder indices: 5-series ties 1/4 (25%, vs null 26.4%), extrema 1/4 (25%, vs null 22.0%), near-tie 2/4 (50%, vs null 62.6%). 7-series ties 0/4 (vs null 1.1%), extrema 2/4 (50%, vs null 15.4%), near-tie 0/4 (vs null 3.3%).
+
+**Verdict: (b) — no systematic distinguishing feature.** With only 4 ladder indices, there is no statistical power. The 5-series ladder indices look entirely generic (all rates within null range). The 7-series shows 2/4 extrema vs null 15.4%, which would be notable if the sample were larger, but at n=4 this is 1 event from chance. n=41 being a tie in the 5-series is noted but is one data point against a 26% null rate.
+
+### 11.4 Overall Assessment
+
+The crackle is understandable — ln(10)*60 = 138.2 and ln(10)*80 = 184.2 are genuinely close to the physics programme's 140 and 184. But the null tests show:
+
+1. The D=60 and D=80 scales are not special in the "first/second boundary" sense — they're the ~5th and ~9th 3-digit jumps, chosen for the paper's structural analysis.
+2. The range between them is not featureless — it's a continuous stream of 2-3 digit jumps.
+3. The ladder indices show no systematic chi5 features.
+
+The coincidence between ln(10)*60 ~ 140 and ln(10)*80 ~ 184 remains a numerical fact. Whether it's meaningful depends on whether there is a *structural* reason for the staggered-to-coincident transition to happen specifically at the ~30th prime of each series (D~60). The tests in this section do not address that question — they address and fail to confirm the broader claims about mod-6 specificity and sub-structure.
+
+**For CinC:** The bridge between Paper A and the physics programme rests on a narrower coincidence than the brief hoped: two specific numbers (60 and 80) whose ln(10) multiples happen to be near 140 and 184. The null tests do not strengthen this into a structural connection. They also do not refute it — a coincidence is not disproved by failing to find additional coincidences. But the discipline of Pattern 75 says: report the coincidence as OBSERVED, do not elevate it to STRUCTURAL without a derivational link.
+
+---
+
+*Mr Code, April 14 2026 (updated with Section 11)*
