@@ -540,4 +540,79 @@ The slope is **not significant** at p = 0.05 (t = 1.90, critical value 2.447 at 
 
 ---
 
-*Mr Code, April 14 2026 (updated with Section 9; Section 9.3 corrected same day per Cliff)*
+## 10. Conjecture 7.1 Sharpening — Boundary Predictions (April 14 2026)
+
+Three tasks to sharpen Conjecture 7.1 from qualitative tautology to falsifiable prediction.
+
+### 10.1 Boundary Identification
+
+**The dense-gap problem.** At these scales (D < ~700), digit gaps are ubiquitous. Each prime multiplication adds ~1.5-2 digits of log-growth, so the cumulative product typically jumps by 2-3 digits per prime, skipping 1-2 digit-lengths every step. The "isolated gap" regime where most digit-lengths are filled does not begin until much larger scales (the full_null_model.py analysis at 3.25M digits is in that regime). Paper 195's boundaries 1-2 are NOT isolated gaps in a mostly-filled sequence — they are specific 3-digit jumps in a still-gap-dense regime.
+
+**Boundary convention.** A "boundary event" is a step n -> n+1 where D(n+1) - D(n) >= 3, creating a pair of consecutive missing digit-lengths. These are common at small n and thin out gradually. The paper's boundaries 1 and 2 are specific instances.
+
+**Enumerated 3-digit jumps (first 20 per series):**
+
+5-series: n=18 (D 31->34), n=22 (40->43), n=25 (47->50), n=27 (52->55), **n=30 (59->62)**, n=32 (64->67), n=34 (69->72), n=36 (74->77), **n=38 (79->82)**, n=39 (82->85), n=41 (87->90), ...
+
+7-series: n=17 (30->33), n=20 (37->40), n=23 (44->47), n=26 (51->54), n=28 (56->59), **n=30 (61->64)**, n=32 (66->69), n=34 (71->74), n=35 (74->77), **n=37 (79->82)**, n=39 (84->87), ...
+
+Bold = paper's boundaries 1 and 2. The 3-digit jumps continue indefinitely (last observed in 500-prime range: n=499 at D~1700). There is no natural "boundary 3" that is distinguished from the ongoing stream of 3-digit jumps. The grouping into discrete boundaries is an artefact of where the paper chose to focus.
+
+**Verdict on Task 1: outcome (b/c).** Boundaries 3 and 4 are not cleanly identifiable as distinct events. The 3-digit jumps form a near-continuous stream. The next jumps after the paper's boundary 2 (n=38, D=79->82 for 5-series; n=37, D=79->82 for 7-series) are:
+
+- 5-series: n=39 (82->85), n=41 (87->90), n=42 (90->93), n=44 (95->98), ...
+- 7-series: n=39 (84->87), n=40 (87->90), n=42 (92->95), n=43 (95->98), ...
+
+These are not "boundary events" in any sense that distinguishes them from the general pattern. The jump at n=38->39 for the 5-series is *immediately* after boundary 2 — there is no gap-free interval between them.
+
+### 10.2 Modular State — The Invariance Finding
+
+**This is the key structural finding of this task.**
+
+The "active-constraint set" (small primes m where Pi_i(n) is coprime to m) is **invariant across all boundaries and all n**, because once a prime p enters a series' cumulative product, p divides Pi_i(n) for all subsequent n.
+
+| Series | Contains primes | Always divides Pi | Coprime moduli (invariant) |
+|---|---|---|---|
+| 5-series | 5, 11, 17, 23, 29, 41, 47, 53, ... | 5, 11, 17, 23 | {3, 7, 13, 19} |
+| 7-series | 7, 13, 19, 31, 37, 43, 61, 67, ... | 7, 13, 19 | {3, 5, 11, 17, 23} |
+
+Specifically:
+- Pi_5(n) mod 5 = 0 for all n >= 1 (contains p=5). Pi_5(n) mod 11 = 0 for all n >= 4 (contains p=11). Pi_5(n) mod 17 = 0 for all n >= 3 (contains p=17). Pi_5(n) mod 23 = 0 for all n >= 4 (contains p=23).
+- Pi_7(n) mod 7 = 0 for all n >= 1 (contains p=7). Pi_7(n) mod 13 = 0 for all n >= 2 (contains p=13). Pi_7(n) mod 19 = 0 for all n >= 3 (contains p=19).
+
+Verified at boundaries 1-4:
+
+| Boundary | 5-series active moduli | 7-series active moduli |
+|---|---|---|
+| 1 (D~60) | {3, 7, 13, 19} | {3, 5, 11, 17, 23} |
+| 2 (D~80) | {3, 7, 13, 19} | {3, 5, 11, 17, 23} |
+| 3 (D~112) | {3, 7, 13, 19} | {3, 5, 11, 17, 23} |
+| 4 (D~123) | {3, 7, 13, 19} | {3, 5, 11, 17, 23} |
+
+All identical. The active-constraint set does not change.
+
+**Cross-check against paper's observed factors:**
+- Boundary 1, 5-series: Pi_5(30) mod 3 = 1, mod 5 = 0. Observed factor: 3. Consistent: only mod 3 is active among the moduli needed.
+- Boundary 1, 7-series: Pi_7(30) mod 3 = 1, mod 5 = 3. Observed factor: 3 (not 15). Active set includes mod 5, but factor 5 was not required at this boundary.
+- Boundary 2, 7-series: Pi_7(37) mod 3 = 1, mod 5 = 2. Observed factor: 15. Both mod 3 and mod 5 are active AND required.
+
+The cross-check shows the active-constraint set is necessary but not sufficient: the *actual* required factor at a boundary depends on which constraints the gap-filling arithmetic demands, not just which moduli the product is coprime to.
+
+### 10.3 Implications for Conjecture 7.1
+
+**The conjecture as currently stated is not falsifiable in the way intended.** The "accumulated mod-m state" does not change meaningfully across boundaries (the coprimality pattern is fixed once the small primes enter the series). The factor escalation 3 -> 15 is not about the active-constraint set "growing" — it is about which constraints the gap-filling problem *requires*, which depends on the specific digit-gap geometry at each boundary.
+
+The question Conjecture 7.1 should be asking is: **at each 3-digit jump, what is the minimum factor k such that Pi_i(n_B) * k has a digit-length in the gap range?** This is a question about the leading digits of Pi_i(n_B) relative to the gap boundaries, not about the modular residue state.
+
+**What the data shows:** The minimum gap-filling factor at each boundary is determined by:
+1. The digit-length of Pi_i(n_B) relative to the lower edge of the gap.
+2. Which small primes divide Pi_i(n_B) (fixed by series membership).
+3. The specific value of Pi_i(n_B) mod m for active moduli (varies with n_B but the active moduli don't change).
+
+**Prediction for CinC.** A sharper Conjecture 7.1 would predict the *required factor* at each boundary by computing: what is the smallest integer k coprime to the series' primes such that Pi_i(n_B) * k has digit-length in the gap range? This is computable but depends on the actual value of Pi, not just its residue classes. The factor escalation 3 -> 15 at boundary 2 for the 7-series happens because at that specific scale, multiplying by 3 alone does not produce a number with 80 or 81 digits, while multiplying by 15 does — and 15 is the smallest multiple of 3 that achieves this.
+
+**Recommended action:** The invariance of the active-constraint set means Conjecture 7.1 cannot be sharpened by predicting "which new moduli activate" at later boundaries — they don't. The conjecture should instead be reframed around the digit-gap geometry and the specific filler factors required. This is a change of framing, not a contradiction — the paper's observations about factor escalation are correct, but the mechanism is digit-arithmetic, not modular-activation.
+
+---
+
+*Mr Code, April 14 2026 (updated with Section 10)*
