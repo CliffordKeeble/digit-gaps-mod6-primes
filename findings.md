@@ -215,4 +215,101 @@ Open Question 1 ("Does beta converge to ln(2)/ln(3) exactly?") should be updated
 
 ---
 
-*Mr Code, April 13 2026 (updated with Section 6, same date)*
+## 7. Adversary Follow-up Tests (April 13 2026, evening)
+
+Three tests requested by Mr Adversary's review of v2.4, addressing gaps in the empirical evidence behind the paper's headline claims.
+
+### 7.1 JUMP/PAIR Null at 200k Scale (Task 1)
+
+**The gap.** The previous JUMP/PAIR test (Section 3 above) ran at full scale (46 ratios, 20 trials) and called the observation a "small-sample artefact." But the original observation was at 200k scale (11 ratios from 13 clusters). Mr Adversary correctly noted we had not tested whether 11-ratio null trials at 200k routinely produce similar pair fractions.
+
+**Method.** 50 null-model trials at 200k scale. Same cluster parameters (window=50, min_gaps=20, merge_dist=500). Pair fraction and alternation fraction at four thresholds.
+
+**Important threshold note.** The paper's "44%" pair fraction and the previous pass's "45.5%" were computed at a pair threshold of [0.85, 1.15]. This test, per CinC's brief, uses [0.90, 1.10] as the widest threshold. At [0.90, 1.10], real primes show 27.3% (3/11 ratios), not 45.5%. The two numbers are not comparable without noting the threshold difference.
+
+**Results.**
+
+| Pair range | Real pair% | Null mean% | Null std% | z(pair) | Real alt% | Null alt mean% | z(alt) |
+|---|---|---|---|---|---|---|---|
+| [0.90, 1.10] | 27.3% | 27.6% | 14.1% | -0.02 | 30.0% | 10.2% | 2.22 |
+| [0.95, 1.05] | 18.2% | 13.5% | 9.1% | 0.51 | 30.0% | 4.7% | 4.75 |
+| [0.97, 1.03] | 18.2% | 8.0% | 6.3% | 1.63 | 30.0% | 2.6% | 7.28 |
+| [0.99, 1.01] | 9.1% | 2.6% | 3.6% | 1.81 | 10.0% | 1.1% | 4.31 |
+
+Null pair-fraction distribution at [0.90, 1.10]: median 27.8%, range [6.2%, 72.5%]. 50% of null trials equal or exceed the real-prime pair fraction.
+
+**Interpretation.** The pair fraction at 200k is dead centre of the null distribution (z = -0.02). The previous pass's "artefact" framing is confirmed for the pair fraction itself.
+
+However, the *alternation* fraction — JUMP followed by PAIR or vice versa — is significantly above null at every threshold tested (z = 2.22 to 7.28). Real primes show 30% alternation at [0.90, 1.10] vs null's 10%. The sequential *ordering* of gap ratios is prime-specific at 200k, even though the individual pair fraction is generic.
+
+**Caveat.** The alternation z-scores are high but come from small counts (3 alternations in 10 consecutive-ratio pairs, vs null mean ~2.6). With 11 ratios, a single ratio shifting classification can change the count substantially. The z-scores are computed from the distribution of alternation fractions across 50 null trials, which properly accounts for the variance — but the underlying counts are still small. This signal warrants cautious reporting, not a strong claim.
+
+**Verdict.** The pair-fraction observation is NULL-INDISTINGUISHABLE at 200k (z = -0.02). The alternation pattern is PRIME-SPECIFIC at 200k (z = 2.22+), but from small counts. The Section 3 demotion was correct for pair fraction; the alternation signal is a new finding that Section 5.3 did not originally distinguish from the pair-fraction claim.
+
+**Recommended status for v2.5:** Pair fraction → confirmed generic. Alternation at 200k → cautious observation, prime-specific but small-sample.
+
+### 7.2 Cluster Count at 100 Trials (Task 2)
+
+**The gap.** The headline z = -2.04 came from 10 null trials. With only 10 trials, the std estimate is noisy and z barely clears |2|.
+
+**Method.** 100 null-model trials at 200k scale, same cluster detection parameters as published.
+
+**Results.**
+
+| Metric | Real | Null mean | Null std | z-score |
+|---|---|---|---|---|
+| Cluster count | 13 | 28.12 | 11.02 | -1.37 |
+
+Null distribution: min 7, Q1 21, median 25, Q3 33, max 60.
+Null trials with count <= 13: 4/100 (empirical p = 0.04, one-tailed).
+
+**The paper's z = -2.04 with 10 trials used null mean 29.2 and null std 7.9.** At 100 trials the null mean is similar (28.12) but the std is substantially larger (11.02 vs 7.9), pulling z below 2. The 10-trial std was an underestimate.
+
+**Interpretation.** The cluster-count separation weakens from z = -2.04 to z = -1.37. This is below the |z| > 2 threshold the paper uses elsewhere. However, the empirical p-value (4%) is still noteworthy — only 4 of 100 null trials produce 13 or fewer clusters. The result is at the edge of conventional significance (p = 0.04 one-tailed), not noise, but not as clean as z = -2.04 implied.
+
+**Verdict.** The headline z = -2.04 was inflated by an underestimated null std from 10 trials. At 100 trials: z = -1.37, empirical p = 0.04. MARGINAL — the claim that real primes produce "fewer clusters" is directionally correct and the empirical p-value is suggestive, but z no longer clears |2|. The paper should not call this "the surviving headline statistical result" without the 100-trial caveat.
+
+**Recommended status for v2.5:** Revise z-score to -1.37 (100 trials), report empirical p = 0.04, soften language from "prime-specific" to "suggestive of prime-specific structure at marginal significance."
+
+### 7.3 Null R-squared Distribution at 200k (Task 3)
+
+**The gap.** The paper says null produces "no comparable clean fit" and writes "(scattered)" in the R² cell. Mr Adversary noted we never quoted a number.
+
+**Method.** From the 100-trial run, extract power-law R² for each null trial producing >= 4 clusters.
+
+**Results.**
+
+| Metric | Real | Null mean | Null std | z-score |
+|---|---|---|---|---|
+| R-squared | 0.9792 | 0.5767 | 0.1833 | +2.20 |
+| Beta | 0.6371 | 0.5395 | 0.1852 | +0.53 |
+
+Null R² distribution: min 0.016, Q1 0.499, median 0.615, Q3 0.703, max 0.856.
+**Zero null trials out of 100 reach R² >= 0.979.** The maximum null R² is 0.856.
+
+**Interpretation.** The R² is the strongest surviving prime-specific result. z = +2.20 clears the |z| > 2 threshold. The empirical p-value is < 1/100 (none of 100 trials reach the real value). The exponent beta is null-indistinguishable (z = 0.53, confirming the paper's existing +0.34) — but the *cleanness* of the fit (R²) is genuinely prime-specific.
+
+This means: random pseudo-primes at 200k produce cluster-spacing patterns with similar *slope* but much more *scatter* than real primes. The structural order is in the regularity of cluster spacing, not in the exponent itself.
+
+**Verdict.** R² = 0.979 is **PRIME-SPECIFIC** (z = +2.20, 0/100 null trials reach it). This is the cleanest statistical claim in the paper and should be promoted as such in v2.5.
+
+### 7.4 Revised Picture of Prime-Specific Structure
+
+After the adversary follow-up, the paper's prime-specific claims rank as follows:
+
+| Claim | z-score | Empirical p | Status |
+|---|---|---|---|
+| R² = 0.979 at 200k | +2.20 | < 1% | PRIME-SPECIFIC |
+| Cluster count = 13 at 200k | -1.37 | 4% | MARGINAL |
+| JUMP/PAIR alternation at 200k | +2.22 to +7.28 | — | CAUTIOUS (small counts) |
+| Beta = 0.637 at 200k | +0.53 | — | NULL-INDISTINGUISHABLE |
+| JUMP/PAIR pair fraction at 200k | -0.02 | 50% | NULL-INDISTINGUISHABLE |
+| All spacing statistics | ~0 | — | GENERIC |
+| Phase transition | ~0 | — | GENERIC |
+| Power law at full scale | +0.04 | — | NULL-INDISTINGUISHABLE |
+
+The R-squared cleanness is the load-bearing prime-specific result. The cluster count is supportive but marginal. Everything else is either generic or null-indistinguishable.
+
+---
+
+*Mr Code, April 13 2026 (updated with Sections 6 and 7)*
