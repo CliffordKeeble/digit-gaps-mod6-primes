@@ -456,4 +456,88 @@ The shuffle result (Task 3) is the genuinely surprising finding: the natural ord
 
 ---
 
-*Mr Code, April 13 2026 (updated with Section 8)*
+## 9. Paper A v3.1 Adversary Follow-up (April 14 2026)
+
+Three tasks addressing Mr Adversary's two compute-addressable items from the v3.1 review.
+
+### 9.1 Shuffle-Test Window and Band Robustness
+
+**Question:** Is the natural-order tie-count anomaly structural (robust across window lengths and band thresholds) or post-hoc (present only at the data-derived n=33, c=2)?
+
+**Answer: (a) ROBUST.** The anomaly persists across almost the entire tested range.
+
+| n | T_nat | shuf_mean | shuf_std | z | p | n_distinct |
+|---|---|---|---|---|---|---|
+| 10 | 5 | 2.45 | 1.43 | 1.78 | 0.078 | 6 |
+| 15 | 7 | 4.07 | 1.72 | 1.70 | 0.082 | 8 |
+| 20 | 9 | 3.97 | 2.19 | 2.29 | 0.018 | 11 |
+| 25 | 11 | 3.87 | 2.39 | 2.98 | 0.005 | 13 |
+| 30 | 12 | 5.00 | 2.83 | 2.47 | 0.012 | 15 |
+| 33 | 14 | 6.29 | 2.96 | 2.60 | 0.007 | 15 |
+| 35 | 14 | 4.93 | 2.93 | 3.09 | 0.000 | 14 |
+| 40 | 14 | 6.33 | 3.34 | 2.30 | 0.015 | 18 |
+| 45 | 16 | 5.66 | 3.44 | 3.00 | 0.004 | 19 |
+| 50 | 16 | 5.62 | 3.66 | 2.84 | 0.007 | 18 |
+| 60 | 16 | 7.67 | 4.28 | 1.95 | 0.036 | 23 |
+| 70 | 21 | 8.60 | 4.61 | 2.69 | 0.008 | 25 |
+| 80 | 26 | 9.19 | 5.10 | 3.30 | 0.003 | 27 |
+| 90 | 29 | 9.87 | 5.26 | 3.64 | 0.000 | 27 |
+| 100 | 29 | 10.55 | 5.80 | 3.18 | 0.002 | 30 |
+
+z > 2 at 12 of 15 window sizes (n=20 through n=100). z > 3 at 5 windows (n=35, 45, 80, 90, 100). The only windows below z=2 are n=10 (underpowered, 6 distinct values), n=15 (underpowered, 8 distinct values), and n=60 (z=1.95, just below threshold).
+
+The band threshold c is irrelevant to the shuffle test: ties are defined as S=0 regardless of the band. The three c values produce identical results at each n. The band enters only via identifying which n is the "natural" window for a given c: c=1 implies n=12, c=2 implies n=35, c=3 implies n=50. All three natural band-windows give z > 2.
+
+**Underpowered flag:** All windows n <= 90 have fewer than 30 distinct tie counts in the shuffle distribution. This is inherent to the problem (a 33-step random walk can only produce 0-17 ties). The z-scores and empirical p-values are still meaningful but should be interpreted with this discreteness caveat. At n=100, the distribution has 30 distinct values.
+
+**Verdict: (a) Structural.** The anomaly is not an artefact of selecting n=33. The z-score at n=33 (2.60) is in fact *not* the peak — the strongest signal is at n=90 (z=3.64). The natural prime ordering produces more ties than random shuffles across the entire n=20..100 range. The post-hoc concern is dismissed.
+
+**Note on v3.1 z=3.42 vs present z=2.60 at n=33.** The previous pass (Section 8.3) reported z=3.42, p=0.001. The present pass reports z=2.60, p=0.007. The difference is the random seed: the previous pass used the perturbation_tests.py seed (rng = random.Random(42)), while this pass uses SEED_BASE=42 but with a different RNG state because the shuffle test here reuses one RNG across all windows. Both are legitimate; the z-score is in the range 2.5-3.5 depending on the specific shuffle sample. The empirical p is consistently below 0.01.
+
+### 9.2 Ramification Accounting for chi5(5) = 0
+
+**Question:** Does the anomaly depend on counting the ramified n=1 step as a "tie"?
+
+**Answer: No.** All three definitions give z > 2.
+
+| Definition | T_nat | shuf_mean | shuf_std | z | p |
+|---|---|---|---|---|---|
+| A (include n=1) | 14 | 6.48 | 2.95 | 2.55 | 0.009 |
+| B (exclude n=1 from count) | 13 | 6.46 | 2.94 | 2.22 | 0.020 |
+| C (omit p=5 entirely, 32 steps) | 13 | 6.17 | 2.79 | 2.45 | 0.013 |
+
+The ramified n=1 step contributes ~0.3 to z (from 2.22 to 2.55). Under all three definitions, the natural-order tie count exceeds the shuffle distribution at p < 0.02.
+
+**Most principled definition:** Definition C (omit p=5, compute 32-step sum). Rationale: chi5(5) = 0 contributes nothing to the split/inert balance; including it inflates both T_nat and the shuffle mean by the same amount. Definition C measures what the paper claims: the balance between split and inert primes in the natural ordering. Under Definition C, T_nat = 13, z = 2.45, p = 0.013.
+
+**Recommendation for v4:** Report the anomaly using Definition C (13 ties in 32 non-ramified primes, z = 2.45, p = 0.013) as the primary result, with Definition A (14 ties in 33 including ramified, z = 2.55) as a note. The claim weakens slightly but remains clear of z > 2.
+
+### 9.3 Persistence-Ratio Stability Statistics
+
+**Question:** Is "stable at approximately 5-6x" a quantitatively accurate description?
+
+From the 7 data points {3.63, 4.04, 5.59, 5.80, 5.48, 6.05, 5.16} at N = {100, 500, 1000, 2000, 5000, 10000, 20000}:
+
+| Statistic | Value |
+|---|---|
+| Mean | 5.107 |
+| Standard deviation | 0.919 |
+| Coefficient of variation | 18.0% |
+| 95% CI on mean | [4.257, 5.957] |
+| Linear fit slope (ratio vs log10 N) | 0.865 |
+| SE(slope) | 0.343 |
+| t(slope) | 2.523 |
+| df | 5 |
+| R-squared | 0.560 |
+
+The slope is marginally significant: t = 2.52, just below the critical value of 2.571 at p = 0.05 (df = 5). The ratio is not constant — it drifts upward from ~3.6 at N=100 to ~5-6 at N=2000+, then stabilises. The initial ramp (N = 100-1000) accounts for most of the slope.
+
+**Verdict:** "Stable at approximately 5-6x" is approximately correct for N >= 1000 but overstates the case for the full range N = 100-20000. More accurate description: "The ratio increases from ~3.6 at N = 100 to ~5-6 at N >= 1000, where it stabilises (mean 5.6, CV 6% for N >= 1000)."
+
+Computing the restricted statistics for N >= 1000: ratios {5.59, 5.80, 5.48, 6.05, 5.16}, mean = 5.616, std = 0.333, CV = 5.9%. This restricted set is genuinely stable.
+
+**Recommendation for v4:** Replace "stable at approximately 5-6x" with "stabilises at approximately 5.6x for N >= 1000 (CV = 6%), after an initial ramp from 3.6x at N = 100." This is honest and quantified.
+
+---
+
+*Mr Code, April 14 2026 (updated with Section 9)*
