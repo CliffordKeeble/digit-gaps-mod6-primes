@@ -925,3 +925,252 @@ Plot: `results/v3_14_task3_extended_windows.png`.
 🐕☕⬡
 
 — Mr Code, 10 May 2026 (v3.14 follow-up)
+
+---
+
+# Paper 3 v3.15 follow-up
+
+**Mr Code pass — 10 May 2026 (later)**
+**Brief:** `mr_code_brief_paper_3_v3_15.md` from CinC
+**New scripts:** `growth_rate.py`, `proximity_null.py`
+
+Two computational additions for v3.15. Task 1 (PRINCIPAL) characterises
+the growth rate of the §6.5.1 z statistic; Task 2 (RECOMMENDED) tests
+the §6.6 proximity claim against a random-placement null. Both tasks
+verify against v3.x anchors.
+
+**Headline summary:**
+- **Task 1:** z grows as n^α with α = **0.212 ± 0.077 (Def C)** and
+  0.196 ± 0.080 (Def A) — significantly **below** the naive √n
+  prediction of α = 0.5 (p ≈ 0.02). Brief scenario **(b) sub-linear**.
+  Trajectory is non-monotone (z/√n: 0.31, 0.27, 0.20, 0.15, 0.17, 0.18)
+  with a localised tie-rate spike between n=500 and n=750 — worth a
+  caveat alongside the power-law fit.
+- **Task 2:** Empirical p = **0.4246** under the paper-boundary set
+  (B1-B4, n ∈ {30, 38, 50, 54}). Brief scenario **(b) plausible-but-
+  not-striking**. Soften §6.6 from "concurrent" / "within ~10 primes"
+  to "co-located at the same scale; null-model p ≈ 0.42".
+
+---
+
+## v3.15 Task 1: §6.5.1 growth-rate characterisation (PRINCIPAL)
+
+**Question:** v3.14 reported z at three windows {100, 500, 1000} with
+non-monotone z/√n. Does z(n) follow a clean power-law? How does the
+exponent α compare to the naive constant-rate prediction α = 0.5?
+
+**Method.** Six windows n ∈ {100, 200, 300, 500, 750, 1000}, both
+Definition A and Definition C natural. 1000-trial shuffle baseline at
+each (seed = trial × 137 + 42). Linear regression of log z on log n.
+
+### Verification gate
+
+All v3.14 anchors at n ∈ {100, 500, 1000} reproduce within ±0.10:
+
+| n | Def A this run | v3.14 | Def C this run | v3.14 |
+|---|---|---|---|---|
+| 100 | +3.214 | 3.21 | +3.078 | 3.08 |
+| 500 | +3.483 | 3.48 | +3.371 | 3.37 |
+| 1000 | +5.698 | 5.70 | +5.569 | 5.57 |
+
+### Six-window table (Definition C, primary)
+
+| n | T_nat | μ_s | σ_s | z | z/√n |
+|---|---|---|---|---|---|
+| 100  |  28 | 10.46 |  5.70 | +3.078 | 0.3078 |
+| 200  |  43 | 12.75 |  7.96 | +3.801 | 0.2688 |
+| 300  |  51 | 16.77 | 10.14 | +3.375 | 0.1948 |
+| 500  |  71 | 25.90 | 13.38 | +3.371 | 0.1508 |
+| 750  | 112 | 32.19 | 17.20 | +4.639 | 0.1694 |
+| 1000 | 140 | 32.68 | 19.27 | +5.569 | 0.1761 |
+
+Definition A is parallel (z = 3.21, 3.99, 3.41, 3.48, 4.59, 5.70 across
+the same n; full table in `results/v3_15_task1_growth_rate.csv`).
+
+### Power-law fit
+
+| Definition | n points | α (slope) | SE(α) | R² | t vs α=0.5 | p (two-tail) vs α=0.5 |
+|---|---|---|---|---|---|---|
+| A | 6 | **0.196** | 0.080 | 0.604 | −3.82 | **0.019** |
+| C | 6 | **0.212** | 0.077 | 0.655 | −3.73 | **0.020** |
+
+**Both definitions give α significantly below 0.5 at p ≈ 0.02.**
+
+### Verdict
+
+**Brief scenario (b) sub-linear excess** — confirmed quantitatively.
+The naive constant-rate-of-tie-excess prediction (α = 0.5) is rejected
+at p ≈ 0.02. The rate of tie excess per prime declines as n grows.
+
+### Caveat — non-monotone z/√n trajectory
+
+The z/√n column shows non-monotonicity: 0.31 → 0.27 → 0.20 → 0.15 →
+0.17 → 0.18. The minimum is at n = 500; partial recovery at n = 750
+and n = 1000. R² of the power-law fit is 0.65 — moderate, reflecting
+the trajectory's structure within the broad sub-linear trend.
+
+A cleaner view of the local rate: between n = 500 and n = 750, T_nat
+grew from 71 to 112 (+41 ties in 250 primes; rate 0.164 ties/prime),
+which is much higher than the n = 100→500 rate (43 ties in 400 primes;
+rate 0.108 ties/prime) or the n = 750→1000 rate (28 ties in 250 primes;
+rate 0.112 ties/prime). There's a **localised tie-rate spike** between
+n = 500 and n = 750 worth flagging — possibly noise on a single 250-prime
+bin, possibly structural (a cluster of small primes with chi5 patterns
+that drive ties). Not pursued further here.
+
+### One-line summary for §6.5.1
+
+> Across n ∈ {100, 200, 300, 500, 750, 1000}, z grows as n^α with
+> α = 0.212 ± 0.077 (Def C) and α = 0.196 ± 0.080 (Def A); compare
+> to the naive constant-rate-excess prediction of α = 0.5 (rejected
+> at p ≈ 0.02 for both definitions).
+
+CSVs: `results/v3_15_task1_growth_rate.csv`, `v3_15_task1_powerlaw_fits.csv`.
+Plot: `v3_15_task1_growth_rate.png`.
+
+---
+
+## v3.15 Task 2: χ₅-boundary proximity null (RECOMMENDED)
+
+**Question:** §6.6 reports the end of the 5-series tight-oscillation
+regime is "within ~10 primes" of the first digital boundary crossing.
+Without a null, this describes the data, not a structural connection.
+What is the empirical p?
+
+**Method.** Tie-desert onsets defined as n where S₅(n) = 0 (a tie) AND
+S₅(n+1..n+10) all ≠ 0 (next 10 are non-ties); this matches v3.13 §6.1's
+"first desert n=43 to n=61" framing. Three boundary-set definitions
+computed for transparency:
+
+(i) ΔD ≥ 2: brief's literal computation. L = 4996 in n ≤ 5000 — almost
+every step is a "jump" once primes exceed log10(p) ≥ 1, so this is
+**degenerate** (any onset is within 10 of some jump trivially).
+
+(ii) ΔD ≥ 3 (all 3-digit jumps): L = 4963 — also dense at large n, also
+**degenerate**.
+
+(iii) **Paper-named boundaries B1-B4** [PRIMARY]: L = 4 specific events
+v3.13 §7.3 named at D ≈ 60, 80, 112, 123. Identified algorithmically by
+finding the first 3-digit jump whose pre-jump D-value falls in each
+target band. Result: **n ∈ {30, 38, 50, 54}** — the sparse, paper-meaningful
+event set.
+
+**Brief inconsistency note.** The brief says "Digit-jump positions ...
+The first is n = 30 (boundary 1)" — but the FIRST 5-series 3-digit jump
+is at n = 18 (D 31→34); n = 30 is the *fifth* 3-digit jump, paper-labelled
+as boundary 1. The "first" wording was a brief slip; the verification
+anchor (lag 13 from boundary 1) presumes n = 30, which is what we use.
+Definitions (i) and (ii) are reported alongside as the all-jumps comparison
+that exposes the degeneracy.
+
+### Verification gate
+
+| Anchor | Got | Status |
+|---|---|---|
+| First tie-desert onset | n = 43 | OK (matches v3.13 §6.1 framing) |
+| Paper boundary 1 = n=30 in 3-digit-jump list | yes (5th overall) | OK |
+| Lag (43 − 30) | 13 | OK |
+| Paper B1-B4 n's | {30, 38, 50, 54} | OK |
+| K (onsets in n ≤ 5000) | 60 | informational |
+
+### Per-onset distance to nearest paper boundary (natural)
+
+K = 60 onsets; only the early ones are anywhere near paper B1-B4 (which all sit at n ≤ 54):
+
+- First onset n = 43 → nearest paper boundary B2 (n = 38): distance **5**.
+- Median min-distance over all 60 onsets: **1733** (most onsets are far past B4 = 54).
+- Onsets within 10 of any paper boundary: **1 of 60** (just the first).
+
+So the natural "any onset within 10 of any boundary" claim survives — but
+only via the first onset, and only at distance 5 (within 10 but not within 5).
+
+### Empirical null (K = 10,000 random placements)
+
+Under (iii) PRIMARY:
+- Natural overall min-distance: 5
+- Null P(any onset within 10 of any of B1-B4 | random K=60 placement) = **0.4246**
+- Null P(overall min ≤ natural min = 5) = 0.3398
+- Null overall-min percentiles: 5th = 1.0, 50th = 16.0, 95th = 187.0
+
+The null distribution is heavy at small distances because K=60 onsets in
+[1, 5000] makes hitting the 80-position-wide "within 10 of any of 4 boundaries"
+region likely (~ 1 − (1 − 80/5000)^60 ≈ 0.62 in the iid approximation;
+empirical 0.42 is somewhat lower because of without-replacement sampling
+plus boundary clustering).
+
+For (i) and (ii) the null p = 1.0000 — degenerate as expected.
+
+### Verdict
+
+**Brief scenario (b) — proximity is plausible but not striking.** The
+§6.6 "within ~10 primes" claim is supported by data (first onset n=43
+is 5 from B2 = 38) but is **not statistically distinguished** from
+random placement. p = 0.42 means ~42% of randomly-placed onset sets
+would also satisfy "within 10 of some paper boundary."
+
+### Recommended §6.6 reframing for v3.15
+
+Per Mr Adversary's path-(B) wording: drop "within ~10 primes" /
+"concurrent" and use "co-located at the same scale" with no
+quantitative claim. Or alternatively, retain the quantitative report
+of distance-5 to B2, but report the empirical p alongside ("under
+random-placement null, p = 0.42 — proximity is plausible but does
+not pass a 5% threshold").
+
+This is **NOT** a Pattern 75 retraction (the data is consistent with
+the §6.6 claim, just doesn't statistically distinguish it from
+randomness). It's a calibration: drop the implicit "structural" framing
+that "within ~10 primes" suggested and keep only the descriptive
+co-location observation.
+
+### One-line summary for §6.6
+
+> K = 60 tie-desert onsets and L = 4 paper-defined boundaries B1-B4
+> (n ∈ {30, 38, 50, 54}) in n ≤ 5000; empirical p = 0.4246 for at
+> least one onset within 10 primes of a boundary under uniform-random
+> placement of K onsets.
+
+CSVs: `results/v3_15_task2_onsets_jumps.csv`, `v3_15_task2_summary.csv`.
+Plot: `v3_15_task2_proximity_null.png`.
+
+---
+
+## v3.15 flags for CinC
+
+1. **Task 1 result is clean (b):** α = 0.212 ± 0.077 significantly
+   below 0.5 (p ≈ 0.02). Sub-linear excess confirmed. The non-monotone
+   z/√n trajectory (with a localised tie-rate spike at n = 500-750)
+   is worth a caveat alongside the power-law fit; whether it's
+   structural or noise on a 250-prime bin can't be determined from
+   six points.
+
+2. **Task 2 result is (b) — soften §6.6 framing.** The "within ~10
+   primes" claim is supported by data (distance 5 from first onset
+   to paper boundary B2) but does not survive a random-placement null
+   at p < 0.05. Recommend Mr Adversary's path-(B) softening: "co-located
+   at the same scale" with the null acknowledged. This is calibration,
+   not retraction — the data are consistent with the claim, just don't
+   distinguish it from chance.
+
+3. **Brief inconsistency (Task 2):** "first digital boundary at n = 30"
+   in the verification anchor refers to paper-labelled boundary 1,
+   not "first 3-digit jump" (which is at n = 18). Resolved by using
+   n = 30 as the specific paper-boundary anchor and computing B2-B4
+   algorithmically (n = 38, 50, 54). All three jump-set definitions
+   reported transparently; (iii) paper-boundary set is primary because
+   it's the only one with sparse-enough events for a meaningful null.
+   v3.15 §6.6 should explicitly cite the four paper boundaries rather
+   than "the first digital boundary" alone.
+
+4. **Cross-reference for §6.5.1 / §6.5.3 / §7.3:** the v3.14 finding
+   that "boundaries 1 and 2 are not isolated under per-cluster reading"
+   plus this v3.15 finding that "tie-desert onsets are not statistically
+   close to paper boundaries" together suggest §7.3 / §9 Q4 should
+   focus on the staggered-vs-coincident structural distinction, not
+   on isolation or proximity. Both quantitative tests of structural
+   adjacency claims have come back as "co-located at the same scale,
+   not statistically separated from random."
+
+🐕☕⬡
+
+— Mr Code, 10 May 2026 (v3.15 follow-up)

@@ -1,0 +1,4 @@
+definition,K_onsets,L_jumps,natural_min_dist,natural_any_within_10,empirical_p_within_10,empirical_p_overall_min
+(i) ΔD ≥ 2,60,4996,0,1,1.000000,1.000000
+(ii) ΔD ≥ 3 (all 3-digit jumps),60,4963,0,1,1.000000,1.000000
+(iii) paper boundaries B1-B4 [PRIMARY],60,4,5,1,0.424600,0.339800
