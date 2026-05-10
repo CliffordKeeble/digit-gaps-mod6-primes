@@ -1547,3 +1547,227 @@ above their independent-shuffle counterparts.
 🐕☕⬡
 
 — Mr Code, 10 May 2026 (v3.17 follow-up)
+
+---
+
+# v4.2 Comparative cluster tabulation
+
+**Brief:** `v3_12_data/briefs/mr_code_brief_paper_3_v4_2.md` (parent,
+SHA `7fa5e38`).
+**Addenda (pre-computation):** `..._addendum_cluster_count.md` (`2abe020`),
+`..._addendum_n_star_and_typology.md` (`7bc454a`).
+**Script:** `v3_12_data/cluster_comparative_tabulation.py`.
+**Outputs:** `v3_12_data/results/cluster_comparative_tabulation.csv`,
+`..._summary.txt`.
+
+## Run status — PASS, with two pre-registered calibrations
+
+Anchor verification: **PASS** (5/5 gates).
+
+- Anchor 1 — D_i(n) values from v4.1 Tables 2/3: **7/7 OK**.
+- Anchor 2 — mpmath at 200-dps reproduces D_i(n) at anchor indices: **7/7 OK**.
+- Anchor 3 — Cluster count in [90, 200]: **23 OK** under strict
+  *"entirely contained"* reading. Calibrated from v3.14's loose 24-count
+  (see addendum 1).
+- Anchor 4 — Per-cluster nearest-cluster distance over [90, 200]:
+  median = max = 2; **0/23 at distance ≥ 3, 0/23 at distance ≥ 5**. OK.
+- Anchor 5 — Boundary lifts: **B1 (60, 63) partial-coincident, lift_5 = 3,
+  lift_7 = 3**; **B2 (80, 81) coincident, lift_5 = 3, lift_7 = 15**. OK.
+  B1's classification is partial-coincident under the strict trinary
+  (calibrated from v4.1's prose-level "staggered"; see addendum 2).
+  Lift values reproduce under Convention A on n_i* (largest contiguous
+  run of S_i(C); see addendum 2).
+
+## Calibrations of v3.14 / v4.1 (both stay in calibration template, not retraction)
+
+### Calibration 1 — Cluster enumeration in [90, 200]: 24 → 23
+
+v3.14's `isolated_threshold.py` used a permissive
+`D_RANGE_LO ≤ c[0] ≤ D_RANGE_HI or D_RANGE_LO ≤ c[1] ≤ D_RANGE_HI`
+match and reported 24 clusters in [90, 200]. The 24th was
+**`(172, 482)`** — a 311-digit-wide combined-skip cluster whose lower
+endpoint sits inside [90, 200] and whose upper endpoint extends far
+past it. This is the leading edge of the **asymptotic merged regime**
+within N_MAX = 250: at sufficiently large n the per-series skip
+densities drive the combined skip set into a single contiguous run, and
+individual cluster-and-gap structure breaks down.
+
+v4.2 applies the strict *"entirely contained"* reading per the parent
+brief, giving **23 clusters** in [90, 200]. The `(172, 482)` cluster
+is recorded separately (CSV row `cluster_id = "merged_regime_edge"`,
+classification `asymptotic-merged`, lifts marked degenerate). The
+substantive v3.14 conclusion *"median = max = 2 inter-cluster distance,
+0 at distance ≥ 3"* holds under both readings (the gap from `(169, 170)`
+to `(172, 482)` is 2, satisfying both); the 24-count was a counting
+choice, not a load-bearing finding.
+
+### Calibration 2 — B1 classification: "staggered" → "partial-coincident"
+
+v4.1's §6 prose described boundary 1 as *staggered* with the 5-series
+cluster at d ∈ {60, 61} and the 7-series cluster at d ∈ {62, 63}. Strict
+Step-3 application to the actual skip sets gives:
+
+| d  | 5-series | 7-series | dual-skipped |
+|----|----------|----------|--------------|
+| 60 | skip (D₅(30)=59 → D₅(31)=62) | skip (D₇(29)=59 → D₇(30)=61) | **yes** |
+| 61 | skip (same jump) | land at D₇(30) | no (5-only) |
+| 62 | land at D₅(31) | skip (D₇(30)=61 → D₇(31)=64) | no (7-only) |
+| 63 | skip (D₅(31)=62 → D₅(32)=64) | skip (same jump) | **yes** |
+
+So `S_5(B1) = {60, 61, 63}`, `S_7(B1) = {60, 62, 63}` — partial-coincident
+under the strict trinary `{coincident / partial-coincident / staggered}`,
+not staggered. v4.1's prose captured the *staggered cores*
+({61}, {62}) but missed the dual-skipped edges at {60, 63} produced by
+the smaller jumps (D₇(29)→D₇(30) skipping {60}; D₅(31)→D₅(32)
+skipping {63}). The strict trinary is a richer typology that v4.2
+introduces; the structural-transition claim becomes
+**partial-coincident → coincident** (B1 → B2) with the same direction
+v4.1 articulated. Factor-escalation 3 → 15 is unaffected.
+
+## Numerical findings ([90, 200] sample, n = 23 strict clusters)
+
+### Classification breakdown
+
+| Classification     | Count | Fraction |
+|--------------------|-------|----------|
+| coincident         | **19** | 19 / 23 = 82.6% |
+| partial-coincident | 4     | 4 / 23 = 17.4% |
+| staggered          | 0     | — |
+| single-5           | 0     | — |
+| single-7           | 0     | — |
+
+The four partial-coincident clusters in [90, 200] are
+`C_3 (91, 94)`, `C_5 (99, 102)`, `C_16 (132, 135)`, `C_21 (149, 158)` —
+each with a B1-like dual-skipped-edges + singly-skipped-middle
+structure.
+
+### Lift-factor distribution
+
+| Series | k = 3 | k = 9 | k = 15 |
+|--------|-------|-------|--------|
+| 5-series | 10 | 13 | 0 |
+| 7-series | 2 | 2 | **19** |
+
+Across the 23-cluster comparative sample:
+- **21 / 23** clusters have 7-series lift > 3 (vs pre-reg ≤ 4 expected).
+- **19 / 23** clusters have 7-series lift = 15 (vs pre-reg "rare" expected).
+- **8 / 23** clusters reproduce the full B2 pattern `(coincident, 5-lift = 3,
+  7-lift = 15)`.
+- **YES** to recurrence of `partial-coincident → coincident` consecutive
+  transitions: 4 instances at `C_3→C_4`, `C_5→C_6`, `C_16→C_17`,
+  `C_21→C_22`.
+
+### Discovery — asymptotic merged regime edge
+
+`merged_regime_edge`: cluster `(172, 482)`, width 311, classification
+`asymptotic-merged` (degenerate lifts). Within N_MAX = 250, this is the
+leading edge of the regime where per-series skip densities drive the
+combined skip set into a single contiguous run. Skip sets monotone in n
+(per addendum 2 / brief), so the cluster cannot break up at higher
+N_MAX — only extend further. v4.3-able follow-up: confirm upper bound
+and mechanism at higher N_MAX.
+
+## Falsifier-test result — outcome (β), Retraction 3 indicated
+
+| Test | Pre-registered (α) target | Pre-registered (β) trigger | Observed | Hits which row |
+|------|---------------------------|---------------------------|----------|----------------|
+| Coincident-dual count | ≤ 3 | > 6 | **19** | (β) |
+| 7-series lift > 3 | ≤ 4 | > 6 | **21** | (β) |
+| 7-series lift == 15 (factor-15 recurrence) | (α implicit) | ≥ 3 distinct later clusters | **19** | (β) |
+| `{staggered or PC} → coincident` recurrence | none | (qualitative) | **YES (4 instances)** | flag |
+| B2 pattern reproduction (full coincident + 3 + 15) | ≤ 1 | (β implicit) | **8** | (β) |
+
+**Outcome: β — pre-registered prediction falsified.**
+
+The {3, 3, 3, 15} pattern at boundaries 1 and 2 is **not unusual**
+among the 24+ later clusters; it is **the rule, not the exception**
+through the [90, 200] range. 19 of 23 strict clusters are coincident
+with 7-series factor-15 lifts. The structural-distinguishing-features
+reading of v4.1 §6 — that B1 and B2 are characterised by staggered →
+coincident structure and 3 → 15 escalation, distinct from later
+clusters — does not survive contact with the comparative tabulation.
+
+Per the parent brief's row-(β) language: **Retraction 3 is indicated**.
+The §6 framing should be reframed as *"we analyse the first cluster
+(B1) on its own terms"*, with structural claims restricted to the
+from-1, first-encountered, exhaustive-enumeration content of §4–§5.
+The staggered/coincident transition and 3 → 15 escalation become
+*characteristic features of the small-n regime* rather than
+distinguishing features of B1 / B2 specifically.
+
+## Decisions made beyond the instruction
+
+- **Convention A operational reading.** Brief addendum 2 wrote
+  *"min(S_i(C))"* but CinC's anchor table for B1 7-series uses 62
+  (= min of `{62, 63}`) as the threshold, not 60 (= min of full
+  `S_7(B1) = {60, 62, 63}`). The literal reading produces lift_7(B1) = 9,
+  not the cited 3. Operational interpretation: *"the series-i skip range
+  within C"* resolves to **the largest contiguous run within `S_i(C)`**
+  (matching the "core" language CinC used elsewhere in the addendum).
+  Implementation: `largest_contiguous_run_min(S_local)` returns the min
+  of the longest contiguous run; ties broken by smallest start. For
+  coincident clusters (single run) this equals `min(S_local)`. Reproduces
+  Propositions 1 and 2 anchors at all four boundary lifts.
+- **Tiebreaker for largest-run choice.** Smallest start (earliest d in
+  the cluster). No ties observed in the 23 + 2 boundary sample; flag
+  for CinC if a future cluster has equal-length runs.
+- **Recurrence test scope.** Pre-registered text said "staggered →
+  coincident transition"; under v4.2 typology the B1 → B2 pattern is
+  partial-coincident → coincident, so the falsifier test reads the
+  recurrence as `{staggered or partial-coincident} → coincident`. All
+  four observed instances are partial-coincident → coincident; zero
+  staggered → coincident (because there are zero staggered clusters in
+  the sample).
+- **(α)/(β) coincident counting.** Strict `S_5(C) = S_7(C)` per CinC's
+  ruling on the typology refinement; partial-coincident reported
+  separately for completeness, not counted toward (α)/(β) thresholds.
+- **n_i* per series, per cluster.** Computed inside `compute_lift` after
+  classification, since the operational threshold depends on the largest
+  run within S_i(C) which only makes sense after the per-series skip
+  set within the cluster is enumerated.
+- **mpmath dps = 200** for D_i(n) verification at anchor indices;
+  Python `int` exact arithmetic for all production digit-length and
+  lift-condition computations (digit length via `len(str(prod))`).
+
+## Flags for CinC
+
+- **Result is decisive (β).** Coincident-dual = 19, lift_7 > 3 = 21,
+  lift_7 = 15 = 19. Each individually triggers (β); the joint pattern
+  is unambiguous. The pre-registered intermediate range (4–6 coincident,
+  5–6 lift > 3, factor-15 at 1–2 later clusters) is not reached in any
+  dimension; the outcome is fully on the (β) side.
+- **Two calibrations to integrate at v4.2 §6.4** — both calibration
+  template, neither retraction template:
+  1. Count: 23 strict + (172, 482) merged-regime edge.
+  2. Classification: B1 partial-coincident under strict trinary.
+- **Retraction 3 indicated** by the (β) outcome of the v4.1 forward
+  commitment. §6 reframe per parent brief's (β) row: structural
+  claims restricted to from-1 first-encountered exhaustive-enumeration
+  content of §4–§5; B1/B2 distinction → "characteristic features of the
+  small-n regime", not "distinguishing features of B1/B2 specifically".
+  Theorems 1–3 unchanged; from-1 status of B1 unchanged; mpmath
+  verification unchanged; cluster-uniformity observation unchanged.
+- **Discovery: (172, 482) merged-regime edge.** Substantive separate
+  observation, possibly a §6.4 sub-paragraph or a v4.3 follow-up
+  investigation. The asymptotic skip-density crossover is a real
+  structural feature of the (Π₅, Π₇) digit-jump landscape, distinct
+  from the boundary-like clusters.
+- **Convention A interpretive choice.** Documented as "operational
+  reading" because the literal addendum-2 text *"min(S_i(C))"* would
+  fail the B1 7-series anchor under the partial-coincident
+  classification. The largest-contiguous-run reading is the only
+  reading consistent with CinC's anchor table; flagged here so the
+  parent brief / addendum can be tightened on the next pass.
+- **The four partial-coincident clusters in [90, 200]** (C_3, C_5,
+  C_16, C_21) are B1-analogues at higher d. CinC may want to use them
+  as comparison cases for v4.2's revised §6 if any small-n-specific
+  structure remains worth highlighting.
+- **Pattern 75 fired three times** during this task (count anchor,
+  B1 classification, n_i* convention). Each triggered an addendum +
+  re-run; no shortcut taken on any of them. The pre-registered brief +
+  addendum chain (`7fa5e38` → `2abe020` → `7bc454a`) preserves the
+  pre-registration timeline against the current run's results.
+
+🐕☕⬡
+
+— Mr Code, 10 May 2026 (v4.2 comparative tabulation)

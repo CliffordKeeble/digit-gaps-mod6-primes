@@ -1,0 +1,27 @@
+cluster_id,d_lower,d_upper,series_5_active,series_7_active,classification,S5_skips,S7_skips,n5_star,n7_star,lift_5,lift_7,notes
+B1,60,63,True,True,partial-coincident,"60,61,63","60,62,63",30,30,3,3,partial-coincident: defaulted to mod-3 lifts; flag for CinC review
+B2,80,81,True,True,coincident,"80,81","80,81",38,37,3,15,coincident: 7-series mod-15 escalation active
+C_3,91,94,True,True,partial-coincident,"91,92,94","91,93,94",42,42,9,3,partial-coincident: defaulted to mod-3 lifts; flag for CinC review
+C_4,96,97,True,True,coincident,"96,97","96,97",44,43,3,15,coincident: 7-series mod-15 escalation active
+C_5,99,102,True,True,partial-coincident,"99,100,102","99,101,102",45,45,9,3,partial-coincident: defaulted to mod-3 lifts; flag for CinC review
+C_6,104,105,True,True,coincident,"104,105","104,105",47,46,3,15,coincident: 7-series mod-15 escalation active
+C_7,107,108,True,True,coincident,"107,108","107,108",48,47,9,15,coincident: 7-series mod-15 escalation active
+C_8,110,110,True,True,coincident,110,110,49,48,9,15,coincident: 7-series mod-15 escalation active
+C_9,112,113,True,True,coincident,"112,113","112,113",50,49,3,15,coincident: 7-series mod-15 escalation active
+C_10,115,116,True,True,coincident,"115,116","115,116",51,50,3,15,coincident: 7-series mod-15 escalation active
+C_11,118,119,True,True,coincident,"118,119","118,119",52,51,9,15,coincident: 7-series mod-15 escalation active
+C_12,121,121,True,True,coincident,121,121,53,52,9,15,coincident: 7-series mod-15 escalation active
+C_13,123,124,True,True,coincident,"123,124","123,124",54,53,3,15,coincident: 7-series mod-15 escalation active
+C_14,126,127,True,True,coincident,"126,127","126,127",55,54,3,15,coincident: 7-series mod-15 escalation active
+C_15,129,130,True,True,coincident,"129,130","129,130",56,55,9,15,coincident: 7-series mod-15 escalation active
+C_16,132,135,True,True,partial-coincident,"132,134,135","132,133,135",58,56,3,9,partial-coincident: defaulted to mod-3 lifts; flag for CinC review
+C_17,137,138,True,True,coincident,"137,138","137,138",59,58,3,15,coincident: 7-series mod-15 escalation active
+C_18,140,141,True,True,coincident,"140,141","140,141",60,59,3,15,coincident: 7-series mod-15 escalation active
+C_19,143,144,True,True,coincident,"143,144","143,144",61,60,9,15,coincident: 7-series mod-15 escalation active
+C_20,146,147,True,True,coincident,"146,147","146,147",62,61,9,15,coincident: 7-series mod-15 escalation active
+C_21,149,158,True,True,partial-coincident,"149,151,152,154,155,157,158","149,150,152,153,155,156,158",64,62,3,9,partial-coincident: defaulted to mod-3 lifts; flag for CinC review
+C_22,160,161,True,True,coincident,"160,161","160,161",67,66,9,15,coincident: 7-series mod-15 escalation active
+C_23,163,164,True,True,coincident,"163,164","163,164",68,67,9,15,coincident: 7-series mod-15 escalation active
+C_24,166,167,True,True,coincident,"166,167","166,167",69,68,9,15,coincident: 7-series mod-15 escalation active
+C_25,169,170,True,True,coincident,"169,170","169,170",70,69,9,15,coincident: 7-series mod-15 escalation active
+merged_regime_edge,172,482,,,asymptotic-merged,,,,,n/a (degenerate; cluster width 311),n/a (degenerate; cluster width 311),"leading edge of asymptotic merged regime within N_MAX = 250; digit skips contiguous, individual cluster-and-gap structure breaks down"

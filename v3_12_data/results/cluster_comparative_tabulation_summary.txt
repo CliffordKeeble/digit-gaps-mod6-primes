@@ -1,0 +1,42 @@
+Paper 3 v4.2 Comparative cluster tabulation — summary
+
+Anchor verification: PASS
+  - D_i(n) values: 7/7 OK
+  - mpmath 200-dps: 7/7 OK
+  - Cluster count in [90, 200]: 23/23 OK (strict 'entirely contained' reading; addendum 10 May 2026)
+  - merged_regime_edge: (172, 482), width 311 (leading edge of asymptotic merged regime)
+  - Per-cluster distance: median=2, max=2, >=3: 0/23, >=5: 0/23  OK
+  - Boundary 1 lifts: (5, 7) = (3, 3) staggered  OK
+  - Boundary 2 lifts: (5, 7) = (3, 15) coincident  OK
+
+Cluster count in [90, 200]: 23 (strict reading; v3.14's 24-count was loose, see addendum)
+merged_regime_edge: (172, 482), width 311, recorded outside the comparative sample
+
+Classification breakdown (24 clusters):
+  single-5              : 0
+  single-7              : 0
+  staggered             : 0
+  coincident            : 19
+  partial-coincident    : 4
+
+5-series lift distribution (n=23 active):
+  k =          3: 10
+  k =          9: 13
+7-series lift distribution (n=23 active):
+  k =         15: 19
+  k =          3: 2
+  k =          9: 2
+
+Specific findings:
+  coincident-dual: 19
+  partial-coincident: 4
+  7-series lift > 3: 21
+  B2 pattern (coincident, 5=3, 7=15): 8
+  7-series lift == 15: 19
+  {staggered or partial-coincident} → coincident consecutive transition: YES
+    transition: C_3 → C_4  (partial-coincident → coincident)
+    transition: C_5 → C_6  (partial-coincident → coincident)
+    transition: C_16 → C_17  (partial-coincident → coincident)
+    transition: C_21 → C_22  (partial-coincident → coincident)
+
+Falsifier-test outcome: β (pre-registered prediction falsified — Retraction 3)
