@@ -1547,3 +1547,202 @@ above their independent-shuffle counterparts.
 🐕☕⬡
 
 — Mr Code, 10 May 2026 (v3.17 follow-up)
+
+---
+
+# Paper 199 v1.1 Task 3 results — bootstrap SEs on §6.3 ratio table
+
+**Mr Code pass — 10 May 2026 (later same day)**
+**Brief:** `mr_code_brief_paper_199_v1_1.md`, Task 3 (NULL/STATUS,
+Mr Adversary v3.18 query on bootstrap SEs).
+**Script:** `persistence_bootstrap_se.py`
+**Outputs:** `results/persistence_bootstrap_se.csv`,
+`results/persistence_bootstrap_se.png`
+**Branch:** `paper-199-v1-1-data` off main.
+
+## Anchor verification — PASS
+
+All 8 published §8.5 / §6.3 ratios reproduce within ±0.01 (most exact
+to 3 sig fig). 4 new rows (N ∈ {200, 100k, 200k, 500k}) are
+first-time computations.
+
+| N | T_natural | E_RW = √(2N/π) | ratio | published | status |
+|---:|---:|---:|---:|---:|:---|
+| 100 | 29 | 7.979 | 3.635 | 3.63 | OK |
+| 200 | 44 | 11.284 | 3.899 | (new) | first-time |
+| 500 | 72 | 17.841 | 4.036 | 4.04 | OK |
+| 1000 | 141 | 25.231 | 5.588 | 5.59 | OK |
+| 2000 | 232 | 35.682 | 6.502 | 6.50 | OK |
+| 5000 | 327 | 56.419 | 5.796 | 5.80 | OK |
+| 10000 | 437 | 79.788 | 5.477 | 5.48 | OK |
+| 20000 | 683 | 112.838 | 6.053 | 6.05 | OK |
+| 50000 | 921 | 178.412 | 5.162 | **5.16** | **OK** |
+| 100000 | 1190 | 252.313 | 4.716 | (new) | first-time |
+| 200000 | 1663 | 356.825 | 4.661 | (new) | first-time |
+| 500000 | 2924 | 564.190 | 5.183 | (new) | first-time |
+
+Definition note: chose Definition A (includes the ramified prime p=5
+with χ₅(5)=0, contributing 1 trivial tie). This matches §8.5
+publication exactly. Brief Method §1 says "vector of ±1 values" which
+literally implies Def C — with Def C the N=100 anchor would fail
+(T=28 instead of 29, ratio 3.51 not 3.63). Treating that as a brief
+slip; flag for CinC.
+
+## Bootstrap results (B = 10⁴ random permutations per row)
+
+| N | T_nat | T_boot mean | T_boot std | ratio_natural | ratio_boot mean | **SE_ratio** | 95% CI ratio |
+|---:|---:|---:|---:|---:|---:|---:|:---|
+| 100 | 29 | 10.6 | 5.6 | 3.635 | 1.333 | **0.707** | [0.13, 2.88] |
+| 200 | 44 | 12.6 | 8.0 | 3.899 | 1.119 | **0.713** | [0.09, 2.75] |
+| 500 | 72 | 26.0 | 13.7 | 4.036 | 1.458 | **0.769** | [0.22, 3.14] |
+| 1000 | 141 | 32.6 | 19.3 | 5.588 | 1.293 | **0.764** | [0.12, 3.01] |
+| 2000 | 232 | 54.3 | 28.6 | 6.502 | 1.520 | **0.802** | [0.25, 3.31] |
+| 5000 | 327 | 69.9 | 43.2 | 5.796 | 1.239 | **0.766** | [0.09, 2.96] |
+| 10000 | 437 | 114.0 | 64.2 | 5.477 | 1.429 | **0.804** | [0.18, 3.22] |
+| 20000 | 683 | 139.5 | 87.6 | 6.053 | 1.236 | **0.777** | [0.10, 3.00] |
+| 50000 | 921 | 264.6 | 144.8 | 5.162 | 1.483 | **0.812** | [0.22, 3.30] |
+| 100000 | 1190 | 387.3 | 206.4 | 4.716 | 1.535 | **0.818** | [0.25, 3.38] |
+| 200000 | 1663 | 541.8 | 290.0 | 4.661 | 1.518 | **0.813** | [0.23, 3.31] |
+| 500000 | 2924 | 783.4 | 451.9 | 5.183 | 1.389 | **0.801** | [0.14, 3.19] |
+
+## SE_ratio scaling — KEY FINDING #1
+
+**SE_ratio is approximately constant in N (0.71 → 0.82, factor 1.16×
+across the 12 N values), NOT Brownian-scaling.**
+
+Theoretical explanation: for zero-crossings of a random walk,
+SE(T) ∝ √N, so SE(ratio) = SE(T) / √(2N/π) → constant as N → ∞.
+The empirical mean SE_ratio = 0.779 is in the ballpark of the
+theoretical free-walk asymptote √(π/2) ≈ 1.253, somewhat below
+because random PERMUTATION (sampling without replacement from a
+fixed multiset) gives a random *bridge*, which has tighter
+zero-crossing distribution than a free walk.
+
+**This refutes the brief's pre-registered prediction** of SE_ratio ∈
+[0.05, 0.20] at N=500k. Observed SE_ratio at N=500k = 0.801 — 4× the
+upper end of the predicted band, 16× the lower end. The brief's
+reasoning ("relative SE on the order of 1/√T ≈ 3.3%") implicitly
+assumed Poisson-like scaling, which doesn't hold for zero-crossings
+of random walks.
+
+## Bootstrap mean ratio ≈ 1.4 — KEY FINDING #2
+
+The bootstrap MEAN ratio (T_boot / E_RW) is consistently 1.3-1.5,
+not ~1.0:
+
+| N | natural ratio | boot mean ratio | natural / boot |
+|---:|---:|---:|---:|
+| 1000 | 5.588 | 1.293 | 4.32 |
+| 50000 | 5.162 | 1.483 | 3.48 |
+| 500000 | 5.183 | 1.389 | 3.73 |
+
+A random permutation of the (nearly balanced ±1) χ₅ vector is a
+random bridge, which has more zero-crossings than a free random walk
+of the same length. The factor ≈ 1.4 is the bridge-vs-walk
+penalty.
+
+This means the published "ratio T_natural / √(2N/π)" of ≈ 5.2 at
+large N **overstates the natural-vs-permutation excess by a factor
+of ≈ 1.4**. The natural-vs-permutation ratio (the more apples-to-apples
+comparison: same multiset of χ values, only ordering differs) is
+≈ 3.5-4.0 at large N.
+
+This is the kind of issue the bootstrap was specifically designed to
+surface. CinC interprets — possibilities range from "report ratio
+against permutation null in §6.3 going forward" to "leave the
+published ratio as-is, but note the bridge-baseline alongside in
+v1.1." Mr Code does not recommend either.
+
+## v3.16 supplementary falsifier "ratio ≤ 4.5 at N = 10⁷" — NOMINAL
+
+The brief asks whether the v3.16 supplementary directional bound is
+*computable* under the bootstrap framework.
+
+- Baseline at N = 500k: ratio = 5.183 (against theoretical RW null).
+- Bootstrap SE on ratio at N = 500k: 0.801.
+- Gap to falsifier (5.183 − 4.5): **+0.683**.
+- Gap as multiple of N=500k SE: **+0.85 × SE**.
+- Projected SE at N = 10⁷ (using empirical plateau, NOT Brownian):
+  ≈ 0.78 (mean across 12 rows).
+- Gap as multiple of projected SE at N = 10⁷: **+0.88 × SE**.
+
+**Verdict: NOMINAL.** The gap of +0.68 in ratio terms is less than
+1 standard error under the random-permutation null at any N tested
+or projected. The v3.16 supplementary falsifier "ratio ≤ 4.5 at
+N = 10⁷" is *inside the noise floor* of the bootstrap distribution
+— a measurement at N = 10⁷ that returns 4.4 or 4.6 would be
+indistinguishable from the baseline 5.18 under the permutation null.
+
+CinC interprets whether the v3.16 supplementary commitment needs
+re-stating with this SE in mind. Mr Code does not recommend a
+specific re-statement.
+
+## Bootstrap-distribution diagnostics
+
+All 12 rows show mild positive skewness (0.44 → 0.71) and
+near-zero excess kurtosis (−0.15 → +0.30). Mild skewness is typical
+of count data (zero-crossings are bounded below at 0). No row is
+heavy-tailed or pathological. The bootstrap framework itself is
+sound — Row 3 of the brief's falsifier table does NOT apply.
+
+## Pre-registered falsifier-table outcome
+
+The brief's pre-registered table:
+
+| Outcome | Interpretation |
+|---|---|
+| All 11 SE_ratio < 0.30 | Row 1: framework gives well-defined precision; v3.16 falsifier computable. |
+| Some SE_ratio ≥ 0.30 | Row 2: bootstrap precision looser than expected at certain N; falsifier may need re-stating. |
+| Bootstrap distribution non-Gaussian / heavy-tailed / autocorrelated | Row 3: framework questioned; halt. |
+
+**Outcome: Row 2** — *strengthened in degree*. The brief's "some
+SE_ratio ≥ 0.30" wording understates: ALL 12 SE_ratio values are
+≥ 0.71, with max 0.818, mean 0.779. The bootstrap framework is
+well-defined (mild skewness, no pathology), but the precision on
+the ratio is much looser than the brief's prior expectation.
+
+## Decisions made beyond the instruction
+
+- **Definition A** (includes χ₅(5)=0) chosen over the brief's literal
+  "±1 vector" wording (Def C), because the published §8.5 anchors
+  use Def A. Flagged.
+- **Sieve to 16M** to comfortably accommodate N=500k 5-series primes
+  (got 515,747).
+- **Per-N seed shift**: bootstrap seed = `42 + N` per row, so each row
+  gets an independent stream while staying reproducible. Brief said
+  "seed = trial × 137 + 42"; for the bootstrap context I read the
+  intent as "deterministic and per-call distinct," not "literal
+  formula." Recorded in the script.
+- **Skewness flag threshold raised** from |skew| > 0.5 (initial) to
+  |skew| > 1.0, because 0.5-0.7 is mild for count data and not
+  "non-Gaussian" in the brief's heavy-tailed sense.
+- **Brownian-projection of SE to N = 10⁷ replaced** with empirical
+  plateau extrapolation. The Brownian projection (SE ∝ 1/√N) was
+  in my first-pass script and was wrong — would have given the
+  misleading verdict "COMPUTABLE." The empirical plateau (SE ≈ 0.78
+  at all N) gives the correct verdict NOMINAL.
+
+## Flags for CinC
+
+- **Anchor verification PASS, Pre-registered prediction REFUTED.**
+  The bootstrap SE is 4-15× higher than the brief predicted. This is
+  itself the result; the framework is sound, the prior was wrong.
+- **Two interpretive observations for v1.1, both delegated to CinC:**
+  1. Should §6.3 report ratio against the random-permutation null
+     (≈ 1.4 × E_RW) instead of theoretical √(2N/π)? Doing so
+     reduces the headline "5-6× excess" to "3.5-4× excess."
+  2. Should the v3.16 supplementary falsifier "ratio ≤ 4.5 at N = 10⁷"
+     be re-stated with the actual SE in mind? At gap/SE ≈ 0.85, the
+     current threshold is inside the noise floor.
+- **Brief inconsistency on definition** (Def C vs Def A) flagged
+  above. Resolved by following published anchors; CinC may want to
+  clarify which definition v1.1 §6.3 standardises on.
+- **Brief said "11 rows," listed 12 N values.** Computed all 12.
+- **No Pattern 75 halt** — the falsifier outcome is real-and-reportable
+  Row 2 (precision looser than expected), not Row 3 (framework
+  questioned).
+
+🐕☕⬡
+
+— Mr Code, 10 May 2026 (Paper 199 v1.1, Task 3 only — Tasks 1 & 2
+queued, awaiting CinC review of Task 3 per brief Session order)
