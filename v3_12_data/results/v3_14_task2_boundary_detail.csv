@@ -1,0 +1,7 @@
+d,boundary,in_5series,in_7series,cluster_lo,cluster_hi,nj_def_i,nj_def_ii_per_cluster,nj_def_iii
+60,1,1,1,60,63,1,2,0
+61,1,1,0,60,63,1,2,0
+62,1,0,1,60,63,1,2,0
+63,1,1,1,60,63,1,2,0
+80,2,1,1,80,81,1,2,0
+81,2,1,1,80,81,1,2,0

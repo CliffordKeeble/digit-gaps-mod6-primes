@@ -1,0 +1,3 @@
+metric,natural,p_independent,p_correlated_empirical
+sign_test_count,4,0.062500,0.197900
+stouffer_Z,1.486271,0.068604,0.190100
