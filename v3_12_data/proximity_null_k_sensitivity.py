@@ -1,33 +1,31 @@
 #!/usr/bin/env python3
 """Paper 3 v3.17 Task 1: proximity-null K-sensitivity.
 
-v3.16 §6.6 reports random-placement-null empirical p ≈ 0.42 for "any
+v3.16 §6.6 reports random-placement-null empirical p = 0.4246 for "any
 tie-desert onset within 10 primes of any of the four paper boundaries
 B1-B4 (n ∈ {30, 38, 50, 54})" with K = 60 onsets uniformly placed in
 [1, 5000]. Mr Adversary's NULL item: confirm p is stable across K ∈
 {30, 60, 100}.
 
-Brief inconsistency, flagged for CinC. The v3.17 brief specifies
-threshold = 5 in the Method section ("min_distance ≤ 5") but the
-verification anchor requires K = 60 to reproduce v3.15's p ≈ 0.42 —
-which was computed at threshold = 10 (within 10 primes of any
-boundary), not threshold = 5. v3.15 also used N_iter = 10000 (not 10⁵).
-This script:
+Spec corrected by CinC (Mr Code's first pass surfaced a brief
+inconsistency between the stated threshold = 5 and the anchor 0.42,
+which v3.15 reported with threshold = 10). The agreed corrected spec:
 
-  - uses N_iter = 100_000 per the v3.17 spec;
-  - reports BOTH thresholds (within = 5 and within = 10);
-  - anchors the verification gate on within = 10 at K = 60 → p ≈ 0.42
-    (the actual reproducible v3.15 number);
-  - reports within = 5 alongside as a secondary, since 5 is the
-    natural threshold (the observed first-onset distance to B2).
+  - PRINCIPAL: threshold = 10, K ∈ {30, 60, 100}, N_iter = 10000
+    (bit-exact match to v3.15's implementation; K = 60 must reproduce
+    p = 0.4246 EXACTLY).
+  - SUPPLEMENTARY: threshold = 5, K ∈ {30, 60, 100}, N_iter = 10000
+    (additional info — 5 is the actually-observed minimum
+    onset-to-boundary distance, so this is a tighter cross-check).
 
 Output:
   - results/proximity_null_k_sensitivity.csv (K, within, N_iter, p,
     Wilson 95% CI lo/hi, seed_base)
   - findings.md v3.17 entry (handled by separate edit)
 
-Random seed convention: numpy default_rng with base seed = 42; per-trial
-seed shift = trial * 137 (matches v3.15 proximity_null.py).
+Random seed convention: numpy default_rng with base seed = 42;
+per-trial seed shift = trial * 137 (matches v3.15 proximity_null.py
+exactly so the K=60 within=10 result reproduces bit-exact).
 """
 import csv
 import math
@@ -44,15 +42,20 @@ RESULTS_DIR = os.path.join(os.path.dirname(__file__), 'results')
 N_MAX = 5_000
 PAPER_BOUNDARIES = [30, 38, 50, 54]  # B1, B2, B3, B4 from §7.3
 KS = [30, 60, 100]
-WITHINS = [5, 10]                    # 5 = brief spec; 10 = v3.15 anchor
-N_ITER = 100_000
+# Threshold 10 = v3.15's published null threshold (PRINCIPAL — answers
+# Mr Adversary). Threshold 5 = the actually-observed minimum
+# onset-to-boundary distance (SUPPLEMENTARY — natural cross-check).
+WITHINS = [10, 5]
+N_ITER = 10_000                       # match v3.15 for bit-exact anchor
 SEED_BASE = 42                        # programme convention
 
-# Verification anchor: K=60 at within=10 must reproduce v3.15's p ≈ 0.42
+# Verification anchor: K=60 at within=10 must reproduce v3.15's p =
+# 0.4246 EXACTLY (same null, same threshold, same K, same N_iter, same
+# seed convention; bit-exact reproducibility is the gate).
 ANCHOR_K = 60
 ANCHOR_WITHIN = 10
-ANCHOR_P = 0.42
-ANCHOR_TOL = 0.01
+ANCHOR_P = 0.4246
+ANCHOR_TOL = 0.001                    # tightened — bit-exact expected
 
 
 def wilson_ci(k, n, z=1.96):
@@ -95,15 +98,15 @@ def main():
     print('Paper 3 v3.17 Task 1 — proximity-null K-sensitivity')
     print('=' * 72)
     print(f"  N_iter = {N_ITER:,} per (K, within) pair "
-          f"(v3.15 used 10,000 at K=60, within=10)")
+          f"(matches v3.15 for bit-exact anchor)")
     print(f"  Paper boundaries B1-B4: {PAPER_BOUNDARIES}")
     print(f"  K values:               {KS}")
     print(f"  within thresholds:      {WITHINS} "
-          f"(5 = brief spec; 10 = v3.15 anchor)")
+          f"(10 = v3.15 PRINCIPAL; 5 = SUPPLEMENTARY)")
 
     # ---- Verification gate first, on K=60 within=10 ----
     print('\n' + '=' * 72)
-    print('Verification gate — K=60, within=10 must reproduce v3.15 p ≈ 0.42')
+    print('Verification gate — K=60, within=10 must reproduce v3.15 p = 0.4246')
     print('=' * 72)
     n_close_anchor = empirical_proximity(
         ANCHOR_K, ANCHOR_WITHIN, N_ITER, N_MAX,
@@ -111,11 +114,11 @@ def main():
     p_anchor = n_close_anchor / N_ITER
     print(f"  K={ANCHOR_K}, within={ANCHOR_WITHIN}, N_iter={N_ITER:,}")
     print(f"  p = {p_anchor:.4f} ({n_close_anchor:,} / {N_ITER:,})")
-    print(f"  v3.15 anchor: 0.4246 (at N_iter=10,000)")
+    print(f"  v3.15 anchor: 0.4246 (bit-exact expected)")
     if abs(p_anchor - ANCHOR_P) > ANCHOR_TOL:
-        print(f"\n  HALT: anchor mismatch beyond ±{ANCHOR_TOL:.2f}")
+        print(f"\n  HALT: anchor mismatch beyond ±{ANCHOR_TOL:.4f}")
         sys.exit(1)
-    print(f"  Anchor OK (within ±{ANCHOR_TOL:.2f} of 0.42).")
+    print(f"  Anchor OK (within ±{ANCHOR_TOL:.4f} of 0.4246).")
 
     # ---- Full sweep ----
     rows = []
