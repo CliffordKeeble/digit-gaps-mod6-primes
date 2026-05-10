@@ -1955,3 +1955,223 @@ framing.
 
 — Mr Code, 10 May 2026 (Paper 199 v1.1, Task 1 — halting at PASS gate
 before Task 2 per brief Session order)
+
+---
+
+# Paper 199 v1.1 Task 2 results — 7-series monotone-ordering test
+
+**Mr Code pass — 10 May 2026 (later same day)**
+**Brief:** `mr_code_brief_paper_199_v1_1.md`, Task 2 (GAP/FALSIFIER,
+Mr Adversary v3.18 query — Q1(b) vs Q1(d) discriminant).
+**Script:** `seven_series_monotone.py`
+**Outputs:** `results/seven_series_monotone_results.csv`,
+`results/seven_series_aggregate_null.csv`,
+`results/seven_series_monotone.png`
+**Branch:** `paper-199-v1-1-data` off main.
+
+## Anchor verification — PASS (5-series benchmark)
+
+All three 5-series benchmark anchors reproduce within tolerance:
+
+| Anchor | This run | Brief | Δ | Status |
+|---|---|---|---|---|
+| Def C, n=33: T_natural | 13 | 13 | 0 | OK |
+| Def C, n=33: shuf_mean | 6.185 | 6.185 | 0.000 | OK |
+| Def C, n=33: shuf_std | 2.780 | 2.780 | 0.000 | OK |
+| Def C, n=33: z | 2.451 | 2.450 | +0.001 | OK |
+| Def A, n=90: z | 3.612 | 3.610 | +0.002 | OK |
+| Multi-window max-z empirical p (Def C) | 0.0050 | 0.005 | 0.0000 | OK |
+
+Framework verified bit-near-exact against v3.13/v3.12 baseline.
+
+## 7-series core test — natural ordering
+
+First 1000 7-series primes (p > 3, p ≡ 1 mod 6); none ramified, so
+χ₅(p) ∈ {+1, −1} throughout (no Definition A/B/C distinction).
+
+Per-window tie counts and z-scores (1000 shuffles per window, seed
+= trial × 137 + 42):
+
+| n | L | T_natural | shuf_mean | shuf_std | z_natural | p_ge |
+|---:|---:|---:|---:|---:|---:|---:|
+| 20 | 20 | 1 | 2.184 | 1.723 | **−0.687** | 0.811 |
+| 33 | 33 | 2 | 4.064 | 2.689 | **−0.767** | 0.806 |
+| 50 | 50 | 2 | 4.001 | 3.079 | **−0.650** | 0.753 |
+| 70 | 70 | 2 | 6.326 | 4.389 | **−0.986** | 0.855 |
+| 90 | 90 | 2 | 5.796 | 4.467 | **−0.850** | 0.820 |
+| 100 | 100 | 2 | 7.169 | 5.084 | **−1.017** | 0.863 |
+
+**Headline:** Every per-window z is **negative** — the 7-series under
+natural ordering has FEWER ties than random shuffle (tie *deficit*,
+not excess). Magnitudes 0.65–1.02, all within 1.1 σ of the null mean.
+
+For comparison, the 5-series Def C natural z values at the same
+windows: 2.14, 2.45, 2.75, 2.71, 3.33, 3.08 (all positive, magnitudes
+2–3). The 7-series shows neither the magnitude nor the sign of the
+5-series anomaly.
+
+## Multi-window aggregate test (Statistic A)
+
+Per-trial max-z across the 6 windows; 1000-trial null distribution:
+
+| Statistic | Natural | Null 95th | Null 99th | Empirical p |
+|---|---:|---:|---:|---:|
+| max(z_n) | **−0.650** (at n=50) | +2.720 | +3.310 | **0.999** |
+| max(\|z_n\|) | **1.017** (at n=100) | 2.720 | 3.310 | **0.921** |
+
+Natural's max-z = −0.65 (negative — natural ordering's *highest*
+window-z is below the null median). Empirical p = 0.999 means 99.9%
+of shuffles produce a *higher* max-z than natural — the 7-series
+natural ordering is at the *low* tail.
+
+The two-sided |z|max statistic is more lenient (p = 0.921 — 92% of
+shuffles produce a higher absolute deviation), but still nowhere near
+the 0.005 threshold the 5-series produced under the same framework.
+
+## Pre-registered |z(33)| classification
+
+| Outcome | Reading |
+|---|---|
+| \|z(33)\| ≤ 1.0 | Q1(b) "structural-position" favoured |
+| 1.0 < \|z(33)\| < 1.5 | Inconclusive — aggregate p decides |
+| \|z(33)\| ≥ 1.5 | Q1(d) "any-monotone-ordering" favoured |
+
+**Observed: |z(33)| = 0.7674 → Row 1: Q1(b) favoured.**
+
+The pre-registered Q1(d) prediction (|z(33)| ≥ 1.5) is **refuted**.
+The pre-registered Q1(b) prediction (|z(33)| ≤ 1.0) is **confirmed**.
+
+The 5-series tight-oscillation regime under natural ordering is
+**not** reproduced on the 7-series under natural ordering. The
+phenomenon is 5-series-specific (or at least tied to residue classes
+that exhibit a tight-oscillation regime in natural ordering); it is
+**not** a general feature of monotone size-ordering of mod-6 prime
+sequences.
+
+## Structured-ordering controls at n=33 — interesting twist
+
+Same shuffle baseline (mean = 4.064, std = 2.689) for all four
+orderings of the first 33 7-series primes:
+
+| Ordering | T | z | \|z\| |
+|---|---:|---:|---:|
+| natural | 2 | **−0.767** | 0.767 |
+| reversed_size | 10 | **+2.207** | 2.207 |
+| every_other | 11 | **+2.579** | 2.579 |
+| index_interleaved | 6 | +0.720 | 0.720 |
+
+**5-series Def C n=33 reference** (from v3.12 task1_orderings, the
+reference pattern for "monotone vs permuted" framework):
+
+| Ordering | z |
+|---|---:|
+| natural | +2.45 |
+| reversed_size | +2.45 |
+| every_other | −0.43 |
+| index_interleaved | +1.90 |
+
+**5-series pattern:** natural ≈ reversed_size (both monotone) >>
+permuted controls. The two monotone orderings produce identical tie
+excess; permuted orderings produce smaller |z|.
+
+**7-series pattern is COMPLETELY DIFFERENT:**
+- natural (z=−0.77) ≠ reversed_size (z=+2.21): |Δ| = 2.97 — the two
+  monotone orderings disagree dramatically, and in OPPOSITE signs.
+- every_other (z=+2.58) is the LARGEST |z| of any ordering — the
+  exact OPPOSITE of the 5-series, where every_other was the smallest.
+- index_interleaved (z=+0.72) is mild.
+
+The 7-series has its OWN tie-related structure under non-natural
+orderings (reversed-size and every-other both produce notable tie
+*excess*), but this structure is not aligned with the
+"monotone-vs-permuted" framework that captures the 5-series.
+
+This twist *strengthens* the Q1(b) verdict: not only does the
+7-series natural ordering fail to reproduce the 5-series anomaly, but
+the entire "monotone size-orderings produce excess ties on mod-6
+prime sequences" reading (Q1(d)) is contradicted by the structured
+controls. The reversed-size and natural orderings of the 7-series —
+both monotone — go in OPPOSITE directions.
+
+## Pre-registered falsifier-table outcome
+
+| Row | Outcome | Reading |
+|---|---|---|
+| 1 | \|z(33)\| ≤ 1.0 | Q1(b) favoured (5-series-specific) |
+| 2 | 1.0 < \|z(33)\| < 1.5 | Inconclusive; aggregate p deciding |
+| 3 | \|z(33)\| ≥ 1.5 | Q1(d) favoured (any-monotone, parsimonious) |
+| 4 | \|z(33)\| ≥ 1.5 + structured controls match 5-series | Strong Q1(d) |
+| 5 | \|z(33)\| ≥ 1.5 + structured controls don't match | Mixed — new reading |
+
+**Outcome: Row 1 — Q1(b) favoured.** |z(33)| = 0.767 ≤ 1.0; the
+prerequisite for Rows 3-5 (|z(33)| ≥ 1.5) is unmet. The structured-
+controls observation is informational only at this outcome row but
+adds qualitative support: the 7-series structured-ordering pattern
+diverges from the 5-series pattern, *both* in the natural-vs-
+reversed alignment (5-series: natural ≈ reversed; 7-series:
+natural ≠ reversed by 2.97 σ) *and* in the smallest-|z| ordering
+(5-series: every_other; 7-series: index_interleaved).
+
+## Implications for §10 Q1 (delegated to CinC)
+
+The pre-registered Q1(b) reading is favoured. CinC interprets:
+
+1. **Q1(a) "small-prime-decay"**: already falsified v3.14 (per brief
+   background). Status: refuted, no change.
+2. **Q1(b) "structural-position"**: favoured by this Task 2 result.
+   The 5-series tight-oscillation regime sits in a structural slot
+   that the 7-series does NOT mirror. CinC interprets what
+   "structural position" means concretely (mod-5 residue class
+   specificity? something about χ₅ marginal balance? something about
+   small-prime distribution within ≡5 mod 6?).
+3. **Q1(c) "geometric-shadow"**: not directly tested by Task 2;
+   remains a candidate.
+4. **Q1(d) "any-monotone-ordering"**: refuted by this Task 2 result.
+   The phenomenon is not generalised to monotone size-ordering of
+   any mod-6 prime sequence. Removed as a candidate.
+
+Mr Code does not weigh Q1(b) against Q1(c) — that's CinC.
+
+## Decisions made beyond the instruction
+
+- **|z|max as a secondary statistic alongside max-z.** Brief Method
+  §3 says "take the maximum z across windows" (signed max). I added
+  the |z|max (two-sided) statistic alongside, since the 7-series
+  natural produces only negative z's and a signed-max-only test is
+  guaranteed to give p ≈ 1 — uninformative on whether the magnitude
+  is unusual. Both reported; signed max-z is the one that maps to the
+  brief's pre-registered table (and gives the clean Q1(b) verdict).
+- **Sieve to 200,000** (vs 250,000 in v3.15 proximity_null): plenty
+  for first 1000 7-series primes (p_max = 17,539); faster.
+- **No Definition A/B/C distinction** for the 7-series, as the brief
+  notes (no ramification). One single unambiguous chi-sequence.
+- **Structured-ordering controls reuse v3.12 task1_orderings**
+  functions directly (order_natural, order_reversed_size,
+  order_every_other, order_index_interleaved) — same definitions,
+  same conventions; chi_clustered ordering omitted (not in the brief
+  spec for this task).
+
+## Flags for CinC
+
+- **Anchor verification PASS, pre-registered prediction CONFIRMED in
+  the Q1(b) direction.** Clean result; no Pattern 75 halt; no
+  inconclusive aggregate p.
+- **The structured-controls twist is the substantive bonus finding.**
+  Worth flagging in v1.1 §10 Q1: not only does the 7-series fail to
+  reproduce the 5-series natural-ordering anomaly, but the 7-series
+  *does* have its own structural-tie pattern under reversed-size and
+  every-other orderings, and that pattern differs from the 5-series's
+  monotone-vs-permuted shape. This is a new observation that wasn't
+  pre-registered (it sits inside the structured-controls block but
+  the 5-series-pattern-mismatch is more informative than I expected).
+  CinC may want to file as a §10 open question: "What does the
+  7-series tie-excess under reversed/every-other orderings mean?"
+- **No definitional inconsistencies** in the brief for Task 2 (unlike
+  Task 1's n=100 layer or Task 3's Def-A vs Def-C). The 7-series has
+  no ramification so the question doesn't arise.
+
+🐕☕⬡
+
+— Mr Code, 10 May 2026 (Paper 199 v1.1, Task 2 — halting at PASS
+gate; all three tasks complete, awaiting CinC review for v1.1
+markdown integration)
