@@ -1174,3 +1174,144 @@ Plot: `v3_15_task2_proximity_null.png`.
 🐕☕⬡
 
 — Mr Code, 10 May 2026 (v3.15 follow-up)
+
+---
+
+# Paper 3 v3.16 follow-up — α-robustness
+
+**Mr Code pass — 10 May 2026 (later same day)**
+**Brief:** `mr_code_brief_paper_3_v3_16.md` — single task addressing Mr
+Adversary's GAP/NULL item on the v3.15 §6.5.1 power-law fit.
+**Script:** `alpha_robustness.py`
+**Inputs:** existing `results/v3_15_task1_growth_rate.csv` (six (n, z)
+pairs per definition).
+**New outputs:** `results/v3_16_alpha_summary.csv`,
+`results/v3_16_alpha_bootstrap.csv`,
+`results/v3_16_alpha_leave_one_out.csv`,
+`results/v3_16_alpha_subsets.csv`,
+`results/v3_16_alpha_robustness.png`.
+
+## Reproduction
+
+v3.15 Def C parametric fit reproduces from the loaded six (n, z) pairs:
+α = 0.2125 ± 0.0772 (published 0.21 ± 0.08). Verification gate passes,
+bootstrap proceeds.
+
+## Result — Definition C (primary)
+
+| Fit                       | Windows                  | α       | 95% CI / SE                |
+|---------------------------|--------------------------|---------|----------------------------|
+| Full (parametric)         | 6 windows (100..1000)    | 0.212   | ± 0.077 (parametric SE)    |
+| Full (bootstrap, K=10⁴)   | 6 windows (100..1000)    | 0.217   | [+0.024, +0.477] (95%)     |
+| Sub-set (early)           | 4 windows (100..500)     | 0.042   | ± 0.085 (R² = 0.11)        |
+| Sub-set (late)            | 3 windows (500..1000)    | 0.729   | ± 0.042 (R² = 0.997)       |
+| Sub-set (mid-late)        | 4 windows (300..1000)    | 0.435   | ± 0.136 (R² = 0.84)        |
+| Leave-one-out range       | 6 LOO samples            | 0.141..0.249 | std 0.039 across samples |
+
+Definition A is qualitatively identical (full α = 0.196 ± 0.080;
+bootstrap 95% CI [+0.009, +0.475]; early α = +0.030 ± 0.093,
+R² = 0.05; late α = +0.708 ± 0.021, R² = 0.999); see
+`v3_16_alpha_subsets.csv` for both definitions in full.
+
+## Reading
+
+**The brief named this scenario explicitly: it is (a).** Mr
+Adversary's wide-bullseye criticism is decisively confirmed.
+
+1. **Bootstrap CI is ~50% wider than parametric** and its lower edge
+   essentially touches zero (+0.024). α = 0 is not excluded at the
+   95% level. The non-i.i.d. residual structure does in fact
+   under-represent the parametric uncertainty, as suspected.
+
+2. **The "strengthens overall" claim is carried entirely by the last
+   two windows.** The sub-set fit on n ∈ {100, 200, 300, 500} alone
+   gives α = +0.04 ± 0.09 — flat within error, R² = 0.11. The fit on
+   n ∈ {500, 750, 1000} alone gives α = +0.73 ± 0.04 with R² = 0.997
+   (essentially a perfect line). The full six-point α = 0.21 is the
+   *average* of a flat early regime and a steep late regime, not a
+   uniform power-law.
+
+3. **LOO is reassuringly stable (α ∈ [0.14, 0.25])** but this *masks*
+   rather than reveals the structure. Removing any single point leaves
+   the early-flat / late-rising pattern in place to dominate the OLS
+   fit. The largest LOO shift comes from removing n = 1000 (α drops to
+   0.141), confirming the late windows are doing the work. Removing
+   n = 750 has near-zero effect (Δ = −0.006) — the localised
+   acceleration is not a single-point artefact, the regime change
+   itself is real.
+
+4. **There are two distinguishable readings of (3):**
+   - *Two-regime reading:* tie excess is approximately constant per
+     prime up to n ≈ 500 (z roughly flat, consistent with √n null
+     fluctuations), then enters a faster-than-√n regime above n = 500.
+     The single power-law summary is the wrong functional form; a
+     piecewise or threshold model would fit better.
+   - *Sample-size reading:* the early regime is power-law with α small,
+     the late regime is power-law with α large, and we have too few
+     points to distinguish that from a kink. Resolution requires more
+     windows in the n ∈ {500, 750, 1000, 1500, 2000} range.
+
+   Both readings agree that **a single α reported with parametric ± 0.08
+   is misleading.**
+
+## Recommendation for v3.16
+
+The brief's scenario (a) action: **downgrade the abstract's
+"falsifiable target" language to "six-point fit summary."** The
+specific shape:
+
+- Replace "α = 0.21 ± 0.08 (sub-linear power-law)" framing with the
+  bootstrap-CI form: **"α = 0.22 [+0.02, +0.48] (95% bootstrap CI on
+  six windows)."**
+- Add the early/late split as a one-line caveat: **"Sub-set fits show
+  the trend is concentrated in n ≥ 500; n ∈ [100, 500] is consistent
+  with α = 0."**
+- Remove or weaken any "falsifiable target" framing tied to a specific
+  numerical α; the point estimate is too unstable across reasonable
+  data subsets to function as a target.
+
+This is calibration in spirit if not retraction. The underlying
+*observation* — z grows from ~3 at n = 100 to ~5.6 at n = 1000 with a
+non-monotone middle — stands. The *parametric power-law summary* of
+that observation does not.
+
+## Decisions made beyond the instruction
+
+- **Bootstrap seed convention.** Used `random.Random(42)` for Def C
+  and `random.Random(43)` for Def A (offset of 1 to keep Def A's
+  resamples independent). The brief specified
+  `np.random.default_rng(trial * 137 + 42)` as the *general* seed
+  convention; this script uses Python's `random.Random` for parity
+  with the existing `growth_rate.py` shuffle null and applies the
+  base seed 42.
+- **Bootstrap band on the plot uses K = 2000** (not 10,000) for the
+  per-x quantile re-derivation — sufficient for visual smoothness
+  and saves memory; the headline 95% CI of α uses the full K = 10⁴.
+- **Degenerate resamples** (all six draws produce constant log n)
+  are skipped rather than imputed; one such sample appeared in Def A,
+  none in Def C.
+
+## Flags for CinC
+
+- **The result lands cleanly in scenario (a).** This is a real
+  calibration event for v3.16 §6.5.1 and the abstract. Mr Adversary's
+  flag was correct on both counts: parametric SE is too small, *and*
+  the early-windows fit is consistent with α = 0.
+- **The two-regime structure is more interesting than the
+  single-α summary.** Worth noting in §6.5.1 even if the paper
+  doesn't formally adopt a piecewise model: "the data are better
+  described as a flat early regime plus a steep late regime than as
+  a uniform power-law" is itself a sharper statement than "α ≈ 0.21."
+  Whether to make that statement load-bearing depends on whether v3.16
+  wants to invest in additional windows to confirm it, or simply mark
+  the existing fit as exploratory.
+- **The LOO test was the weakest of the three.** It would have
+  reassured a casual reader ("α stays in [0.14, 0.25] under any
+  single removal") while hiding the actual problem. The sub-set fit
+  is what reveals the issue. Worth keeping LOO in the report for
+  completeness, but the headline robustness diagnostic is the
+  early/late split, not LOO.
+
+🐕☕⬡
+
+— Mr Code, 10 May 2026 (v3.16 follow-up)

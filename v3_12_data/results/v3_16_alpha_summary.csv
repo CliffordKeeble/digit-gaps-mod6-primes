@@ -1,0 +1,7 @@
+fit,windows,alpha,ci_or_se
+Full (parametric),6 windows (100..1000),0.212,± 0.077 (parametric SE)
+"Full (bootstrap, K=10,000)",6 windows (100..1000),0.217,"[0.024, 0.477] (95% bootstrap)"
+Sub-set (early),4 windows (100..500),0.042,± 0.085
+Sub-set (late),3 windows (500..1000),0.729,± 0.042
+Sub-set (mid-late),4 windows (300..1000),0.435,± 0.136
+Leave-one-out range,6 LOO samples,0.141..0.249,std 0.039 across samples
