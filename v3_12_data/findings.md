@@ -1746,3 +1746,212 @@ the ratio is much looser than the brief's prior expectation.
 
 — Mr Code, 10 May 2026 (Paper 199 v1.1, Task 3 only — Tasks 1 & 2
 queued, awaiting CinC review of Task 3 per brief Session order)
+
+---
+
+# Paper 199 v1.1 Task 1 results — independent modulus test
+
+**Mr Code pass — 10 May 2026 (later same day)**
+**Brief:** `mr_code_brief_paper_199_v1_1.md`, Task 1 (NULL,
+Mr Adversary v3.18 query on truly-independent moduli).
+**Script:** `independent_modulus.py`
+**Outputs:** `results/independent_modulus_results.csv`,
+`results/independent_modulus_correlated_null.csv`,
+`results/independent_modulus.png`
+**Branch:** `paper-199-v1-1-data` off main.
+
+## Anchor verification — PASS (with halt-lifted soft-flag)
+
+**n=1000 gate (load-bearing per CinC):** all 4 reproduce exactly.
+
+| q | this run | brief anchor | status |
+|---|---|---|---|
+| 4 | 508 | 508 | OK ✓ |
+| 6 | 509 | 509 | OK ✓ |
+| 8 | 516 | 516 | OK ✓ |
+| 12 | 514 | 514 | OK ✓ |
+
+**4-modulus correlated null (K = 10⁴) anchor:** within ±0.001 of brief.
+
+| metric | this run | brief anchor | Δ |
+|---|---|---|---|
+| 4-mod Stouffer p | 0.1901 | 0.190 | +0.0001 |
+| 4-mod sign-test p | 0.1979 | 0.198 | −0.0001 |
+
+**n=100 layer (auxiliary, halt-lifted by CinC):** soft-flag 3 of 4
+moduli differ by ±1–3 from v3.12-task3_premise.py-source anchors.
+This run's values ARE the v1.1 convention-standardised numbers (per
+CinC's plan: §11 Calibration noting v1.1 standardises on v3.14's
+correlated_null.py convention; §5 Test table's n=100 column updated).
+
+| q | this run | brief anchor (v3.12 source) | Δ |
+|---|---|---|---|
+| 4 | 53 | 50 | +3 |
+| 6 | 53 | 53 | 0 |
+| 8 | 57 | 56 | +1 |
+| 12 | 56 | 57 | −1 |
+
+## Per-modulus natural results
+
+All 7 moduli at n=100 and n=1000 (binomial null at p=0.5,
+one-sided p for "inerts ≥ k_q"):
+
+| q | n | inerts | pct | z_q | p (binom 1-sided) |
+|---:|---:|---:|---:|---:|---:|
+| 4 | 100 | 53 | 53.0% | +0.600 | 0.3087 |
+| 4 | 1000 | 508 | 50.8% | +0.506 | 0.3176 |
+| 6 | 100 | 53 | 53.0% | +0.600 | 0.3087 |
+| 6 | 1000 | 509 | 50.9% | +0.569 | 0.2954 |
+| **7** | **100** | **51** | **51.0%** | **+0.200** | **0.4602** |
+| **7** | **1000** | **505** | **50.5%** | **+0.316** | **0.3880** |
+| 8 | 100 | 57 | 57.0% | +1.400 | 0.0967 |
+| 8 | 1000 | 516 | 51.6% | +1.012 | 0.1635 |
+| **11** | **100** | **50** | **50.0%** | **+0.000** | **0.5398** |
+| **11** | **1000** | **499** | **49.9%** | **−0.063** | **0.5378** |
+| 12 | 100 | 56 | 56.0% | +1.200 | 0.1356 |
+| 12 | 1000 | 514 | 51.4% | +0.885 | 0.1966 |
+| **13** | **100** | **52** | **52.0%** | **+0.400** | **0.3822** |
+| **13** | **1000** | **510** | **51.0%** | **+0.632** | **0.2740** |
+
+(Bold rows = the 3 new truly-independent moduli q ∈ {7, 11, 13}.)
+
+**Direction at n=1000 for the 3 new moduli:**
+- q=7: 505 inerts, z = +0.316 → **inert excess** (+5)
+- q=11: 499 inerts, z = −0.063 → **inert deficit** (−1, essentially at null mean)
+- q=13: 510 inerts, z = +0.632 → **inert excess** (+10)
+
+**2 of 3 new moduli show inert excess; 1 (q=11) is essentially at the null mean.**
+
+Per-modulus p-values for q ∈ {7, 11, 13} fall in [0.27, 0.54]; all are
+within the brief's pre-registered range [0.10, 0.45] except q=11
+which sits just above (p = 0.54 — the right side of fair-coin null).
+None individually significant.
+
+## Aggregate test (7-modulus correlated null, K = 10⁴)
+
+| metric | natural | independence-assumed p | **correlated-null p** |
+|---|---:|---:|---:|
+| 4-mod Stouffer Z | +1.4863 | 0.0686 | **0.1901** |
+| 4-mod sign-test (4 of 4 +) | 4 | 0.0625 | **0.1979** |
+| **7-mod Stouffer Z** | **+1.4582** | **0.0724** | **0.1935** |
+| **7-mod sign-test (6 of 7 +)** | **6 of 7** | (varies) | **0.1583** |
+
+**Headline:** the 7-modulus joint Stouffer p (0.1935) is *essentially
+identical* to the 4-modulus value (0.1901). Adding three truly-
+independent moduli **did not tighten the joint significance.**
+
+**7-mod sign-count distribution under shuffle (K = 10⁴):**
+
+```
+sign-count = 0:   222 ( 2.22%)
+sign-count = 1:   820 ( 8.20%)
+sign-count = 2:  1570 (15.70%)
+sign-count = 3:  1860 (18.60%)
+sign-count = 4:  2064 (20.64%)
+sign-count = 5:  1881 (18.81%)
+sign-count = 6:  1209 (12.09%)  ← natural (6 of 7 +)
+sign-count = 7:   374 ( 3.74%)
+```
+
+**7-mod Stouffer Z null percentiles:** 5th = −2.01, 50th = +0.29,
+90th = +2.03, 95th = +2.51, 99th = +3.49, max = +5.78.
+
+## Pre-registered prediction comparison
+
+The brief's prediction:
+- **Per-modulus**: all 3 of q ∈ {7, 11, 13} show inert excess at n=1000, k_q ∈ [505, 525], one-sided p ∈ [0.10, 0.45].
+- **Aggregate (7 moduli) under correlated null**: joint p ≤ 0.10 (Stouffer); conservative range [0.05, 0.15].
+
+What was observed:
+- **Per-modulus**: 2 of 3 show inert excess (q=7: 505, q=13: 510 — both within predicted range). 1 of 3 (q=11: 499) shows mild inert deficit, essentially at the null mean. Per-modulus p-values 0.27–0.54 — q=7 and q=13 within predicted range; q=11's 0.54 sits just above.
+- **Aggregate**: joint p (Stouffer, 7-mod) = **0.1935** — **above the conservative range [0.05, 0.15]**, essentially equal to the 4-mod value of 0.1901.
+
+**The pre-registered direction is partially confirmed but the
+predicted significance tightening is refuted.** Adding 3 truly-
+independent moduli did not tighten significance because q=11's
+near-null contribution (z = −0.06) drags the Stouffer down to
++1.46 from the 4-mod +1.49.
+
+## Pre-registered falsifier-table outcome
+
+The brief's pre-registered table:
+
+| Outcome | Reading |
+|---|---|
+| ≥ 2 of {7, 11, 13} show k_q < n/2 (opposite direction) | STRONG falsifier — claim fails |
+| 1 of {7, 11, 13} shows k_q < n/2 | Inconclusive — aggregate p deciding |
+| All 3 show k_q ≥ n/2 AND aggregate p ≤ 0.05 | Significance threshold met |
+| All 3 show k_q ≥ n/2 AND aggregate p ∈ (0.05, 0.15] | Directional consistency persists at non-significant level |
+| All 3 show k_q ≥ n/2 AND aggregate p > 0.15 | Direction holds, joint significance not improved |
+
+**Outcome: Row 2 — INCONCLUSIVE.** 1 of 3 new moduli (q=11) shows
+k_q < n/2; aggregate 7-mod Stouffer p = 0.1935 is the deciding
+statistic.
+
+The aggregate p value does not have its own row in the table when
+the prerequisite "all 3 ≥ n/2" is unmet, but for reference: if all
+3 had been ≥ n/2, the aggregate p of 0.1935 would map to Row 5
+("direction holds, joint significance not improved"). The actual
+result is *milder than Row 5* — only 2 of 3 directionally support
+the claim, and the joint significance is unchanged from the
+nested-4-mod baseline.
+
+CinC interprets the implication for the §5 cyclotomic-split-bias
+framing.
+
+## Decisions made beyond the instruction
+
+- **Anchor halt lifted by CinC mid-pass** (n=100 layer was auxiliary;
+  n=1000 was load-bearing and PASS). The script soft-flags n=100
+  drifts and proceeds. v1.1 §5 Test table's n=100 column will be
+  updated under v1.1's standardised v3.14-convention values.
+- **Same seed convention as v3.14**: numpy `default_rng(trial * 137 + 42)`
+  per shuffle. K = 10⁴, M = 20,000, sieve to 300,000 — all matched.
+- **Both 4-mod and 7-mod aggregate computed in the same pipeline**
+  so the 4-mod anchor reproduces alongside the new 7-mod result;
+  guarantees same shuffle stream so they're not divergent runs.
+- **Sign-count empirical p uses ≥ natural** (not > natural), matching
+  v3.14's empirical p convention.
+
+## Flags for CinC
+
+- **Anchor verification PASS, pre-registered prediction PARTIALLY
+  REFUTED.** Direction holds for 2 of 3 new moduli; aggregate
+  significance does NOT tighten (joint p essentially unchanged).
+- **The substantive finding:** q=11's near-null (z = −0.06) is the
+  proximate cause of the non-tightening. Whether to interpret this as
+  "real signal absent at q=11" or "small effect, sampling-noise-
+  bounded at this sample size" is CinC's call. q=11 sample reaches
+  p = 105,733 (vs q=7 reaches 59,627 and q=13 reaches 128,519); the
+  three new moduli are not perfectly comparable in p_max, which may
+  matter for the cyclotomic-split bias hypothesis if the bias scales
+  with prime size.
+- **No Pattern 75 halt**. Row 2 is "inconclusive" not "falsifier";
+  the direction-claim is neither confirmed nor refuted, just not
+  consolidated by independent moduli.
+- **Two interpretive observations for v1.1, both delegated to CinC:**
+  1. §5 framing should likely shift from "directional consistency
+     across 4 nested moduli (joint p = 0.19)" to "directional
+     consistency across 4 nested moduli AND 2 of 3 truly-independent
+     moduli (joint p = 0.19, unchanged); q=11 essentially at null."
+  2. The "essentially three observations dressed as four"
+     Mr Adversary critique is partially answered: the 7-mod test is
+     not "essentially three observations" — it's 4 nested + 3
+     independent — but the joint significance is the same as the
+     4-mod baseline, suggesting the 4-mod number was not artificially
+     tight from over-counting nested observations. The v3.14 correlated
+     null already accounts for the nesting; adding genuinely
+     independent moduli neither helps nor hurts the joint p.
+- **Branch entanglement note** (procedural, not scientific): two
+  commits unrelated to v1.1 (06d7e6e and c13b108, Paper 3 v4.2 brief
+  drafts) sit on this branch from the cross-session branch
+  shuffles. They will be pushed alongside this Task 1 commit. CinC
+  may want to clean up by either (a) leaving them — harmless brief
+  docs — or (b) cherry-picking them onto paper-3-v4-2-data and
+  resetting paper-199-v1-1-data to drop them. Mr Code does not
+  reset without explicit go-ahead.
+
+🐕☕⬡
+
+— Mr Code, 10 May 2026 (Paper 199 v1.1, Task 1 — halting at PASS gate
+before Task 2 per brief Session order)
