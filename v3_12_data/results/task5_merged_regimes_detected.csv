@@ -1,0 +1,6 @@
+lower_edge,upper_edge,width,lower_bounded,upper_bounded,past_range,landing_5_n,landing_7_n,landing_series,landing_first
+952,1717,766,True,True,False,506,503,both,7
+2812,4231,1420,True,True,False,1116,1112,both,7
+6013,8318,2306,True,True,False,2034,2029,both,7
+10979,15045,4067,True,True,False,3458,3452,both,7
+17539,17690,152,True,True,True,,3994,7,7
