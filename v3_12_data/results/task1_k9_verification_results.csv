@@ -1,0 +1,3 @@
+cluster_id,d_range,classification,n_5_star,n_7_star,D_7_at_n_star,S_7_skips,largest_run,threshold_min_largest_run,n_star_check,required_divisor_7,csv_lift_7,recomputed_lift_7,matches_csv,outcome_for_row
+C_16,"(132,135)",partial-coincident,58,56,131,"132,133,135","(132,133)",132,OK,3,9,9,True,α
+C_21,"(149,158)",partial-coincident,64,62,148,"149,150,152,153,155,156,158","(149,150)",149,OK,3,9,9,True,α
