@@ -1,0 +1,3 @@
+lower_edge,upper_edge,width,lower_bounded,upper_bounded,past_range
+952,1717,766,True,True,False
+2812,3740,929,True,True,True
