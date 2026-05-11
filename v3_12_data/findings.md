@@ -1917,3 +1917,720 @@ Prime-set census: {3}: 251 (40%); {3, 5}: 365 (58%); {3, 5, 7}: 15 (2%).
 🐕☕⬡
 
 — Mr Code, 11 May 2026 (Task X — second coincident-gap regime)
+
+---
+
+# Paper 199 v1.1 Task 3 results — bootstrap SEs on §6.3 ratio table
+
+**Mr Code pass — 10 May 2026 (later same day)**
+**Brief:** `mr_code_brief_paper_199_v1_1.md`, Task 3 (NULL/STATUS,
+Mr Adversary v3.18 query on bootstrap SEs).
+**Script:** `persistence_bootstrap_se.py`
+**Outputs:** `results/persistence_bootstrap_se.csv`,
+`results/persistence_bootstrap_se.png`
+**Branch:** `paper-199-v1-1-data` off main.
+
+## Anchor verification — PASS
+
+All 8 published §8.5 / §6.3 ratios reproduce within ±0.01 (most exact
+to 3 sig fig). 4 new rows (N ∈ {200, 100k, 200k, 500k}) are
+first-time computations.
+
+| N | T_natural | E_RW = √(2N/π) | ratio | published | status |
+|---:|---:|---:|---:|---:|:---|
+| 100 | 29 | 7.979 | 3.635 | 3.63 | OK |
+| 200 | 44 | 11.284 | 3.899 | (new) | first-time |
+| 500 | 72 | 17.841 | 4.036 | 4.04 | OK |
+| 1000 | 141 | 25.231 | 5.588 | 5.59 | OK |
+| 2000 | 232 | 35.682 | 6.502 | 6.50 | OK |
+| 5000 | 327 | 56.419 | 5.796 | 5.80 | OK |
+| 10000 | 437 | 79.788 | 5.477 | 5.48 | OK |
+| 20000 | 683 | 112.838 | 6.053 | 6.05 | OK |
+| 50000 | 921 | 178.412 | 5.162 | **5.16** | **OK** |
+| 100000 | 1190 | 252.313 | 4.716 | (new) | first-time |
+| 200000 | 1663 | 356.825 | 4.661 | (new) | first-time |
+| 500000 | 2924 | 564.190 | 5.183 | (new) | first-time |
+
+Definition note: chose Definition A (includes the ramified prime p=5
+with χ₅(5)=0, contributing 1 trivial tie). This matches §8.5
+publication exactly. Brief Method §1 says "vector of ±1 values" which
+literally implies Def C — with Def C the N=100 anchor would fail
+(T=28 instead of 29, ratio 3.51 not 3.63). Treating that as a brief
+slip; flag for CinC.
+
+## Bootstrap results (B = 10⁴ random permutations per row)
+
+| N | T_nat | T_boot mean | T_boot std | ratio_natural | ratio_boot mean | **SE_ratio** | 95% CI ratio |
+|---:|---:|---:|---:|---:|---:|---:|:---|
+| 100 | 29 | 10.6 | 5.6 | 3.635 | 1.333 | **0.707** | [0.13, 2.88] |
+| 200 | 44 | 12.6 | 8.0 | 3.899 | 1.119 | **0.713** | [0.09, 2.75] |
+| 500 | 72 | 26.0 | 13.7 | 4.036 | 1.458 | **0.769** | [0.22, 3.14] |
+| 1000 | 141 | 32.6 | 19.3 | 5.588 | 1.293 | **0.764** | [0.12, 3.01] |
+| 2000 | 232 | 54.3 | 28.6 | 6.502 | 1.520 | **0.802** | [0.25, 3.31] |
+| 5000 | 327 | 69.9 | 43.2 | 5.796 | 1.239 | **0.766** | [0.09, 2.96] |
+| 10000 | 437 | 114.0 | 64.2 | 5.477 | 1.429 | **0.804** | [0.18, 3.22] |
+| 20000 | 683 | 139.5 | 87.6 | 6.053 | 1.236 | **0.777** | [0.10, 3.00] |
+| 50000 | 921 | 264.6 | 144.8 | 5.162 | 1.483 | **0.812** | [0.22, 3.30] |
+| 100000 | 1190 | 387.3 | 206.4 | 4.716 | 1.535 | **0.818** | [0.25, 3.38] |
+| 200000 | 1663 | 541.8 | 290.0 | 4.661 | 1.518 | **0.813** | [0.23, 3.31] |
+| 500000 | 2924 | 783.4 | 451.9 | 5.183 | 1.389 | **0.801** | [0.14, 3.19] |
+
+## SE_ratio scaling — KEY FINDING #1
+
+**SE_ratio is approximately constant in N (0.71 → 0.82, factor 1.16×
+across the 12 N values), NOT Brownian-scaling.**
+
+Theoretical explanation: for zero-crossings of a random walk,
+SE(T) ∝ √N, so SE(ratio) = SE(T) / √(2N/π) → constant as N → ∞.
+The empirical mean SE_ratio = 0.779 is in the ballpark of the
+theoretical free-walk asymptote √(π/2) ≈ 1.253, somewhat below
+because random PERMUTATION (sampling without replacement from a
+fixed multiset) gives a random *bridge*, which has tighter
+zero-crossing distribution than a free walk.
+
+**This refutes the brief's pre-registered prediction** of SE_ratio ∈
+[0.05, 0.20] at N=500k. Observed SE_ratio at N=500k = 0.801 — 4× the
+upper end of the predicted band, 16× the lower end. The brief's
+reasoning ("relative SE on the order of 1/√T ≈ 3.3%") implicitly
+assumed Poisson-like scaling, which doesn't hold for zero-crossings
+of random walks.
+
+## Bootstrap mean ratio ≈ 1.4 — KEY FINDING #2
+
+The bootstrap MEAN ratio (T_boot / E_RW) is consistently 1.3-1.5,
+not ~1.0:
+
+| N | natural ratio | boot mean ratio | natural / boot |
+|---:|---:|---:|---:|
+| 1000 | 5.588 | 1.293 | 4.32 |
+| 50000 | 5.162 | 1.483 | 3.48 |
+| 500000 | 5.183 | 1.389 | 3.73 |
+
+A random permutation of the (nearly balanced ±1) χ₅ vector is a
+random bridge, which has more zero-crossings than a free random walk
+of the same length. The factor ≈ 1.4 is the bridge-vs-walk
+penalty.
+
+This means the published "ratio T_natural / √(2N/π)" of ≈ 5.2 at
+large N **overstates the natural-vs-permutation excess by a factor
+of ≈ 1.4**. The natural-vs-permutation ratio (the more apples-to-apples
+comparison: same multiset of χ values, only ordering differs) is
+≈ 3.5-4.0 at large N.
+
+This is the kind of issue the bootstrap was specifically designed to
+surface. CinC interprets — possibilities range from "report ratio
+against permutation null in §6.3 going forward" to "leave the
+published ratio as-is, but note the bridge-baseline alongside in
+v1.1." Mr Code does not recommend either.
+
+## v3.16 supplementary falsifier "ratio ≤ 4.5 at N = 10⁷" — NOMINAL
+
+The brief asks whether the v3.16 supplementary directional bound is
+*computable* under the bootstrap framework.
+
+- Baseline at N = 500k: ratio = 5.183 (against theoretical RW null).
+- Bootstrap SE on ratio at N = 500k: 0.801.
+- Gap to falsifier (5.183 − 4.5): **+0.683**.
+- Gap as multiple of N=500k SE: **+0.85 × SE**.
+- Projected SE at N = 10⁷ (using empirical plateau, NOT Brownian):
+  ≈ 0.78 (mean across 12 rows).
+- Gap as multiple of projected SE at N = 10⁷: **+0.88 × SE**.
+
+**Verdict: NOMINAL.** The gap of +0.68 in ratio terms is less than
+1 standard error under the random-permutation null at any N tested
+or projected. The v3.16 supplementary falsifier "ratio ≤ 4.5 at
+N = 10⁷" is *inside the noise floor* of the bootstrap distribution
+— a measurement at N = 10⁷ that returns 4.4 or 4.6 would be
+indistinguishable from the baseline 5.18 under the permutation null.
+
+CinC interprets whether the v3.16 supplementary commitment needs
+re-stating with this SE in mind. Mr Code does not recommend a
+specific re-statement.
+
+## Bootstrap-distribution diagnostics
+
+All 12 rows show mild positive skewness (0.44 → 0.71) and
+near-zero excess kurtosis (−0.15 → +0.30). Mild skewness is typical
+of count data (zero-crossings are bounded below at 0). No row is
+heavy-tailed or pathological. The bootstrap framework itself is
+sound — Row 3 of the brief's falsifier table does NOT apply.
+
+## Pre-registered falsifier-table outcome
+
+The brief's pre-registered table:
+
+| Outcome | Interpretation |
+|---|---|
+| All 11 SE_ratio < 0.30 | Row 1: framework gives well-defined precision; v3.16 falsifier computable. |
+| Some SE_ratio ≥ 0.30 | Row 2: bootstrap precision looser than expected at certain N; falsifier may need re-stating. |
+| Bootstrap distribution non-Gaussian / heavy-tailed / autocorrelated | Row 3: framework questioned; halt. |
+
+**Outcome: Row 2** — *strengthened in degree*. The brief's "some
+SE_ratio ≥ 0.30" wording understates: ALL 12 SE_ratio values are
+≥ 0.71, with max 0.818, mean 0.779. The bootstrap framework is
+well-defined (mild skewness, no pathology), but the precision on
+the ratio is much looser than the brief's prior expectation.
+
+## Decisions made beyond the instruction
+
+- **Definition A** (includes χ₅(5)=0) chosen over the brief's literal
+  "±1 vector" wording (Def C), because the published §8.5 anchors
+  use Def A. Flagged.
+- **Sieve to 16M** to comfortably accommodate N=500k 5-series primes
+  (got 515,747).
+- **Per-N seed shift**: bootstrap seed = `42 + N` per row, so each row
+  gets an independent stream while staying reproducible. Brief said
+  "seed = trial × 137 + 42"; for the bootstrap context I read the
+  intent as "deterministic and per-call distinct," not "literal
+  formula." Recorded in the script.
+- **Skewness flag threshold raised** from |skew| > 0.5 (initial) to
+  |skew| > 1.0, because 0.5-0.7 is mild for count data and not
+  "non-Gaussian" in the brief's heavy-tailed sense.
+- **Brownian-projection of SE to N = 10⁷ replaced** with empirical
+  plateau extrapolation. The Brownian projection (SE ∝ 1/√N) was
+  in my first-pass script and was wrong — would have given the
+  misleading verdict "COMPUTABLE." The empirical plateau (SE ≈ 0.78
+  at all N) gives the correct verdict NOMINAL.
+
+## Flags for CinC
+
+- **Anchor verification PASS, Pre-registered prediction REFUTED.**
+  The bootstrap SE is 4-15× higher than the brief predicted. This is
+  itself the result; the framework is sound, the prior was wrong.
+- **Two interpretive observations for v1.1, both delegated to CinC:**
+  1. Should §6.3 report ratio against the random-permutation null
+     (≈ 1.4 × E_RW) instead of theoretical √(2N/π)? Doing so
+     reduces the headline "5-6× excess" to "3.5-4× excess."
+  2. Should the v3.16 supplementary falsifier "ratio ≤ 4.5 at N = 10⁷"
+     be re-stated with the actual SE in mind? At gap/SE ≈ 0.85, the
+     current threshold is inside the noise floor.
+- **Brief inconsistency on definition** (Def C vs Def A) flagged
+  above. Resolved by following published anchors; CinC may want to
+  clarify which definition v1.1 §6.3 standardises on.
+- **Brief said "11 rows," listed 12 N values.** Computed all 12.
+- **No Pattern 75 halt** — the falsifier outcome is real-and-reportable
+  Row 2 (precision looser than expected), not Row 3 (framework
+  questioned).
+
+🐕☕⬡
+
+— Mr Code, 10 May 2026 (Paper 199 v1.1, Task 3 only — Tasks 1 & 2
+queued, awaiting CinC review of Task 3 per brief Session order)
+
+---
+
+# Paper 199 v1.1 Task 1 results — independent modulus test
+
+**Mr Code pass — 10 May 2026 (later same day)**
+**Brief:** `mr_code_brief_paper_199_v1_1.md`, Task 1 (NULL,
+Mr Adversary v3.18 query on truly-independent moduli).
+**Script:** `independent_modulus.py`
+**Outputs:** `results/independent_modulus_results.csv`,
+`results/independent_modulus_correlated_null.csv`,
+`results/independent_modulus.png`
+**Branch:** `paper-199-v1-1-data` off main.
+
+## Anchor verification — PASS (with halt-lifted soft-flag)
+
+**n=1000 gate (load-bearing per CinC):** all 4 reproduce exactly.
+
+| q | this run | brief anchor | status |
+|---|---|---|---|
+| 4 | 508 | 508 | OK ✓ |
+| 6 | 509 | 509 | OK ✓ |
+| 8 | 516 | 516 | OK ✓ |
+| 12 | 514 | 514 | OK ✓ |
+
+**4-modulus correlated null (K = 10⁴) anchor:** within ±0.001 of brief.
+
+| metric | this run | brief anchor | Δ |
+|---|---|---|---|
+| 4-mod Stouffer p | 0.1901 | 0.190 | +0.0001 |
+| 4-mod sign-test p | 0.1979 | 0.198 | −0.0001 |
+
+**n=100 layer (auxiliary, halt-lifted by CinC):** soft-flag 3 of 4
+moduli differ by ±1–3 from v3.12-task3_premise.py-source anchors.
+This run's values ARE the v1.1 convention-standardised numbers (per
+CinC's plan: §11 Calibration noting v1.1 standardises on v3.14's
+correlated_null.py convention; §5 Test table's n=100 column updated).
+
+| q | this run | brief anchor (v3.12 source) | Δ |
+|---|---|---|---|
+| 4 | 53 | 50 | +3 |
+| 6 | 53 | 53 | 0 |
+| 8 | 57 | 56 | +1 |
+| 12 | 56 | 57 | −1 |
+
+## Per-modulus natural results
+
+All 7 moduli at n=100 and n=1000 (binomial null at p=0.5,
+one-sided p for "inerts ≥ k_q"):
+
+| q | n | inerts | pct | z_q | p (binom 1-sided) |
+|---:|---:|---:|---:|---:|---:|
+| 4 | 100 | 53 | 53.0% | +0.600 | 0.3087 |
+| 4 | 1000 | 508 | 50.8% | +0.506 | 0.3176 |
+| 6 | 100 | 53 | 53.0% | +0.600 | 0.3087 |
+| 6 | 1000 | 509 | 50.9% | +0.569 | 0.2954 |
+| **7** | **100** | **51** | **51.0%** | **+0.200** | **0.4602** |
+| **7** | **1000** | **505** | **50.5%** | **+0.316** | **0.3880** |
+| 8 | 100 | 57 | 57.0% | +1.400 | 0.0967 |
+| 8 | 1000 | 516 | 51.6% | +1.012 | 0.1635 |
+| **11** | **100** | **50** | **50.0%** | **+0.000** | **0.5398** |
+| **11** | **1000** | **499** | **49.9%** | **−0.063** | **0.5378** |
+| 12 | 100 | 56 | 56.0% | +1.200 | 0.1356 |
+| 12 | 1000 | 514 | 51.4% | +0.885 | 0.1966 |
+| **13** | **100** | **52** | **52.0%** | **+0.400** | **0.3822** |
+| **13** | **1000** | **510** | **51.0%** | **+0.632** | **0.2740** |
+
+(Bold rows = the 3 new truly-independent moduli q ∈ {7, 11, 13}.)
+
+**Direction at n=1000 for the 3 new moduli:**
+- q=7: 505 inerts, z = +0.316 → **inert excess** (+5)
+- q=11: 499 inerts, z = −0.063 → **inert deficit** (−1, essentially at null mean)
+- q=13: 510 inerts, z = +0.632 → **inert excess** (+10)
+
+**2 of 3 new moduli show inert excess; 1 (q=11) is essentially at the null mean.**
+
+Per-modulus p-values for q ∈ {7, 11, 13} fall in [0.27, 0.54]; all are
+within the brief's pre-registered range [0.10, 0.45] except q=11
+which sits just above (p = 0.54 — the right side of fair-coin null).
+None individually significant.
+
+## Aggregate test (7-modulus correlated null, K = 10⁴)
+
+| metric | natural | independence-assumed p | **correlated-null p** |
+|---|---:|---:|---:|
+| 4-mod Stouffer Z | +1.4863 | 0.0686 | **0.1901** |
+| 4-mod sign-test (4 of 4 +) | 4 | 0.0625 | **0.1979** |
+| **7-mod Stouffer Z** | **+1.4582** | **0.0724** | **0.1935** |
+| **7-mod sign-test (6 of 7 +)** | **6 of 7** | (varies) | **0.1583** |
+
+**Headline:** the 7-modulus joint Stouffer p (0.1935) is *essentially
+identical* to the 4-modulus value (0.1901). Adding three truly-
+independent moduli **did not tighten the joint significance.**
+
+**7-mod sign-count distribution under shuffle (K = 10⁴):**
+
+```
+sign-count = 0:   222 ( 2.22%)
+sign-count = 1:   820 ( 8.20%)
+sign-count = 2:  1570 (15.70%)
+sign-count = 3:  1860 (18.60%)
+sign-count = 4:  2064 (20.64%)
+sign-count = 5:  1881 (18.81%)
+sign-count = 6:  1209 (12.09%)  ← natural (6 of 7 +)
+sign-count = 7:   374 ( 3.74%)
+```
+
+**7-mod Stouffer Z null percentiles:** 5th = −2.01, 50th = +0.29,
+90th = +2.03, 95th = +2.51, 99th = +3.49, max = +5.78.
+
+## Pre-registered prediction comparison
+
+The brief's prediction:
+- **Per-modulus**: all 3 of q ∈ {7, 11, 13} show inert excess at n=1000, k_q ∈ [505, 525], one-sided p ∈ [0.10, 0.45].
+- **Aggregate (7 moduli) under correlated null**: joint p ≤ 0.10 (Stouffer); conservative range [0.05, 0.15].
+
+What was observed:
+- **Per-modulus**: 2 of 3 show inert excess (q=7: 505, q=13: 510 — both within predicted range). 1 of 3 (q=11: 499) shows mild inert deficit, essentially at the null mean. Per-modulus p-values 0.27–0.54 — q=7 and q=13 within predicted range; q=11's 0.54 sits just above.
+- **Aggregate**: joint p (Stouffer, 7-mod) = **0.1935** — **above the conservative range [0.05, 0.15]**, essentially equal to the 4-mod value of 0.1901.
+
+**The pre-registered direction is partially confirmed but the
+predicted significance tightening is refuted.** Adding 3 truly-
+independent moduli did not tighten significance because q=11's
+near-null contribution (z = −0.06) drags the Stouffer down to
++1.46 from the 4-mod +1.49.
+
+## Pre-registered falsifier-table outcome
+
+The brief's pre-registered table:
+
+| Outcome | Reading |
+|---|---|
+| ≥ 2 of {7, 11, 13} show k_q < n/2 (opposite direction) | STRONG falsifier — claim fails |
+| 1 of {7, 11, 13} shows k_q < n/2 | Inconclusive — aggregate p deciding |
+| All 3 show k_q ≥ n/2 AND aggregate p ≤ 0.05 | Significance threshold met |
+| All 3 show k_q ≥ n/2 AND aggregate p ∈ (0.05, 0.15] | Directional consistency persists at non-significant level |
+| All 3 show k_q ≥ n/2 AND aggregate p > 0.15 | Direction holds, joint significance not improved |
+
+**Outcome: Row 2 — INCONCLUSIVE.** 1 of 3 new moduli (q=11) shows
+k_q < n/2; aggregate 7-mod Stouffer p = 0.1935 is the deciding
+statistic.
+
+The aggregate p value does not have its own row in the table when
+the prerequisite "all 3 ≥ n/2" is unmet, but for reference: if all
+3 had been ≥ n/2, the aggregate p of 0.1935 would map to Row 5
+("direction holds, joint significance not improved"). The actual
+result is *milder than Row 5* — only 2 of 3 directionally support
+the claim, and the joint significance is unchanged from the
+nested-4-mod baseline.
+
+CinC interprets the implication for the §5 cyclotomic-split-bias
+framing.
+
+## Decisions made beyond the instruction
+
+- **Anchor halt lifted by CinC mid-pass** (n=100 layer was auxiliary;
+  n=1000 was load-bearing and PASS). The script soft-flags n=100
+  drifts and proceeds. v1.1 §5 Test table's n=100 column will be
+  updated under v1.1's standardised v3.14-convention values.
+- **Same seed convention as v3.14**: numpy `default_rng(trial * 137 + 42)`
+  per shuffle. K = 10⁴, M = 20,000, sieve to 300,000 — all matched.
+- **Both 4-mod and 7-mod aggregate computed in the same pipeline**
+  so the 4-mod anchor reproduces alongside the new 7-mod result;
+  guarantees same shuffle stream so they're not divergent runs.
+- **Sign-count empirical p uses ≥ natural** (not > natural), matching
+  v3.14's empirical p convention.
+
+## Flags for CinC
+
+- **Anchor verification PASS, pre-registered prediction PARTIALLY
+  REFUTED.** Direction holds for 2 of 3 new moduli; aggregate
+  significance does NOT tighten (joint p essentially unchanged).
+- **The substantive finding:** q=11's near-null (z = −0.06) is the
+  proximate cause of the non-tightening. Whether to interpret this as
+  "real signal absent at q=11" or "small effect, sampling-noise-
+  bounded at this sample size" is CinC's call. q=11 sample reaches
+  p = 105,733 (vs q=7 reaches 59,627 and q=13 reaches 128,519); the
+  three new moduli are not perfectly comparable in p_max, which may
+  matter for the cyclotomic-split bias hypothesis if the bias scales
+  with prime size.
+- **No Pattern 75 halt**. Row 2 is "inconclusive" not "falsifier";
+  the direction-claim is neither confirmed nor refuted, just not
+  consolidated by independent moduli.
+- **Two interpretive observations for v1.1, both delegated to CinC:**
+  1. §5 framing should likely shift from "directional consistency
+     across 4 nested moduli (joint p = 0.19)" to "directional
+     consistency across 4 nested moduli AND 2 of 3 truly-independent
+     moduli (joint p = 0.19, unchanged); q=11 essentially at null."
+  2. The "essentially three observations dressed as four"
+     Mr Adversary critique is partially answered: the 7-mod test is
+     not "essentially three observations" — it's 4 nested + 3
+     independent — but the joint significance is the same as the
+     4-mod baseline, suggesting the 4-mod number was not artificially
+     tight from over-counting nested observations. The v3.14 correlated
+     null already accounts for the nesting; adding genuinely
+     independent moduli neither helps nor hurts the joint p.
+- **Branch entanglement note** (procedural, not scientific): two
+  commits unrelated to v1.1 (06d7e6e and c13b108, Paper 3 v4.2 brief
+  drafts) sit on this branch from the cross-session branch
+  shuffles. They will be pushed alongside this Task 1 commit. CinC
+  may want to clean up by either (a) leaving them — harmless brief
+  docs — or (b) cherry-picking them onto paper-3-v4-2-data and
+  resetting paper-199-v1-1-data to drop them. Mr Code does not
+  reset without explicit go-ahead.
+
+🐕☕⬡
+
+— Mr Code, 10 May 2026 (Paper 199 v1.1, Task 1 — halting at PASS gate
+before Task 2 per brief Session order)
+
+---
+
+# Paper 199 v1.1 Task 2 results — 7-series monotone-ordering test
+
+**Mr Code pass — 10 May 2026 (later same day)**
+**Brief:** `mr_code_brief_paper_199_v1_1.md`, Task 2 (GAP/FALSIFIER,
+Mr Adversary v3.18 query — Q1(b) vs Q1(d) discriminant).
+**Script:** `seven_series_monotone.py`
+**Outputs:** `results/seven_series_monotone_results.csv`,
+`results/seven_series_aggregate_null.csv`,
+`results/seven_series_monotone.png`
+**Branch:** `paper-199-v1-1-data` off main.
+
+## Anchor verification — PASS (5-series benchmark)
+
+All three 5-series benchmark anchors reproduce within tolerance:
+
+| Anchor | This run | Brief | Δ | Status |
+|---|---|---|---|---|
+| Def C, n=33: T_natural | 13 | 13 | 0 | OK |
+| Def C, n=33: shuf_mean | 6.185 | 6.185 | 0.000 | OK |
+| Def C, n=33: shuf_std | 2.780 | 2.780 | 0.000 | OK |
+| Def C, n=33: z | 2.451 | 2.450 | +0.001 | OK |
+| Def A, n=90: z | 3.612 | 3.610 | +0.002 | OK |
+| Multi-window max-z empirical p (Def C) | 0.0050 | 0.005 | 0.0000 | OK |
+
+Framework verified bit-near-exact against v3.13/v3.12 baseline.
+
+## 7-series core test — natural ordering
+
+First 1000 7-series primes (p > 3, p ≡ 1 mod 6); none ramified, so
+χ₅(p) ∈ {+1, −1} throughout (no Definition A/B/C distinction).
+
+Per-window tie counts and z-scores (1000 shuffles per window, seed
+= trial × 137 + 42):
+
+| n | L | T_natural | shuf_mean | shuf_std | z_natural | p_ge |
+|---:|---:|---:|---:|---:|---:|---:|
+| 20 | 20 | 1 | 2.184 | 1.723 | **−0.687** | 0.811 |
+| 33 | 33 | 2 | 4.064 | 2.689 | **−0.767** | 0.806 |
+| 50 | 50 | 2 | 4.001 | 3.079 | **−0.650** | 0.753 |
+| 70 | 70 | 2 | 6.326 | 4.389 | **−0.986** | 0.855 |
+| 90 | 90 | 2 | 5.796 | 4.467 | **−0.850** | 0.820 |
+| 100 | 100 | 2 | 7.169 | 5.084 | **−1.017** | 0.863 |
+
+**Headline:** Every per-window z is **negative** — the 7-series under
+natural ordering has FEWER ties than random shuffle (tie *deficit*,
+not excess). Magnitudes 0.65–1.02, all within 1.1 σ of the null mean.
+
+For comparison, the 5-series Def C natural z values at the same
+windows: 2.14, 2.45, 2.75, 2.71, 3.33, 3.08 (all positive, magnitudes
+2–3). The 7-series shows neither the magnitude nor the sign of the
+5-series anomaly.
+
+## Multi-window aggregate test (Statistic A)
+
+Per-trial max-z across the 6 windows; 1000-trial null distribution:
+
+| Statistic | Natural | Null 95th | Null 99th | Empirical p |
+|---|---:|---:|---:|---:|
+| max(z_n) | **−0.650** (at n=50) | +2.720 | +3.310 | **0.999** |
+| max(\|z_n\|) | **1.017** (at n=100) | 2.720 | 3.310 | **0.921** |
+
+Natural's max-z = −0.65 (negative — natural ordering's *highest*
+window-z is below the null median). Empirical p = 0.999 means 99.9%
+of shuffles produce a *higher* max-z than natural — the 7-series
+natural ordering is at the *low* tail.
+
+The two-sided |z|max statistic is more lenient (p = 0.921 — 92% of
+shuffles produce a higher absolute deviation), but still nowhere near
+the 0.005 threshold the 5-series produced under the same framework.
+
+## Pre-registered |z(33)| classification
+
+| Outcome | Reading |
+|---|---|
+| \|z(33)\| ≤ 1.0 | Q1(b) "structural-position" favoured |
+| 1.0 < \|z(33)\| < 1.5 | Inconclusive — aggregate p decides |
+| \|z(33)\| ≥ 1.5 | Q1(d) "any-monotone-ordering" favoured |
+
+**Observed: |z(33)| = 0.7674 → Row 1: Q1(b) favoured.**
+
+The pre-registered Q1(d) prediction (|z(33)| ≥ 1.5) is **refuted**.
+The pre-registered Q1(b) prediction (|z(33)| ≤ 1.0) is **confirmed**.
+
+The 5-series tight-oscillation regime under natural ordering is
+**not** reproduced on the 7-series under natural ordering. The
+phenomenon is 5-series-specific (or at least tied to residue classes
+that exhibit a tight-oscillation regime in natural ordering); it is
+**not** a general feature of monotone size-ordering of mod-6 prime
+sequences.
+
+## Structured-ordering controls at n=33 — interesting twist
+
+Same shuffle baseline (mean = 4.064, std = 2.689) for all four
+orderings of the first 33 7-series primes:
+
+| Ordering | T | z | \|z\| |
+|---|---:|---:|---:|
+| natural | 2 | **−0.767** | 0.767 |
+| reversed_size | 10 | **+2.207** | 2.207 |
+| every_other | 11 | **+2.579** | 2.579 |
+| index_interleaved | 6 | +0.720 | 0.720 |
+
+**5-series Def C n=33 reference** (from v3.12 task1_orderings, the
+reference pattern for "monotone vs permuted" framework):
+
+| Ordering | z |
+|---|---:|
+| natural | +2.45 |
+| reversed_size | +2.45 |
+| every_other | −0.43 |
+| index_interleaved | +1.90 |
+
+**5-series pattern:** natural ≈ reversed_size (both monotone) >>
+permuted controls. The two monotone orderings produce identical tie
+excess; permuted orderings produce smaller |z|.
+
+**7-series pattern is COMPLETELY DIFFERENT:**
+- natural (z=−0.77) ≠ reversed_size (z=+2.21): |Δ| = 2.97 — the two
+  monotone orderings disagree dramatically, and in OPPOSITE signs.
+- every_other (z=+2.58) is the LARGEST |z| of any ordering — the
+  exact OPPOSITE of the 5-series, where every_other was the smallest.
+- index_interleaved (z=+0.72) is mild.
+
+The 7-series has its OWN tie-related structure under non-natural
+orderings (reversed-size and every-other both produce notable tie
+*excess*), but this structure is not aligned with the
+"monotone-vs-permuted" framework that captures the 5-series.
+
+This twist *strengthens* the Q1(b) verdict: not only does the
+7-series natural ordering fail to reproduce the 5-series anomaly, but
+the entire "monotone size-orderings produce excess ties on mod-6
+prime sequences" reading (Q1(d)) is contradicted by the structured
+controls. The reversed-size and natural orderings of the 7-series —
+both monotone — go in OPPOSITE directions.
+
+## Pre-registered falsifier-table outcome
+
+| Row | Outcome | Reading |
+|---|---|---|
+| 1 | \|z(33)\| ≤ 1.0 | Q1(b) favoured (5-series-specific) |
+| 2 | 1.0 < \|z(33)\| < 1.5 | Inconclusive; aggregate p deciding |
+| 3 | \|z(33)\| ≥ 1.5 | Q1(d) favoured (any-monotone, parsimonious) |
+| 4 | \|z(33)\| ≥ 1.5 + structured controls match 5-series | Strong Q1(d) |
+| 5 | \|z(33)\| ≥ 1.5 + structured controls don't match | Mixed — new reading |
+
+**Outcome: Row 1 — Q1(b) favoured.** |z(33)| = 0.767 ≤ 1.0; the
+prerequisite for Rows 3-5 (|z(33)| ≥ 1.5) is unmet. The structured-
+controls observation is informational only at this outcome row but
+adds qualitative support: the 7-series structured-ordering pattern
+diverges from the 5-series pattern, *both* in the natural-vs-
+reversed alignment (5-series: natural ≈ reversed; 7-series:
+natural ≠ reversed by 2.97 σ) *and* in the smallest-|z| ordering
+(5-series: every_other; 7-series: index_interleaved).
+
+## Implications for §10 Q1 (delegated to CinC)
+
+The pre-registered Q1(b) reading is favoured. CinC interprets:
+
+1. **Q1(a) "small-prime-decay"**: already falsified v3.14 (per brief
+   background). Status: refuted, no change.
+2. **Q1(b) "structural-position"**: favoured by this Task 2 result.
+   The 5-series tight-oscillation regime sits in a structural slot
+   that the 7-series does NOT mirror. CinC interprets what
+   "structural position" means concretely (mod-5 residue class
+   specificity? something about χ₅ marginal balance? something about
+   small-prime distribution within ≡5 mod 6?).
+3. **Q1(c) "geometric-shadow"**: not directly tested by Task 2;
+   remains a candidate.
+4. **Q1(d) "any-monotone-ordering"**: refuted by this Task 2 result.
+   The phenomenon is not generalised to monotone size-ordering of
+   any mod-6 prime sequence. Removed as a candidate.
+
+Mr Code does not weigh Q1(b) against Q1(c) — that's CinC.
+
+## Decisions made beyond the instruction
+
+- **|z|max as a secondary statistic alongside max-z.** Brief Method
+  §3 says "take the maximum z across windows" (signed max). I added
+  the |z|max (two-sided) statistic alongside, since the 7-series
+  natural produces only negative z's and a signed-max-only test is
+  guaranteed to give p ≈ 1 — uninformative on whether the magnitude
+  is unusual. Both reported; signed max-z is the one that maps to the
+  brief's pre-registered table (and gives the clean Q1(b) verdict).
+- **Sieve to 200,000** (vs 250,000 in v3.15 proximity_null): plenty
+  for first 1000 7-series primes (p_max = 17,539); faster.
+- **No Definition A/B/C distinction** for the 7-series, as the brief
+  notes (no ramification). One single unambiguous chi-sequence.
+- **Structured-ordering controls reuse v3.12 task1_orderings**
+  functions directly (order_natural, order_reversed_size,
+  order_every_other, order_index_interleaved) — same definitions,
+  same conventions; chi_clustered ordering omitted (not in the brief
+  spec for this task).
+
+## Flags for CinC
+
+- **Anchor verification PASS, pre-registered prediction CONFIRMED in
+  the Q1(b) direction.** Clean result; no Pattern 75 halt; no
+  inconclusive aggregate p.
+- **The structured-controls twist is the substantive bonus finding.**
+  Worth flagging in v1.1 §10 Q1: not only does the 7-series fail to
+  reproduce the 5-series natural-ordering anomaly, but the 7-series
+  *does* have its own structural-tie pattern under reversed-size and
+  every-other orderings, and that pattern differs from the 5-series's
+  monotone-vs-permuted shape. This is a new observation that wasn't
+  pre-registered (it sits inside the structured-controls block but
+  the 5-series-pattern-mismatch is more informative than I expected).
+  CinC may want to file as a §10 open question: "What does the
+  7-series tie-excess under reversed/every-other orderings mean?"
+- **No definitional inconsistencies** in the brief for Task 2 (unlike
+  Task 1's n=100 layer or Task 3's Def-A vs Def-C). The 7-series has
+  no ramification so the question doesn't arise.
+
+🐕☕⬡
+
+— Mr Code, 10 May 2026 (Paper 199 v1.1, Task 2 — halting at PASS
+gate; all three tasks complete, awaiting CinC review for v1.1
+markdown integration)
+
+---
+
+# Paper 199 v1.1 Task Y — χ₅ running-sum at four mod-6 prime-product boundary crossings
+
+**Mr Code pass — 11 May 2026**
+**Brief:** `v3_12_data/briefs/mr_code_brief_task_y_chi5_boundary_crossings.md`
+(pre-registered at SHA `1e45e02`, 11 May 2026)
+**Script:** `v3_12_data/task_y_boundary_chi5_sums.py`
+**CSV:** `v3_12_data/results/task_y_boundary_chi5_sums.csv`
+
+## Anchor verification
+
+| Anchor | Status |
+|---|---|
+| 5-series first 10 primes match `(5, 11, 17, 23, 29, 41, 47, 53, 59, 71)` | OK |
+| 7-series first 10 primes match `(7, 13, 19, 31, 37, 43, 61, 67, 73, 79)` | OK |
+| `S_5(31) = 0` (Paper 199 §6.3 load-bearing) | **OK** |
+| 7-series first two ties at `n = 4, n = 26` (Paper 199 §4) | OK |
+| Digit-length crossings at the four pre-registered post-steps | OK (all four) |
+
+All five anchors reproduce. Pattern 75 stop-on-fail not triggered.
+
+## Results — `S_i(n)` at the four pre-registered crossings (Definition A)
+
+| series | n | type | scale | D(n−1) → D(n) | S_i(n) | prev tie | next tie |
+|---|---|---|---|---|---|---|---|
+| 5 | 31 | staggered | 10^{61} (e^{α⁻¹}) | 59 → 62 | **0** ★ | n = 27 (−4) | n = 33 (+2) |
+| 5 | 39 | coincident | 10^{80} (e^{184}) | 79 → 82 | −2 | n = 33 (−6) | n = 41 (+2) |
+| 7 | 31 | staggered | 10^{63} | 61 → 64 | −3 | n = 26 (−5) | (none within +20) |
+| 7 | 38 | coincident | 10^{80} (e^{184}) | 79 → 82 | −4 | n = 26 (−12) | (none within +20) |
+
+All four crossings are 3-digit jumps (the product skips three digit-lengths
+in one step). `S_5(31) = 0` is the only zero; the other three are non-zero
+and in the 7-series the next tie does not occur within +20 primes (Paper
+199 §4: only n = 4 and n = 26 in the first 5000).
+
+## Pre-registered decision-tree outcome
+
+**ROW 1: HYPOTHESIS CONFIRMED.** Only `S_5(31) = 0`; the other three
+crossings have non-zero running sums. The χ₅ reset is α-exhaustion-specific:
+it occurs at the 5-series staggered (digital) boundary but not at the
+coincident (lattice-tension) boundary, and not in the 7-series at all.
+Paper 200's load-bearing claim — that the χ₅ reset is a digital-boundary
+signature, not a generic-boundary signature — is supported.
+
+## Findings note
+
+The four pre-registered crossings are structurally homogeneous in one
+respect — all four are 3-digit-length jumps of the running prime product —
+and they are sharply differentiated in another: only the 5-series staggered
+crossing at e^{α⁻¹} produces `S(n) = 0`. The 5-series coincident crossing
+at e^{184} lands at `S = −2` with the nearest ties two and six steps away,
+straddling but not hitting the crossing step. The two 7-series crossings
+land at `S = −3` and `S = −4`, deep inside the persistent-negative drift
+the 7-series occupies after n = 26 (no tie within +20 in either case).
+
+The pattern matches the pre-registration: the χ₅ reset is a property of
+the *digital* boundary in the *5-series*, not of the digit-length jump as
+a generic structural event. Since coincident boundaries (where 5-series
+and 7-series jump at the same digit-length) do not reset, and 7-series
+boundaries of either type do not reset, the reset cannot be reduced to
+"the running prime product crossed a power-of-ten." Something more
+specific — the conjectured α-exhaustion event at e^{α⁻¹} in the mod-5
+carrier — is doing the work.
+
+## Flags for CinC
+
+- **Anchor verification PASS, pre-registered prediction CONFIRMED (Row 1).**
+- **3-digit-jump homogeneity worth noting.** All four crossings skip
+  three digit-lengths in a single step; the differentiation between the
+  one tie and three non-ties is not driven by a structural property of
+  the jump (all four are 3-digit jumps), strengthening the reading that
+  the reset is mod-5-carrier-specific rather than product-shape-specific.
+- **7-series tie-locality.** The two 7-series crossings are at `S = −3`
+  and `S = −4`, and the next tie after n = 26 is more than 20 steps away
+  (consistent with Paper 199 §4's report of only two ties in the first
+  5000 primes). The 7-series isn't merely "non-zero at the crossing" —
+  it's deep inside drift, with no nearby tie at all.
+- **Digit-length anchor naming.** The 7-series staggered crossing was
+  named "10^{63}" in the brief; the script accepted `[≤62, ≥63]` as the
+  threshold (digit-length ≥ 64 in base-10 means the product is ≥ 10^{63}).
+  The observed transition is D 61 → D 64, so the post-crossing product
+  is in `[10^{63}, 10^{64})`. Consistent with the brief's "10^{63}" scale.
+
+🐕☕⬡
+
+— Mr Code, 11 May 2026 (Task Y — boundary χ₅ running-sum behaviour;
+Row 1 hypothesis confirmed; awaiting CinC review for Paper 200 integration)
