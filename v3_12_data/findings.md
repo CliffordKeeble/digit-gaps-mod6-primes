@@ -1771,3 +1771,149 @@ distinguishing features of B1 / B2 specifically.
 🐕☕⬡
 
 — Mr Code, 10 May 2026 (v4.2 comparative tabulation)
+
+---
+
+## Task X: Second coincident-gap regime (prime-set escalation)
+
+Pre-reg: `v3_12_data/briefs/task_x_second_regime_pre_registration.md`
+(commit `988ff21`, 11 May 2026). Hypothesis: the first cluster past D = 200
+with 7 | lift_5 has joint LCM(lift_5, lift_7) = 105, achieved as
+lift_5 = 21 = 3·7 and lift_7 = 15 = 3·5.
+
+### Anchor verification — PASS
+
+All v4.2 anchors reproduce under N_MAX = 3000: D_i(n) values; mpmath
+200-dps reproduction; strict-23 cluster count in [90, 200]; (172, 482)
+merged_regime_edge; per-cluster nearest-distance median = max = 2;
+B1 (3, 3) partial-coincident; B2 (3, 15) coincident.
+
+### Scan parameters
+
+- N_MAX = 3000 per series; D_5(3000) = 12845, D_7(3000) = 12871.
+- Scan range D ∈ [201, 10000]; 634 clusters entirely contained, of
+  which 3 asymptotic-merged (width ≥ 100), 631 non-degenerate.
+
+### Primary observation — R2_first
+
+**Cluster (740, 741), coincident, width 2.**
+
+| | 5-series | 7-series |
+|---|---|---|
+| n_i* | 244 | 242 |
+| lift_i | **21 = 3·7** | **15 = 3·5** |
+| Π_i(n_i*) mod 5 | 0 | 3 |
+| Π_i(n_i*) mod 7 | 1 | 0 |
+
+**LCM(21, 15) = 105 exactly.** Prime set = {3, 5, 7}.
+
+### Confirmation cluster — R2_confirm
+
+**Cluster (2299, 2301), coincident, width 3.**
+
+| | 5-series | 7-series |
+|---|---|---|
+| n_i* | 652 | 649 |
+| lift_i | **21 = 3·7** | **15 = 3·5** |
+| Π_i(n_i*) mod 5 | 0 | 4 |
+| Π_i(n_i*) mod 7 | 3 | 0 |
+
+LCM = 105. Prime set = {3, 5, 7}.
+
+### Decision-tree outcome — (α) confirmed
+
+Both R2_first and R2_confirm hit LCM = 105 exactly. The
+one-new-prime-per-escalation heuristic is confirmed at three data
+points (3 → 15 at B2; 15 → 105 at R2_first; reproduced at R2_confirm).
+Mod-7 lockout joins mod-3 and mod-5 lockouts, carried via the
+5-series filler as predicted by the structural argument
+(7 ∈ P_7 → lift_7 coprime to 7).
+
+### Census of 7-in-lift_5 clusters in [201, 10000]
+
+15 clusters in total. All 15 have lift_5 = 21, lift_7 = 15, LCM = 105
+exactly — **no power escalation past 21·15 = 315 observed within
+prime set {3, 5, 7}**, and no jump to higher prime sets within the
+scan range.
+
+Distribution across the inter-regime intervals (between merged regimes):
+
+| Inter-regime D-interval | 7-in-lift_5 count | Notable |
+|---|---|---|
+| [483, 951] (pre (952, 1717)) | 1 | (740, 741) — R2_first |
+| [1718, 2811] (pre (2812, 4231)) | 8 | (2299, 2301) through (2693, 2695) — R2_confirm in here |
+| [4232, 6012] (pre (6013, 8318)) | 3 | (5324, 5326), (5641, 5643), (5694, 5696) |
+| [8319, 10978] (pre (10979, 15045)) | 3 | (9916, 9918), (9930, 9932), (9944, 9946) |
+
+**Structural pattern (flag for CinC): every 7-in-lift_5 event sits
+in the inter-regime interval that precedes a merged regime, and the
+events bunch toward the upper edge of each inter-regime interval (i.e.
+just before merged-regime onset).** The 15 events span four
+inter-regime intervals; zero events appear inside merged regimes
+(by construction — lifts degenerate there) but also zero appear in
+the early portion of any inter-regime interval.
+
+### Stretch — third regime (11-in-lift)
+
+Zero clusters with 11 | lift_5 or 11 | lift_7 in scan range. The
+predicted third regime (LCM = 1155 = 3·5·7·11) is not reached
+within D ≤ 10000. The {3, 5, 7} regime is **broader on the D-axis
+than the {3, 5} regime** — first occurrence at D = 740 vs B2 at
+D = 80, ~9× the onset scale; and no third-regime onset by D = 10000.
+
+### LCM distribution (631 non-degenerate clusters)
+
+| LCM | Prime set | Count |
+|---|---|---|
+| 3 | {3} | 219 |
+| 9 | {3} | 32 |
+| 15 | {3, 5} | 218 |
+| 45 | {3, 5} | 147 |
+| 105 | {3, 5, 7} | 15 |
+| (other) | (other) | 0 |
+
+Prime-set census: {3}: 251 (40%); {3, 5}: 365 (58%); {3, 5, 7}: 15 (2%).
+
+### Decisions made beyond the instruction
+
+- **N_MAX = 3000** chosen as a generous default for D ≤ 10000 (v5.x
+  Task 5 used N_MAX = 4000 reaching D ≈ 14000; 3000 is the
+  matching shoulder).
+- **Merged-regime threshold = width 100**: any cluster wider than 100
+  digit-lengths is classified `asymptotic-merged` and excluded from
+  the 7-in-lift_5 search (cluster-and-gap typology breaks down).
+  Observed widths in scan range: (952, 1717) = 766, (2812, 4231) =
+  1420, (6013, 8318) = 2306 — all well past the threshold.
+- **D_LO_SCAN = 201** so the v4.2 strict-[90, 200] block is preserved
+  intact; no overlap with the v4.2 sample.
+- **Convention A reused verbatim** for n_i* (largest contiguous run
+  min within S_i(C)); mod-15 required-divisor for coincident-7-series,
+  mod-3 elsewhere. Identical to v4.2.
+
+### Flags for CinC
+
+- **Outcome is decisive (α).** Two confirmation data points
+  (R2_first and R2_confirm) both LCM = 105 exactly. Plus 13 further
+  examples in the scan, all LCM = 105. The hypothesis is not
+  near-thresholded — it lands cleanly.
+- **Structural surprise: 7-in-lift_5 events cluster pre-merged-regime.**
+  All 15 events sit in the four inter-regime intervals; within each
+  interval they bunch toward the upper edge (near merged-regime
+  onset). Possible reading: as Π_i densities approach the asymptotic
+  merged-regime threshold, the residual structural slots for
+  coincident-gap clusters become arithmetically constrained, and
+  mod-7 alignment of Π_5 enters the picture. This is interpretation
+  beyond Mr Code's scope — flagged for CinC.
+- **The {3, 5, 7} regime is sparse on D-axis.** Only 15 events in
+  ~10000 D-units; the {3, 5} regime accounts for 365 events. The
+  one-new-prime-per-escalation pattern holds in *kind* but not in
+  *density* — each prime-set regime is sparser than the previous,
+  and the spacing grows.
+- **Third-regime entry not reached within D ≤ 10000.** The predicted
+  factor-1155 (= 3·5·7·11) is consistent with no 11-in-lift
+  observation; if the regime exists, it sits past D = 10000. Followup
+  task could extend N_MAX (Pattern G first) to probe for it.
+
+🐕☕⬡
+
+— Mr Code, 11 May 2026 (Task X — second coincident-gap regime)
