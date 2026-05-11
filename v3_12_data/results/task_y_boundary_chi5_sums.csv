@@ -1,0 +1,5 @@
+series,crossing_type,n_post,digit_length_pre,digit_length_post,S_i_n,is_tie,tie_prev_n,tie_prev_gap,tie_next_n,tie_next_gap,named_scale
+5,staggered,31,59,62,0,1,27,4,33,2,10^61 (e^{α⁻¹})
+5,coincident,39,79,82,-2,0,33,6,41,2,10^80 (e^{184})
+7,staggered,31,61,64,-3,0,26,5,,,10^63
+7,coincident,38,79,82,-4,0,26,12,,,10^80 (e^{184})

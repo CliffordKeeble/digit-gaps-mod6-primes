@@ -2175,3 +2175,93 @@ Mr Code does not weigh Q1(b) against Q1(c) — that's CinC.
 — Mr Code, 10 May 2026 (Paper 199 v1.1, Task 2 — halting at PASS
 gate; all three tasks complete, awaiting CinC review for v1.1
 markdown integration)
+
+---
+
+# Paper 199 v1.1 Task Y — χ₅ running-sum at four mod-6 prime-product boundary crossings
+
+**Mr Code pass — 11 May 2026**
+**Brief:** `v3_12_data/briefs/mr_code_brief_task_y_chi5_boundary_crossings.md`
+(pre-registered at SHA `1e45e02`, 11 May 2026)
+**Script:** `v3_12_data/task_y_boundary_chi5_sums.py`
+**CSV:** `v3_12_data/results/task_y_boundary_chi5_sums.csv`
+
+## Anchor verification
+
+| Anchor | Status |
+|---|---|
+| 5-series first 10 primes match `(5, 11, 17, 23, 29, 41, 47, 53, 59, 71)` | OK |
+| 7-series first 10 primes match `(7, 13, 19, 31, 37, 43, 61, 67, 73, 79)` | OK |
+| `S_5(31) = 0` (Paper 199 §6.3 load-bearing) | **OK** |
+| 7-series first two ties at `n = 4, n = 26` (Paper 199 §4) | OK |
+| Digit-length crossings at the four pre-registered post-steps | OK (all four) |
+
+All five anchors reproduce. Pattern 75 stop-on-fail not triggered.
+
+## Results — `S_i(n)` at the four pre-registered crossings (Definition A)
+
+| series | n | type | scale | D(n−1) → D(n) | S_i(n) | prev tie | next tie |
+|---|---|---|---|---|---|---|---|
+| 5 | 31 | staggered | 10^{61} (e^{α⁻¹}) | 59 → 62 | **0** ★ | n = 27 (−4) | n = 33 (+2) |
+| 5 | 39 | coincident | 10^{80} (e^{184}) | 79 → 82 | −2 | n = 33 (−6) | n = 41 (+2) |
+| 7 | 31 | staggered | 10^{63} | 61 → 64 | −3 | n = 26 (−5) | (none within +20) |
+| 7 | 38 | coincident | 10^{80} (e^{184}) | 79 → 82 | −4 | n = 26 (−12) | (none within +20) |
+
+All four crossings are 3-digit jumps (the product skips three digit-lengths
+in one step). `S_5(31) = 0` is the only zero; the other three are non-zero
+and in the 7-series the next tie does not occur within +20 primes (Paper
+199 §4: only n = 4 and n = 26 in the first 5000).
+
+## Pre-registered decision-tree outcome
+
+**ROW 1: HYPOTHESIS CONFIRMED.** Only `S_5(31) = 0`; the other three
+crossings have non-zero running sums. The χ₅ reset is α-exhaustion-specific:
+it occurs at the 5-series staggered (digital) boundary but not at the
+coincident (lattice-tension) boundary, and not in the 7-series at all.
+Paper 200's load-bearing claim — that the χ₅ reset is a digital-boundary
+signature, not a generic-boundary signature — is supported.
+
+## Findings note
+
+The four pre-registered crossings are structurally homogeneous in one
+respect — all four are 3-digit-length jumps of the running prime product —
+and they are sharply differentiated in another: only the 5-series staggered
+crossing at e^{α⁻¹} produces `S(n) = 0`. The 5-series coincident crossing
+at e^{184} lands at `S = −2` with the nearest ties two and six steps away,
+straddling but not hitting the crossing step. The two 7-series crossings
+land at `S = −3` and `S = −4`, deep inside the persistent-negative drift
+the 7-series occupies after n = 26 (no tie within +20 in either case).
+
+The pattern matches the pre-registration: the χ₅ reset is a property of
+the *digital* boundary in the *5-series*, not of the digit-length jump as
+a generic structural event. Since coincident boundaries (where 5-series
+and 7-series jump at the same digit-length) do not reset, and 7-series
+boundaries of either type do not reset, the reset cannot be reduced to
+"the running prime product crossed a power-of-ten." Something more
+specific — the conjectured α-exhaustion event at e^{α⁻¹} in the mod-5
+carrier — is doing the work.
+
+## Flags for CinC
+
+- **Anchor verification PASS, pre-registered prediction CONFIRMED (Row 1).**
+- **3-digit-jump homogeneity worth noting.** All four crossings skip
+  three digit-lengths in a single step; the differentiation between the
+  one tie and three non-ties is not driven by a structural property of
+  the jump (all four are 3-digit jumps), strengthening the reading that
+  the reset is mod-5-carrier-specific rather than product-shape-specific.
+- **7-series tie-locality.** The two 7-series crossings are at `S = −3`
+  and `S = −4`, and the next tie after n = 26 is more than 20 steps away
+  (consistent with Paper 199 §4's report of only two ties in the first
+  5000 primes). The 7-series isn't merely "non-zero at the crossing" —
+  it's deep inside drift, with no nearby tie at all.
+- **Digit-length anchor naming.** The 7-series staggered crossing was
+  named "10^{63}" in the brief; the script accepted `[≤62, ≥63]` as the
+  threshold (digit-length ≥ 64 in base-10 means the product is ≥ 10^{63}).
+  The observed transition is D 61 → D 64, so the post-crossing product
+  is in `[10^{63}, 10^{64})`. Consistent with the brief's "10^{63}" scale.
+
+🐕☕⬡
+
+— Mr Code, 11 May 2026 (Task Y — boundary χ₅ running-sum behaviour;
+Row 1 hypothesis confirmed; awaiting CinC review for Paper 200 integration)
+
