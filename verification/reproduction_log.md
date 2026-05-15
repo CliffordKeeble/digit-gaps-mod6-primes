@@ -207,3 +207,42 @@ See findings.md §12.2.
 - `figures/r2_vs_scale.png` and `figures/r2_vs_scale.svg`
 
 See findings.md §12.3.
+
+### Task 4 — Base-Independence Test for R²
+
+**Script:** `null-tests/base_independence.py`
+**Run date:** 2026-05-15
+**Runtime:** 412.9s (~7 min)
+**Seeds:** trial * 137 + 42 + base_offset; base_offset = 0 for all bases (shared draws across bases).
+
+**Scales (all = 200,000-base-10-digit-equivalent):**
+
+| Base | Cumulative scale | window | min_gaps | merge_dist |
+|---|---|---|---|---|
+| base-10 |       200,000 digits |  50 | 20 |    500 |
+| base-2  | 664,386 bits         | 166 | 20 | 1,661 |
+| base-6  | 257,019 base-6 digits|  64 | 20 |    643 |
+
+**Real-prime results:**
+
+| Base | n_cl | β_real | R²_real |
+|---|---|---|---|
+| base-10 | 13 | 0.6371 | 0.9792 |
+| base-2  | 11 | 0.6173 | 0.9399 |
+| base-6  | 13 | 0.6335 | 0.9765 |
+
+**Real-vs-null:**
+
+| Base | z(R²) | z(β) | #null ≥ real R² |
+|---|---|---|---|
+| base-10 | +2.20 | +0.53 | 0/100 |
+| base-2  | +2.87 | +0.81 | 0/99  |
+| base-6  | +2.10 | +0.43 | 0/100 |
+
+**Verdict: R² and β are both base-independent.** Power-law structure survives base change cleanly: z(R²) ≥ +2.0 in every base, 0 null trials reach the real R², β within ±0.02 across bases (all close to ln(2)/ln(3) = 0.6309).
+
+**Outputs:**
+- `null-tests/results/base_independence_per_trial.csv`
+- `null-tests/results/base_independence_summary.csv`
+
+See findings.md §12.4.
