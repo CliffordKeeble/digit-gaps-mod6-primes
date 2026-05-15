@@ -126,3 +126,26 @@ Determinism: re-running with the same seed scheme produces identical numbers (ve
 **Verdict:** NOT PRE-REGISTERED. §5.3 paper text explicitly labels the alternation statistic "(Observational, Pending Null Test)" with self-disclaimed pareidolia risk. No separate prediction commit exists for §5.3 prior to its null test. The 44% descriptive statistic was already computed when the repo was scaffolded (it appears in the paper text from commit zero). Pattern 19/27 pre-reg practice began 2026-05-10, ~4 weeks after §5.3 was written.
 
 See findings.md §12.5.
+
+### Task 6 — §6.2 Cluster-Count Direction Pre-Registration
+
+**Type:** Git archaeology, no compute.
+**Run date:** 2026-05-15
+
+| Artefact | Commit | Date (UTC+1) |
+|---|---|---|
+| Earliest test definition (`full_null_model.py`) | `74b18be` | 2026-04-13 10:45:51 |
+| Earliest paper specification (§6.2 text + z = -2.04 result) | `74b18be` | 2026-04-13 10:45:51 |
+| Earliest reproduction (reproduction_log.md verifying z = -2.04) | `858b97e` | 2026-04-13 10:49:57 |
+| First pre-reg commit anywhere in repo | `06d7e6e` / `7fa5e38` | 2026-05-10 15:57:47 |
+
+**Verdict:** DIRECTION NOT PRE-COMMITTED. Two-tailed p-value required for v2.7.
+
+Corrected p-values (key numbers):
+- v2.3 headline (10 trials): z = -2.04, one-tailed p = 0.0207, **two-tailed p = 0.0414** (significant at α=0.05).
+- 100-trial follow-up (findings §7.2): z = -1.37, one-tailed p = 0.0853, **two-tailed p = 0.1707** (NOT significant at α=0.05).
+- 100-trial empirical: 4/100 trials ≤ 13 clusters; **two-tailed empirical p ≈ 0.08** (NOT significant at α=0.05).
+
+With the 100-trial follow-up applied two-tailed, the cluster-count separation is no longer significant. The R² result (findings §7.3, 0/100 null trials reach R² ≥ 0.979) is robust to direction and remains the cleanest surviving prime-specific claim.
+
+See findings.md §12.6.

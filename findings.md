@@ -813,8 +813,47 @@ No separate prediction commit ("we predict the alternation will survive null wit
 
 ### 12.6 §6.2 Cluster-Count Direction Pre-Registration (Task 6)
 
-*Pending — same branch, next commit.*
+**Question:** Was the direction of the §6.2 cluster-count test pre-committed (one-tailed), or only a two-sided "different from null" test (two-tailed)?
+
+**Method.** Git archaeology — find the earliest commit specifying the cluster-count test including any directional prediction, and the first computation date.
+
+**Evidence.**
+
+| Artefact | Commit | Date (UTC+1) | Note |
+|---|---|---|---|
+| Earliest test definition (script) | `74b18be` | 2026-04-13 10:45:51 | `verification/full_null_model.py` — `find_clusters_fast` + computes z over null trials with no directional flag (two-sided by construction). Extracted from v2.0 PDF appendix. |
+| Earliest paper-text specification | `74b18be` | 2026-04-13 10:45:51 | Same commit; `paper/Digit_Gaps_Mod6_v2_3.md` §6.2 reports the test *and* its result (z = -2.04, "Real primes produce fewer, larger clusters") in one commit. |
+| First computation | `74b18be` | 2026-04-13 10:45:51 | The result z = -2.04 was already in the paper text at scaffold time; running `full_null_model.py` reproduces it (verified `858b97e` 2026-04-13 10:49:57 in `reproduction_log.md`). |
+| First pre-registration commit anywhere | `06d7e6e` / `7fa5e38` | 2026-05-10 15:57:47 | Pattern 19/27 practice begins ~4 weeks after §6.2 was written. |
+
+**Specification, computation, and result all arrive in the same commit.** The script defines a two-sided z-score; the paper text adds directional prose ("fewer, larger") *after* observing the result. There is no separate commit pre-committing the direction "we predict z < 0" before the test was run. The directional language in §6.2 is post-hoc descriptive, not a pre-registered one-tailed hypothesis.
+
+**Verdict: DIRECTION NOT PRE-COMMITTED. Two-tailed p-value required for v2.7.**
+
+**Corrected p-values.**
+
+| Source | n_trials | z (cluster count) | One-tailed p | Two-tailed p | Significant at α=0.05 (two-tailed)? |
+|---|---|---|---|---|---|
+| v2.3 §6.2 (paper headline) | 10 | -2.04 | 0.0207 | **0.0414** | Yes — just |
+| 100-trial follow-up (findings §7.2) | 100 | -1.37 | 0.0853 | **0.1707** | **No** |
+| 100-trial empirical (findings §7.2) | 100 | (4/100 ≤ real, one-tailed) | 0.04 | ≈ 0.08* | **No** |
+
+*Two-tailed empirical: count of |null_count − null_mean| ≥ |13 − 28.12| = 15.12, i.e. null trials with count ≤ 13 or count ≥ 43.24. Lower bound 0.08 from doubling the one-tailed tail (upper tail mass is non-zero given null max 60); exact two-tailed empirical can be recomputed from `null-tests/results/cluster_count_100_trials.csv` if v2.7 needs the precise number.
+
+**Implications for v2.7.**
+
+1. The v2.3/v2.6 headline z = -2.04 should not be reported as if from a one-tailed pre-registered test. Either:
+   - Report two-tailed p = 0.0414 alongside z = -2.04 and note the 10-trial std is an underestimate (per findings §7.2), or
+   - Lead with the 100-trial follow-up (z = -1.37, two-tailed p ≈ 0.17, empirical p ≈ 0.08).
+2. With the 100-trial follow-up applied two-tailed, the cluster-count separation is **no longer statistically significant at α = 0.05**.
+3. The R² result (findings §7.3) remains the cleanest surviving prime-specific claim — 0/100 null trials reach R² ≥ 0.979, robust to direction (R² is bounded above by 1, so the directionality question is structural rather than convention-dependent).
+
+**Recommended §6.2 framing for v2.7.**
+- Replace z = -2.04 headline with the 100-trial estimate.
+- Quote two-tailed p (≈ 0.17 from |z|, ≈ 0.08 empirical) rather than one-tailed p.
+- Re-position the cluster-count separation as suggestive/marginal, not as a primary headline.
+- Promote the R² result (§7.3) to the headline prime-specific finding instead; it survives the direction test (R² is one-sided by construction) and is robust to trial count.
 
 ---
 
-*Mr Code, May 12-15 2026 (Section 12 in progress — Tasks 1, 5 complete; Tasks 2, 3, 4, 6 pending)*
+*Mr Code, May 12-15 2026 (Section 12 in progress — Tasks 1, 5, 6 complete; Tasks 2, 3, 4 pending)*
