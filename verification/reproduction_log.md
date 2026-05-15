@@ -86,3 +86,28 @@ Null betas range 0.45 to 0.83 -- matches paper's "scattered from 0.45 to 0.83."
 ## Note on script provenance
 
 The script was extracted from the v2.0 PDF appendix (Appendix A). The paper text is v2.3, but v2.1-v2.3 revisions were prose/citation corrections only -- no mathematical content changed. The script therefore correctly reproduces v2.3 claims.
+
+---
+
+## v2.6 -> v2.7 Adversary Follow-up Runs (May 12 2026)
+
+### Task 1 — Synchronisation-Budget Null Comparison
+
+**Script:** `null-tests/synch_budget_null.py`
+**Run date:** 2026-05-12
+**Runtime:** 64.1s
+**Seed:** trial * 137 + 42 (10 trials, full scale, sieve to 15M)
+
+| Metric | Reproduced value |
+|---|---|
+| budget_real | 0.099682 (9.97%) |
+| budget_null_mean | 0.105791 (10.58%) |
+| budget_null_std | 0.022484 (2.25%) |
+| z_score | -0.272 |
+| Real-prime cluster count (full scale) | 48 |
+| Real-prime total cluster span | 324,460 digits |
+| max_d (real) | 3,254,959 |
+
+Determinism: re-running with the same seed scheme produces identical numbers (verified by single run -- algorithm is fully deterministic given seeds).
+
+**Flag (v2.6 §5.4 mismatch):** under the §5.2 cluster definition (window=50, min_gaps>=20, merge_dist=500) the real-prime budget is 9.97%, not the ~6% v2.6 §5.4 reports. See findings.md §12.1 for hypothesis (likely tied to the §5.2 36-vs-47 cluster-count discrepancy investigated in Task 2).

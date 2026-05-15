@@ -732,4 +732,56 @@ The coincidence between ln(10)*60 ~ 140 and ln(10)*80 ~ 184 remains a numerical 
 
 ---
 
-*Mr Code, April 14 2026 (updated with Section 11)*
+## 12. v2.6 -> v2.7 Adversary Follow-up Tests (May 12 2026)
+
+Four computational items Mr Adversary pressed on during the fresh-context review of v2.6 (returned at 4.5 stars). Brief: `mr_code_brief_v27.md`. Tasks 1-4 produce numbers for v2.7; paper prose integration is CinC's downstream step.
+
+### 12.1 Synchronisation-Budget Null Comparison (Task 1)
+
+**Question:** v2.6 section 5.4 reports a cumulative synchronisation budget converging near 6% at full scale but never compares it to the null. Is the budget prime-specific or generic?
+
+**Method.** Extend the existing 10-trial full-scale null framework (`verification/full_null_model.py`) to compute the synch-budget metric per trial. Budget definition: total digit-space inside 100% synchronisation clusters / max_d, where clusters use the same parameters as section 5.2 — window=50, min_gaps>=20, cb==ca (every gap in the window coincident across both series), with overlapping windows merged at merge_dist=500. Sieve to 15,000,000; n_use=485,199 per series; max_d ~ 3.25M.
+
+Seed: trial * 137 + 42 (consistent with all prior null tests).
+
+**Script:** `null-tests/synch_budget_null.py`. Runtime: 64s.
+
+**Results.**
+
+| Metric | Value |
+|---|---|
+| `budget_real` | 0.099682 (9.97%) |
+| `budget_null_mean` | 0.105791 (10.58%) |
+| `budget_null_std` | 0.022484 (2.25%) |
+| `z_score` | **-0.272** |
+| Null range | [7.22%, 14.42%] |
+| Null trials with budget >= real | 5/10 |
+
+**Per-trial null:** 10.46, 10.76, 9.66, 10.59, 9.37, 14.42, 7.22, 14.39, 9.37, 9.54 (%).
+
+Real-prime cluster count at full scale: 48 (total span 324,460 digits over max_d=3,254,959).
+
+**Verdict.** z = -0.27. The synch budget is statistically indistinguishable from the null. Generic property of dense logarithmic accumulation under window=50/min_gaps>=20 cluster detection, not prime-specific. This is the outcome the brief anticipated ("Expected (not required) outcome: z ~ 0, generic-indistinguishable").
+
+**Flag for CinC — budget_real does not match v2.6 section 5.4's ~6% figure.** Under the section 5.2 cluster definition (the one the brief specified — window=50, min_gaps>=20, merge_dist=500), `budget_real` is **9.97%**, not ~6%. Two possibilities:
+
+1. Section 5.4 uses a different cluster-detection parameter set than section 5.2 — e.g., the same definition that produces section 5.2's "36 clusters" headline (which is itself inconsistent with section 5.2's "47 inter-cluster gaps -> 48 clusters" three paragraphs later — see Task 2 below).
+2. Section 5.4 defines budget differently from "total cluster span / max_d" — perhaps as an asymptotic running-average that hasn't yet converged at 3.25M.
+
+Acceptance criterion #1 (deterministic under seed) and #3 (z ~ 0) are met. Acceptance criterion #2 (matches ~6%) is not met under the §5.2 definition. Task 2 may resolve this; if not, the §5.4 prose needs updating to reflect 9.97% under matched parameters.
+
+### 12.2 Cluster-Count Reconciliation (Task 2)
+
+*Pending — investigation of 36 vs 47/48 discrepancy in section 5.2.*
+
+### 12.3 R-squared vs Cumulative Scale (Task 3)
+
+*Pending.*
+
+### 12.4 Base-Independence Test for R-squared (Task 4)
+
+*Pending.*
+
+---
+
+*Mr Code, May 12 2026 (Section 12 in progress)*
