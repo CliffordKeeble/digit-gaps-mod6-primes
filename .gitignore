@@ -7,3 +7,6 @@ build/
 .env
 .venv/
 venv/
+
+# Large script-regenerable outputs (deterministic, regen via the originating script)
+null-tests/results/factor_escalation_search.csv
