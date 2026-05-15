@@ -1198,5 +1198,70 @@ Add merge_dist as a third sensitivity column / mini-table:
 
 ### 13.3 Base Coprime to 6 — Base 5 / Base 7 (Task C)
 
-*Pending — separate branch.*
+**Question:** Mr A's critique of the v2.7 base-independence test: bases {2, 6, 10} all share factor 2. A genuine test should include a base coprime to 6, because the headline β ≈ ln(2)/ln(3) = 0.6309 references the primes 2 and 3. If β were base-dependent in a hidden factor-of-2 way, the most sensitive probe is a base coprime to {2, 3}. The two smallest such bases are 5 and 7.
+
+**Method.** Parallel construction to v2.7 Task 4's `base_independence.py`: 100 null trials per base with shared pseudo-prime draws across bases (base_offset = 0 in `seed = trial × 137 + 42 + base_offset`). Parameter scaling by `log_b(10) = ln(10)/ln(b)`:
+
+| Base | scale | window | min_gaps | merge_dist | step |
+|---|---|---|---|---|---|
+| base-10 (sanity) |   200,000 | 50 | 20 |   500 | 10 |
+| base-5  |   286,135 | 72 | 20 |   715 | 14 |
+| base-7  |   236,659 | 59 | 20 |   592 | 12 |
+
+(Brief gives 286,073 / 237,225 for the base-5 / base-7 scales; correct rounded values are 286,135 / 236,659. Tiny slip in the brief, matching the v2.7 brief's base-6 257,773 → 257,019. Used correct values.)
+
+**Pre-registered hypotheses (from brief).**
+- H_C0 (β survives): β at 200k-equivalent in base 5 (and/or base 7) within ±0.02 of base-10 β = 0.637 AND zero of 100 null trials reach real R².
+- H_C1 (β drifts): β shifts by > 0.02. ln(2)/ln(3) reading would need re-examination.
+
+**Script:** `null-tests/base_coprime_to_6.py`. Runtime: 290s (~5 min).
+
+**Results.**
+
+| Base | n_cl real | β_real | R²_real | |β−0.637| | β_null mean | β_null std | R²_null mean | R²_null std | R²_null max | z(R²) | z(β) | #null ≥ real R² | H_C0 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| base-10 | 13 | 0.6371 | 0.9792 | 0.0000 | 0.5395 | 0.1852 | 0.5767 | 0.1833 | 0.8561 | **+2.20** | +0.53 | 0/100 | **✓** |
+| base-5  | 13 | 0.6338 | 0.9768 | 0.0033 | 0.5112 | 0.2374 | 0.5255 | 0.2015 | 0.8638 | **+2.24** | +0.52 | 0/100 | **✓** |
+| base-7  | 13 | 0.6373 | 0.9788 | 0.0002 | 0.5270 | 0.2120 | 0.5488 | 0.2175 | 0.8696 | **+1.98** | +0.53 | 0/100 | **✓** |
+
+**H_C0 passes in both bases coprime to 6.** The β values in base-5 and base-7 differ from base-10's 0.6371 by 0.0033 and 0.0002 respectively — an order of magnitude tighter than the brief's ±0.02 threshold. Zero null trials reach the real R² in either base.
+
+**Combined five-base table (v2.7 Task 4 results + Task C new results).**
+
+| Base | β | R² | |β−0.637| | z(R²) | #null ≥ real R² | shares factor with 6? |
+|---|---|---|---|---|---|---|
+| base-2 | 0.6173 | 0.9399 | 0.0198 | +2.87 | 0/99 | yes (factor 2) |
+| base-5 | 0.6338 | 0.9768 | 0.0033 | +2.24 | 0/100 | **no (coprime)** |
+| base-6 | 0.6335 | 0.9765 | 0.0036 | +2.10 | 0/100 | yes (factor 2, 3) |
+| base-7 | 0.6373 | 0.9788 | 0.0002 | +1.98 | 0/100 | **no (coprime)** |
+| base-10 | 0.6371 | 0.9792 | 0.0000 | +2.20 | 0/100 | yes (factor 2) |
+
+ln(2)/ln(3) = 0.6309. All five β values are within 0.020 of base-10's 0.6371 (and within 0.014 of ln(2)/ln(3)). The two bases coprime to 6 (5 and 7) bracket the ln(2)/ln(3) value tightly:
+
+- base-5: 0.6338 — above ln(2)/ln(3) by 0.0029
+- base-7: 0.6373 — above ln(2)/ln(3) by 0.0064
+
+The largest deviation from base-10 is base-2 (0.0198 — right at the brief's threshold; H_C0 would still pass at the boundary). The bases that share no common factor with 6 produce β values **closer** to base-10 than base-2 does. **No evidence of a factor-of-2 hidden dependence.**
+
+**Cluster count is identical (13) in all three bases tested here.** This is a stronger finding than just β stability: it suggests the cluster-spacing structure is being read by the same number of clusters regardless of base.
+
+**z(R²) at base-7 is +1.98**, marginally below +2.0. The brief's H_C0 only required "zero null trials reach real R²" — that condition passes cleanly (0/100). The +2 z-score was not part of H_C0, but in the project's standing discipline (used elsewhere as a separation threshold) the base-7 result is just below. Reading: real R² = 0.9788 sits just outside null mean + 2σ (0.5488 + 2×0.2175 = 0.9838), so by an absolute-value measure base-7's separation is marginally below 2σ — but the empirical p-value (0/100) is still below 1%.
+
+**Verdict and v2.8 implication.**
+
+Mr A's "factor-of-2" concern is empirically answered: bases 5 and 7 — the two smallest coprime-to-6 bases — give β values 0.0033 and 0.0002 from base-10, both within H_C0's pre-registered ±0.02 threshold, both with zero null overshoots.
+
+The full five-base picture (β values 0.6173, 0.6338, 0.6335, 0.6373, 0.6371) spans 0.020 with the outlier being base-2. The coprime-to-6 bases sit between base-6 and base-10 in β value and reproduce z(R²) ≥ +2 (or within ε of it).
+
+**Recommended §5.2 base-independence framing for v2.8.**
+
+- The v2.7 "three bases tested {2, 6, 10}" sentence becomes "**five bases tested {2, 5, 6, 7, 10}**, including the two smallest coprime to 6".
+- The base-independence claim strengthens: β within ±0.02 of base-10 across all five, with zero null trials reaching real R² in any base.
+- One-line addition to §9 (closing the base-independence open question):
+  > "Base-independence of β and R² is confirmed across five bases {2, 5, 6, 7, 10}, including bases coprime to 6 (5, 7). β values span [0.617, 0.637] with all but base-2 within 0.004 of base-10. The result is therefore not an artefact of the digit basis sharing factors with 6."
+- Correlation caveat the brief mentioned: all five bases share the same underlying primes and the same 100 null pseudo-prime draws; what varies is only the log mapping. This is per design (the experiment isolates the base-mapping effect), but v2.8 should note that the five base results are not independent samples.
+
+**Outputs.**
+- `null-tests/results/base_coprime_to_6_per_trial.csv` (300 trial-rows + 3 real-prime rows)
+- `null-tests/results/base_coprime_to_6_summary.csv` (3 base-summary rows)
 

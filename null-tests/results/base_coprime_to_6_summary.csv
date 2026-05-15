@@ -1,0 +1,4 @@
+base,log_base,scale,window,min_gaps,merge_dist,n_clusters_real,beta_real,r2_real,n_clusters_null_mean,n_clusters_null_std,beta_null_mean,beta_null_std,r2_null_mean,r2_null_std,r2_null_min,r2_null_max,z_r2,z_beta,n_trials_fit,n_null_ge_real_r2,beta_drift_from_base10,h_c0_passes
+base-10,10,200000,50,20,500,13,0.637100,0.979221,28.12,11.02,0.539529,0.185211,0.576676,0.183265,0.016244,0.856124,2.196517,0.526808,100,0,0.000000,True
+base-5,5,286135,72,20,715,13,0.633810,0.976768,26.09,10.11,0.511213,0.236216,0.525534,0.201497,0.002148,0.936167,2.239406,0.519006,100,0,0.003290,True
+base-7,7,236659,59,20,592,13,0.637291,0.978780,27.93,10.84,0.527013,0.207477,0.548758,0.217470,0.034113,0.879443,1.977384,0.531516,100,0,0.000191,True
