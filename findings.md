@@ -929,9 +929,69 @@ The base-independence claim can be promoted from open question to confirmed for 
 
 **Methodology note.** As with Task 3, shared draws across bases (base_offset = 0) provide correlated per-base R² values, which is the natural view for isolating the base-mapping effect. Per-base z-scores are unaffected by the shared-draw choice.
 
+### 12.7 Factor-105 Escalation Search (Task 9, optional)
+
+**Question:** v2.6 §4.2 names a heuristic — that the required factor set S_d expands from {3} (at 10⁶¹) to {3, 5} (at 10⁸⁰) and would at some larger coincident-gap scale expand to {3, 5, 7} with the 7-series needing factor 105 = 3 × 5 × 7. The paper notes the hypothesis is cheap to refute and has not been searched. Does the factor-105 escalation occur?
+
+**Method.** For every coincident-gap run at d_start > 80 (beyond the §4.2 anchor): compute the boundary indices n_5 and n_7 (last index of each series with digit-length < d_start), and the mod-state of Π_a at those boundaries mod {2, 3, 5, 7, 11, 13}. Then compute the required factor under three candidate sets — S = {3}, {3, 5}, {3, 5, 7} — per the v2.6 §4 Factor Requirement definition: k_a(S) = product of primes p ∈ S such that p ∤ Π_a(n).
+
+**Script:** `null-tests/factor_escalation_search.py`. Runtime: 11.4s. No null trials; deterministic computation over real-prime cumulative products.
+
+**Anchor cross-check (v2.6 §4.2 anchor at d = 80-81):**
+
+| Series | n at boundary | digit-length | mod 3 | mod 5 | mod 7 | k(S={3}) | k(S={3,5}) | k(S={3,5,7}) |
+|---|---|---|---|---|---|---|---|---|
+| 5 | 38 | 79 | 1 | 0 | 5 | 3 | 3 | 21 |
+| 7 | 37 | 79 | 1 | 2 | 0 | 3 | 15 | 15 |
+
+The 5-series factor under S={3,5} is 3 (paper §4.2: 3 ✓); the 7-series factor under S={3,5} is 15 (paper §4.2: 15 ✓). Both match the paper's anchor calculation exactly.
+
+**Search result.**
+
+| Required set | Series | Factor distribution across 753,930 coincident-gap runs (d_start > 80) |
+|---|---|---|
+| S = {3} | 5 | {3: 753,930} — every gap, factor 3 |
+| S = {3} | 7 | {3: 753,930} — every gap, factor 3 |
+| S = {3, 5} | 5 | {3: 753,930} — every gap, factor 3 |
+| S = {3, 5} | 7 | {15: 753,930} — every gap, factor 15 |
+| S = {3, 5, 7} | 5 | {21: 753,930} — every gap, factor 21 = 3 × 7 |
+| S = {3, 5, 7} | 7 | {15: 753,930} — every gap, factor 15 = 3 × 5 |
+
+**Zero gap runs produce factor 105 for either series.** The distribution is completely degenerate — every gap gives the same factor at each candidate required set. This includes the very large coincident-gap scales (some runs span thousands of consecutive digit positions; max d_start across the data is ~3.25M).
+
+**Why the result is degenerate — structural refutation, not just empirical absence.**
+
+The script verified four mod-state invariants computationally at every index n ≥ 1 in both series:
+
+- Π_5(n) ≡ 0 (mod 5) for all n ≥ 1 ✓ (because 5 ∈ p_5)
+- Π_5(n) ≢ 0 (mod 7) for all n ≥ 1 ✓ (because no prime in p_5 is divisible by 7)
+- Π_7(n) ≡ 0 (mod 7) for all n ≥ 1 ✓ (because 7 ∈ p_7)
+- Π_7(n) ≢ 0 (mod 5) for all n ≥ 1 ✓ (because no prime in p_7 is divisible by 5)
+
+Together with §3's mod-3 exclusion (Π_5, Π_7 ≢ 0 mod 3 for all n ≥ 1, since neither residue class contains 3), these invariants pin the factor pattern under any S ⊆ {3, 5, 7}:
+
+- **k_5(S) = (3 if 3 ∈ S) × (7 if 7 ∈ S)** — never includes 5, so k_5 ∈ {1, 3, 7, 21}.
+- **k_7(S) = (3 if 3 ∈ S) × (5 if 5 ∈ S)** — never includes 7, so k_7 ∈ {1, 3, 5, 15}.
+
+Factor 105 = 3 × 5 × 7 requires Π_a(n) ≢ 0 modulo all three of {3, 5, 7}. For the 5-series, Π_5 ≡ 0 (mod 5) excludes this. For the 7-series, Π_7 ≡ 0 (mod 7) excludes this. **Factor 105 is impossible for either series at any cumulative scale, not merely unobserved up to 3.25M digits.**
+
+**Verdict: no escalation to factor 105 found within 3.25M digits — and impossible at any scale by class-membership invariants.**
+
+**For v2.7 — §4.2 / §9 update.**
+
+The §4.2 heuristic and §9 open question can be closed cleanly. Suggested rewrite:
+
+> "The required factor set under the canonical 5-series and 7-series mod-6 classes is bounded: k_5(S) lies in {1, 3, 7, 21} and k_7(S) lies in {1, 3, 5, 15} for any required set S ⊆ {3, 5, 7}, with the actual factor at each coincident-gap boundary determined entirely by mod-3 state (which is non-zero by class-membership, so factor 3 is always required). Factor 105 = 3 × 5 × 7 cannot arise in either series, because the characteristic small prime of each class (5 ∈ p_5, 7 ∈ p_7) always divides Π_a, leaving k_a coprime to it. The 'expansion to {3, 5, 7} with factor 105' heuristic of v2.6 §4.2 is refuted structurally, not just empirically: it is incompatible with the residue-class definition of the two series."
+
+This sharpens the §3 mod-3 exclusion property into a more general "class-membership exclusion" statement:
+
+> "For each mod-6 prime-class p_a (a ∈ {5, 7}): Π_a(n) is divisible by a (the class label) for all n ≥ 1, and by no prime in the complementary class for any n. Consequently the Factor Requirement under any S ⊆ {3, a, 7-a} is structurally fixed."
+
+**Note on the §4.2 heuristic.** The original heuristic — that the required set 'should' expand from {3, 5} to {3, 5, 7} at large scales — implicitly assumed the required set tracks the small-prime structure of an underlying *generic* cumulative product. But Π_5 and Π_7 are not generic: they are *constrained* products restricted to a single mod-6 residue class each, and that constraint reaches all the way down to which small primes can appear as factors. The §4.2 heuristic was a reasonable guess from outside the constraint; the constraint refutes it cleanly.
+
 ---
 
-*Mr Code, May 12-15 2026 (Section 12 complete — Tasks 1, 2, 3, 4, 5, 6; Task 9 optional, pending budget)*
+*Mr Code, May 12-15 2026 (Section 12 complete — all six required tasks + optional Task 9; ready for CinC integration into v2.7)**Mr Code, May 12-15 2026 (Section 12 complete — Tasks 1, 2, 3, 4, 5, 6; Task 9 optional, pending budget)*
 
 ### 12.5 §5.3 Alternation Statistic Pre-Registration (Task 5)
 

@@ -246,3 +246,38 @@ See findings.md §12.3.
 - `null-tests/results/base_independence_summary.csv`
 
 See findings.md §12.4.
+
+### Task 9 (optional) — Factor-105 Escalation Search
+
+**Script:** `null-tests/factor_escalation_search.py`
+**Run date:** 2026-05-15
+**Runtime:** 11.4s
+**Real primes only**, deterministic computation over cumulative mod-arrays.
+
+**Anchor cross-check (§4.2 coincident gap at d=80-81):**
+- 5-series: n=38, digit-length 79, mod 3=1, mod 5=0, mod 7=5 → k(S={3,5}) = 3  (paper: 3 ✓)
+- 7-series: n=37, digit-length 79, mod 3=1, mod 5=2, mod 7=0 → k(S={3,5}) = 15 (paper: 15 ✓)
+
+**Search at d_start > 80 (753,930 coincident-gap runs):**
+
+| Required set | 5-series factor | 7-series factor |
+|---|---|---|
+| S = {3} | {3: 753,930} | {3: 753,930} |
+| S = {3, 5} | {3: 753,930} | {15: 753,930} |
+| S = {3, 5, 7} | {21: 753,930} | {15: 753,930} |
+
+**Zero gap runs produce factor 105 for either series.** Distribution is completely degenerate — every gap gives the same factor at each candidate required set.
+
+**Structural verification (script confirmed at every n ≥ 1):**
+- Π_5(n) ≡ 0 (mod 5) — because 5 ∈ p_5
+- Π_5(n) ≢ 0 (mod 7) — no prime in p_5 divisible by 7
+- Π_7(n) ≡ 0 (mod 7) — because 7 ∈ p_7
+- Π_7(n) ≢ 0 (mod 5) — no prime in p_7 divisible by 5
+
+**Verdict:** No factor-105 escalation within 3.25M digits, **and structurally impossible at any scale** by class-membership invariants. k_5(S) ∈ {1, 3, 7, 21} and k_7(S) ∈ {1, 3, 5, 15} for any S ⊆ {3, 5, 7}. Factor 105 cannot arise for either series.
+
+**Outputs:**
+- `null-tests/results/factor_escalation_summary.csv` (aggregate factor distribution, committed)
+- `null-tests/results/factor_escalation_search.csv` (per-gap data, ~50 MB, **NOT committed** — regenerable by re-running the script in ~11s; deterministic, no randomness involved)
+
+See findings.md §12.7.
