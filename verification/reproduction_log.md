@@ -394,3 +394,42 @@ Bases coprime to 6 give β CLOSER to base-10 than base-2 does. No factor-of-2 de
 - `null-tests/results/base_coprime_to_6_summary.csv` (3 base-summary rows)
 
 See findings.md §13.3.
+
+---
+
+## v2.9 -> v2.10 Adversary Follow-up (May 15 2026)
+
+Pre-registration: `briefs/v2_9_to_v2_10_brief.md`.
+
+### Task D — Residuals of 200k Power-Law Fit
+
+**Script:** `null-tests/residuals_analysis.py`
+**Run date:** 2026-05-15
+**Runtime:** 6.4s
+**Real primes only** (no null trials); deterministic.
+**Params:** window=50, min_gaps=20, merge_dist=500, scale=200,000.
+
+**Fit reproduction (sanity-check against paper §5.2):**
+- β = 0.6371 (paper: 0.637, exact match)
+- se(β) = 0.0293 (paper: 0.029, exact match)
+- R² = 0.9792 (paper: 0.979, exact match)
+- n = 12 pairs (paper: 12, exact match)
+- a = 15.85 (paper: 18.2, **discrepancy** — convention difference, β/R² invariant; CinC check recommended)
+
+**Diagnostics on 12 residuals:**
+
+| Test | Result | H_D0 threshold | Pass? |
+|---|---|---|---|
+| Durbin-Watson | DW = 2.4605 | [1.5, 2.5] | yes |
+| Spearman ρ vs centre | ρ = −0.154, p = 0.633 | p > 0.05 | yes |
+| Lomb-Scargle peak | 0.853 | < 8.27 (95% threshold) | yes |
+| Sign changes | 8/11 (expected 5.5) | informative only | — |
+
+**Verdict: H_D0 (white noise) — all three pre-registered tests pass.**
+
+**Outputs:**
+- `null-tests/results/residuals_200k.csv` (12 per-point rows)
+- `null-tests/results/residuals_diagnostics.txt` (full diagnostics)
+- `figures/residuals_200k.png` + `.svg`
+
+See findings.md §14.1.

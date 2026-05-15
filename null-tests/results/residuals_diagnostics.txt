@@ -1,0 +1,34 @@
+Residuals diagnostics — 200k power-law fit (v2.10 Task D)
+==========================================================
+
+Source: real mod-6 primes, sieve 15,000,000, scale 200,000,
+        window=50, min_gaps=20, merge_dist=500,
+        step=10.
+
+Fit:
+  a    = 15.850649   (paper: 18.2)
+  beta = 0.637100   (paper: 0.637)
+  se(beta) = 0.029348
+  R² = 0.979221   (paper: 0.979)
+  n  = 12 (centre, spacing) pairs
+
+Sign pattern:
+  Signs: - + - - + - + - - + - -
+  Sign changes: 8  (expected under white noise: 5.5)
+
+Spearman ρ (residual vs centre):
+  ρ = -0.153846
+  p = 0.633091
+  H_D0 (p > 0.05): True
+
+Durbin-Watson:
+  DW = 2.460474
+  H_D0 range [1.5, 2.5]: True
+
+Lomb-Scargle:
+  Top peak: freq = 7.738676, power = 0.853334
+  95% threshold (Scargle, M=200): 8.268641
+  Significant peak: False
+  H_D0 (no significant peak): True
+
+Verdict: H_D0 (white noise)

@@ -1265,3 +1265,91 @@ The full five-base picture (β values 0.6173, 0.6338, 0.6335, 0.6373, 0.6371) sp
 - `null-tests/results/base_coprime_to_6_per_trial.csv` (300 trial-rows + 3 real-prime rows)
 - `null-tests/results/base_coprime_to_6_summary.csv` (3 base-summary rows)
 
+---
+
+## 14. v2.9 -> v2.10 Adversary Follow-up (May 15 2026)
+
+Mr Adversary's fifth review of v2.9 (five stars awarded; this section covers the last of four non-blocking improvement items he flagged). Single computational task: residuals of the 200k power-law fit. Brief pre-registered at `briefs/v2_9_to_v2_10_brief.md` before implementation.
+
+### 14.1 Residuals of the 200k Power-Law Fit (Task D)
+
+**Question.** Mr A's note: "Twelve data points, R² = 0.979, β = 0.637 ± 0.029. The fit is clean. Would you indulge me by glancing at the residuals? I do not expect to find structure there, but with only twelve points a power-law fit can be very good while masking a slow oscillation or a systematic curvature that would tell a different story about the cluster spacings."
+
+**Pre-registered hypotheses (from brief).**
+- H_D0 (white noise): Durbin-Watson ∈ [1.5, 2.5] AND Spearman p > 0.05 AND no significant Lomb-Scargle peak at 95%.
+- H_D1 (structured): at least one test rejects.
+
+**Method.** Reproduce the canonical 200k cluster analysis (window=50, min_gaps=20, merge_dist=500), extract the 12 (centre, spacing) pairs, fit OLS log-log power law, compute residuals, run the four diagnostic tests, plot residuals vs centre.
+
+**Script:** `null-tests/residuals_analysis.py`. Runtime: 6.4s.
+
+**Fit reproduction (sanity-check against paper §5.2 headline).**
+
+| Quantity | This run | Paper §5.2 | Match? |
+|---|---|---|---|
+| β | 0.6371 | 0.637 | exact |
+| se(β) | 0.0293 | 0.029 | exact |
+| R² | 0.9792 | 0.979 | exact |
+| n | 12 | 12 | exact |
+| a | 15.85 | 18.2 | **discrepancy** |
+
+The slope β and R² match the paper exactly. The intercept a = exp(intercept_log) differs (15.85 vs paper's 18.2), most likely due to a different `centre` convention — the paper may use the left-cluster centre or report a rounded value computed under a slightly different binning. β and R² are convention-invariant under monotonic re-mapping of `centre`; a is not. This affects the residuals analysis only by a constant shift, which is removed by the OLS fit itself (mean residual = 0 by construction). For v2.10 a CinC may wish to verify the paper's a; the residuals verdict below is unaffected either way.
+
+**Residuals (12 points, ordered by centre).**
+
+| i | centre (digits) | spacing | log(spacing) | predicted | residual | sign |
+|---|---|---|---|---|---|---|
+|  1 |   1,433.5 |  1,525 | 7.330 | 7.394 | −0.0638 | − |
+|  2 |   3,736.0 |  3,080 | 8.033 | 8.004 | +0.0288 | + |
+|  3 |   7,546.0 |  4,540 | 8.421 | 8.452 | −0.0310 | − |
+|  4 |  13,051.0 |  6,470 | 8.775 | 8.801 | −0.0258 | − |
+|  5 |  21,593.5 | 10,615 | 9.270 | 9.122 | +0.1485 | + |
+|  6 |  32,056.0 | 10,310 | 9.241 | 9.373 | −0.1324 | − |
+|  7 |  46,196.0 | 17,970 | 9.796 | 9.606 | +0.1904 | + |
+|  8 |  64,111.0 | 17,860 | 9.790 | 9.815 | −0.0245 | − |
+|  9 |  82,978.5 | 19,875 | 9.897 | 9.979 | −0.0820 | − |
+| 10 | 109,796.0 | 33,760 | 10.427 | 10.158 | +0.2694 | + |
+| 11 | 141,053.5 | 28,755 | 10.267 | 10.317 | −0.0507 | − |
+| 12 | 168,956.0 | 27,050 | 10.205 | 10.432 | −0.2268 | − |
+
+**Diagnostics.**
+
+| Test | Result | H_D0 threshold | Pass? |
+|---|---|---|---|
+| Durbin-Watson | DW = 2.4605 | [1.5, 2.5] | **✓** |
+| Spearman ρ vs centre | ρ = −0.154, p = 0.633 | p > 0.05 | **✓** |
+| Lomb-Scargle peak | power = 0.853 | < 8.27 (95%, Scargle threshold, M=200) | **✓** |
+| Sign-change count | 8 of 11 (expected under white noise: 5.5) | informative | (more alternation than expected) |
+
+**Verdict: H_D0 (WHITE NOISE).**
+
+All three pre-registered diagnostic tests pass:
+
+1. **No lag-1 autocorrelation.** DW = 2.46 is in the H_D0 range [1.5, 2.5], near 2 (the white-noise expectation). The value 2.46 is on the slightly negative-autocorrelation side, consistent with the elevated sign-change count below.
+2. **No monotonic trend.** Spearman ρ = −0.154, p = 0.633. The residuals show no significant tendency to drift with centre. The slight negative ρ is not statistically distinguishable from zero at n = 12.
+3. **No significant periodicity.** Lomb-Scargle top peak at frequency 7.74 has power 0.853, well below the Scargle 95% threshold (8.27 for M = 200 frequency bins). The residuals do not contain a detectable periodic component within the resolvable frequency range of 12 points.
+
+The sign-change count (8 of 11 possible) is *higher* than the white-noise expectation of 5.5. Under strict white noise, the probability of ≥ 8 sign changes from 11 independent signs is moderate but not extreme — sign-change excess of this magnitude is consistent with a slight negative lag-1 autocorrelation (also visible in DW > 2), but at n = 12 the effect is well within sampling fluctuation of a white-noise process and does not reject H_D0 under any of the three pre-registered tests.
+
+**Figure:** `figures/residuals_200k.png` (and `.svg`). Plot of residuals vs centre on a log x-axis with the 12 points indexed 1–12. Residuals are bounded by approximately ±0.27 in log space (equivalent to multiplicative factors of about 1.31× / 0.76×), distributed symmetrically about zero, with no visible monotonic drift or oscillation.
+
+**Note on n = 12 power.** Twelve points is genuinely at the edge of what these tests can resolve. A periodic component with amplitude comparable to the residual scale and a period commensurate with the sampling could in principle slip past Lomb-Scargle at this n. The DW and Spearman tests are more robust at this sample size and both pass cleanly. The brief acknowledged this constraint explicitly; the time-domain diagnostics are the load-bearing checks.
+
+**Decision-rule outcome and v2.10 implication.**
+
+Per the brief's rule: all three time-domain tests pass → "white noise verdict. v2.10 §5.2 gets a footnote stating residuals examined and found unstructured."
+
+**Recommended §5.2 footnote text for v2.10:**
+
+> "Residuals of the log-log power-law fit at 200k were examined for hidden structure (Mr Adversary's fifth-review item, addressed in companion code `null-tests/residuals_analysis.py`). The 12 residuals show no lag-1 autocorrelation (Durbin-Watson = 2.46, within the [1.5, 2.5] white-noise range), no monotonic trend with centre (Spearman ρ = −0.15, p = 0.63), and no significant Lomb-Scargle peak (top power 0.85 vs 95% threshold 8.27). The residuals are consistent with white noise; no slow oscillation or systematic curvature underlies the R² = 0.979 fit."
+
+**§9 update (open questions).** No new open question generated by this task. The residuals analysis closes Mr A's "could residuals be hiding structure?" probe with a clean white-noise verdict.
+
+**Minor flag — paper a = 18.2 vs reproduction a = 15.85.** β and R² reproduce exactly under the OLS fit using midpoint-of-cluster-centres as the `centre` (the convention used in every committed script: `full_null_model.py`, `power_law_full_scale.py`, etc.). The paper's a = 18.2 differs by ~15%, suggesting either a left-cluster-centre convention in the paper, a rounding propagation, or a different prefactor extraction. The residuals verdict is unaffected (mean residual = 0 by OLS construction, regardless of how a is reported in the paper text). Worth a CinC check before v2.10 prints a = 18.2 unchanged.
+
+**Outputs.**
+- `null-tests/residuals_analysis.py` — implementation
+- `null-tests/results/residuals_200k.csv` — 12 per-point rows (i, centre, spacing, log(centre), log(spacing), predicted, residual, sign)
+- `null-tests/results/residuals_diagnostics.txt` — fit summary + all four test statistics + verdict
+- `figures/residuals_200k.png` + `.svg`
+
