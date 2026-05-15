@@ -782,6 +782,39 @@ Acceptance criterion #1 (deterministic under seed) and #3 (z ~ 0) are met. Accep
 
 *Pending.*
 
+### 12.5 §5.3 Alternation Statistic Pre-Registration (Task 5)
+
+**Question:** Was the §5.3 alternation statistic's prediction committed to git before the test was first computed?
+
+**Method.** Git archaeology — trace the earliest commit specifying the alternation statistic (paper prose, prediction note, or analysis script) and the earliest commit/run that computes it on real data.
+
+**Evidence.**
+
+| Artefact | Commit | Date (UTC+1) | Note |
+|---|---|---|---|
+| Earliest specification | `74b18be` | 2026-04-13 10:45:51 | Initial scaffold; `paper/Digit_Gaps_Mod6_v2_3.md` includes §5.3 with the 44% descriptive statistic and the named "JUMP/PAIR Heartbeat" pattern |
+| Earliest null-test computation | `314ab85` | 2026-04-13 10:58:41 | `null-tests/jump_pair_null.py`; commit message reads "JUMP/PAIR null test — pattern is small-sample artefact" — i.e. result is in the commit message |
+| First explicit pre-registration commit anywhere in repo | `06d7e6e` / `7fa5e38` | 2026-05-10 15:57:47 | "pre-register Paper 3 v4.2 brief". Pattern 19/27 pre-reg practice begins ~4 weeks after Paper 4 §5.3 was written. |
+
+**Specification predates first null-test computation by 13 minutes**, but the underlying 44% statistic was computed pre-repo (it appears in the v2.0 PDF appendix from which `full_null_model.py` was extracted). The paper §5.3 text was therefore written *after* the descriptive statistic was already known.
+
+**Crucially, the §5.3 paper text already disclaims confirmatory status.** Its title is "**The JUMP/PAIR Heartbeat (Observational, Pending Null Test)**" and its closing "Status" paragraph reads (verbatim):
+
+> "This observation has not yet been null-tested. Patterns of this kind are particularly susceptible to pattern-recognition artefacts (pareidolia) when extracted from stochastic-looking sequences. Accordingly, we present this as an empirical observation of potential interest, not as an established phenomenon."
+
+No separate prediction commit ("we predict the alternation will survive null with z >= X") exists anywhere in repo history for §5.3. The first quantitative null test (`314ab85`) found the alternation to be a small-sample artefact, and findings.md §3 records this as "pattern is small-sample artefact / verdict: PAREIDOLIA-PRONE."
+
+**Verdict: NOT PRE-REGISTERED.** §5.3 is exploratory observation. The v2.3 text is already honest about this (explicit "Observational, Pending Null Test" label).
+
+**Recommended §5.3 framing for v2.7.**
+1. Preserve the "Observational" label; do not promote to confirmatory.
+2. Acknowledge that the null test (findings §3) found the alternation to be a small-sample artefact at the 200k scale — the 44% rate is in-distribution under the null model.
+3. Either: (a) remove §5.3 from v2.7 entirely now that the null test has run and the result is generic; or (b) retain §5.3 as a worked example of "an observation we initially flagged for null testing, which the test deflated" — pedagogically useful, with the deflation acknowledged in §5.3 itself rather than only in findings.
+
+### 12.6 §6.2 Cluster-Count Direction Pre-Registration (Task 6)
+
+*Pending — same branch, next commit.*
+
 ---
 
-*Mr Code, May 12 2026 (Section 12 in progress)*
+*Mr Code, May 12-15 2026 (Section 12 in progress — Tasks 1, 5 complete; Tasks 2, 3, 4, 6 pending)*

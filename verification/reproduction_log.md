@@ -111,3 +111,18 @@ The script was extracted from the v2.0 PDF appendix (Appendix A). The paper text
 Determinism: re-running with the same seed scheme produces identical numbers (verified by single run -- algorithm is fully deterministic given seeds).
 
 **Flag (v2.6 §5.4 mismatch):** under the §5.2 cluster definition (window=50, min_gaps>=20, merge_dist=500) the real-prime budget is 9.97%, not the ~6% v2.6 §5.4 reports. See findings.md §12.1 for hypothesis (likely tied to the §5.2 36-vs-47 cluster-count discrepancy investigated in Task 2).
+
+### Task 5 — §5.3 Alternation Statistic Pre-Registration
+
+**Type:** Git archaeology, no compute.
+**Run date:** 2026-05-15
+
+| Artefact | Commit | Date (UTC+1) |
+|---|---|---|
+| Earliest §5.3 specification (paper text) | `74b18be` | 2026-04-13 10:45:51 |
+| Earliest null-test computation | `314ab85` | 2026-04-13 10:58:41 |
+| First explicit pre-reg commit anywhere in repo | `06d7e6e` / `7fa5e38` | 2026-05-10 15:57:47 |
+
+**Verdict:** NOT PRE-REGISTERED. §5.3 paper text explicitly labels the alternation statistic "(Observational, Pending Null Test)" with self-disclaimed pareidolia risk. No separate prediction commit exists for §5.3 prior to its null test. The 44% descriptive statistic was already computed when the repo was scaffolded (it appears in the paper text from commit zero). Pattern 19/27 pre-reg practice began 2026-05-10, ~4 weeks after §5.3 was written.
+
+See findings.md §12.5.
