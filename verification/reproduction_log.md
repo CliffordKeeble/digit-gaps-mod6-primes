@@ -281,3 +281,39 @@ See findings.md §12.4.
 - `null-tests/results/factor_escalation_search.csv` (per-gap data, ~50 MB, **NOT committed** — regenerable by re-running the script in ~11s; deterministic, no randomness involved)
 
 See findings.md §12.7.
+
+---
+
+## v2.7 -> v2.8 Adversary Follow-up Runs (May 15 2026)
+
+Pre-registration: `briefs/v2_7_to_v2_8_brief.md`.
+
+### Task A — Shuffle Test (LOAD-BEARING)
+
+**Script:** `null-tests/shuffle_test.py`
+**Run date:** 2026-05-15
+**Runtime:** 97.1s (~1.6 min)
+**Seeds:** trial * 137 + 42. 100 trials × 5 scales = 500 trial-rows.
+**Params:** window=50, min_gaps=20, merge_dist=500 (canonical).
+
+**Method.** For each trial, assign every prime p > 3 (970,702 primes) to class A or class B by random bit; then run the canonical cluster + power-law pipeline. Preserves prime-prime correlations; breaks only the mod-6 grouping.
+
+**Pathology checks:** all 500 R² values in [0, 1]; no bimodality; per-trial runtime 0.8–1.0s (well inside the 10× budget vs PNT-null).
+
+| Scale | R²_real | R²_shuffle mean | R²_shuffle std | R²_PNT mean | z_AB | z_BC | Verdict |
+|---|---|---|---|---|---|---|---|
+| 50,000 | 0.9840 | 0.4352 | 0.2474 | 0.3727 | +2.22 | +0.27 | mod-6 specific |
+| 100,000 | 0.9859 | 0.5000 | 0.2241 | 0.4816 | +2.17 | +0.09 | mod-6 specific |
+| 200,000 | 0.9792 | 0.5701 | 0.1892 | 0.5767 | +2.16 | −0.04 | mod-6 specific |
+| 300,000 | 0.9786 | 0.5661 | 0.1869 | 0.5270 | +2.21 | +0.18 | mod-6 specific |
+| 500,000 | 0.5955 | 0.6208 | 0.1589 | 0.5851 | −0.16 | +0.19 | no effect |
+
+**Verdict: MOD-6 SPECIFICALLY THE CAUSE.** z_AB ≥ +2.0 at every regime scale (H_A1 passes). z_BC ≈ 0 at every scale (H_A2 fails). The shuffle distribution sits on top of the PNT-density null — prime-prime correlations alone do not produce the cluster-spacing structure. The structure is created by the mod-6 partition itself.
+
+At 500k (phase boundary), z_AB collapses, consistent with Task 3's regime finding.
+
+**Outputs:**
+- `null-tests/results/shuffle_summary.csv` (500 trial-rows)
+- `null-tests/results/shuffle_summary_per_scale.csv` (5 scale-summary rows)
+
+See findings.md §13.1.
