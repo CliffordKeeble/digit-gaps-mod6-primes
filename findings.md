@@ -1067,3 +1067,65 @@ No separate prediction commit ("we predict the alternation will survive null wit
 
 ---
 
+## 13. v2.7 -> v2.8 Adversary Follow-up Tests (May 15 2026)
+
+Mr Adversary's third review of v2.7 (four stars, gap to five well-specified). Three computational tasks: A (shuffle test, LOAD-BEARING), B (merge_dist sensitivity), C (base coprime to 6). Brief pre-registered at `briefs/v2_7_to_v2_8_brief.md` before any implementation.
+
+### 13.1 Shuffle Test — Mod-6 Specific vs Primes-Generic (Task A, LOAD-BEARING)
+
+**Question:** Is the §5.2 R² cleanness in the 50k–300k regime (a) specific to the mod-6 grouping, or (b) a property of primes generically that the PNT-density null cannot capture? Mr A's shuffle test: re-assign primes randomly to two pseudo-classes (preserving prime-prime correlations exactly, breaking only the mod-6 grouping) and re-run the cluster-spacing analysis.
+
+**Method.** 100 shuffle trials at canonical (window=50, min_gaps=20, merge_dist=500). For each trial: assign each prime p > 3 (970,702 of them) to class A (bit 0) or class B (bit 1) by random bit at seed t × 137 + 42. Truncate to the smaller class size (or n_use = 485,199, whichever is smaller). Run the existing cluster + power-law pipeline at scales 50k, 100k, 200k, 300k (mandatory) and 500k (phase-boundary check).
+
+**Pre-registered hypotheses (from brief).**
+- H_A1 (mod-6 specific): z_AB = (R²_real − mean(R²_shuffle)) / std(R²_shuffle) ≥ +2.0
+- H_A2 (primes-generic): z_BC = (mean(R²_shuffle) − mean(R²_PNT)) / std(R²_PNT) ≥ +2.0
+
+**Script:** `null-tests/shuffle_test.py`. Runtime: 97.1s (~1.6 min). 500 trial-rows (100 trials × 5 scales).
+
+**Results.**
+
+| Scale | R²_real | R²_shuffle mean | R²_shuffle std | R²_shuffle median | R²_PNT mean | z_AB | z_BC | Verdict |
+|---|---|---|---|---|---|---|---|---|
+| 50,000 | 0.9840 | 0.4352 | 0.2474 | 0.4169 | 0.3727 | **+2.22** | +0.27 | **mod-6 specific** |
+| 100,000 | 0.9859 | 0.5000 | 0.2241 | 0.5659 | 0.4816 | **+2.17** | +0.09 | **mod-6 specific** |
+| 200,000 | 0.9792 | 0.5701 | 0.1892 | 0.6076 | 0.5767 | **+2.16** | −0.04 | **mod-6 specific** |
+| 300,000 | 0.9786 | 0.5661 | 0.1869 | 0.6018 | 0.5270 | **+2.21** | +0.18 | **mod-6 specific** |
+| 500,000 | 0.5955 | 0.6208 | 0.1589 | 0.6437 | 0.5851 | −0.16 | +0.19 | no effect |
+
+Pathology check: all 500 R² values in [0, 1]. No bimodality or other anomalies. Per-trial runtime ~0.8–1.0s (well within the 10× PNT-null budget the brief sets).
+
+**Verdict per the brief's decision tree: MOD-6 SPECIFICALLY THE CAUSE.**
+
+At every regime scale (50k, 100k, 200k, 300k):
+1. **H_A1 PASSES:** z_AB ≥ +2.0 (range +2.16 to +2.22). Real-mod-6 R² is significantly above the shuffle distribution.
+2. **H_A2 FAILS:** z_BC < +2.0 (range −0.04 to +0.27). Shuffle R² is *not* significantly above the PNT-density null. The shuffle distribution and the PNT-density null are statistically indistinguishable.
+
+The shuffle preserves prime-prime correlations exactly. The fact that shuffle R² lands on top of PNT-null R² (z_BC ≈ 0 throughout) demonstrates that **prime-prime correlations alone do not produce cluster-spacing structure beyond what density and equidistribution already produce.** The structure that makes real-mod-6 R² clean comes from the mod-6 grouping itself.
+
+At the 500k phase-boundary scale, z_AB collapses to −0.16 — consistent with Task 3's finding that the structure dissolves above 300k. The shuffle test fails to find structure where the real-mod-6 analysis also fails to find structure. Both nulls and real-mod-6 produce similar R² above 500k. This is corroborating evidence that the regime boundary is real and is not an artefact of one specific null.
+
+**Quantitative summary.** Across the four mandatory regime scales, mean(R²_shuffle) lies almost exactly on top of mean(R²_PNT-null), with shuffle std slightly tighter (0.19–0.25 vs 0.18–0.23). The shuffle test consistently produces between 17 and 70 clusters per trial at full scale, with no significant power-law structure (median R² in [0.42, 0.61]).
+
+**Decision-rule outcome and v2.8 implication.**
+
+Per the brief: z_AB ≥ +2.0 AND z_BC < +2.0 → "**mod-6 specifically the cause. Paper §5.2 framing confirmed; v2.8 prose can sharpen.**" This is the cleanest outcome of the four possible verdicts — it rules out the "primes-generic structure that mod-6 happens to project" interpretation that would have required substantial paper rework.
+
+**Recommended §5.2 and abstract framing for v2.8:**
+
+- The shuffle test result directly answers Mr A's question. The R² cleanness is not a property of primes generically — it is created by the mod-6 grouping.
+- v2.8 can sharpen the abstract: "We show that primes, when partitioned by their residue class mod 6, exhibit a clean cluster-spacing power law... This structure is specifically a property of the mod-6 partition: a control test that preserves prime-prime correlations but reassigns primes to random pseudo-classes (the shuffle test) does not reproduce the structure (z_BC ≈ 0 vs PNT-density null at all four regime scales 50k–300k)."
+- v2.8 §6 can add a "shuffle null" row to Table 5 or a new Table 5a, showing that two independent nulls — PNT-density and shuffle — both produce statistically indistinguishable R² distributions, while real-mod-6 is above both by ≥ +2σ in the same regime.
+
+**Outputs.**
+- `null-tests/results/shuffle_summary.csv` — 500 trial-rows (trial, seed, scale, n_clusters, beta, r_squared, se_beta, max_d, runtime_s)
+- `null-tests/results/shuffle_summary_per_scale.csv` — 5 scale-summary rows (real, shuffle mean/std/median/range, PNT reference, z_AB, z_BC, h_a1, h_a2, verdict)
+
+### 13.2 merge_dist Sensitivity (Task B)
+
+*Pending — separate branch.*
+
+### 13.3 Base Coprime to 6 — Base 5 / Base 7 (Task C)
+
+*Pending — separate branch.*
+
