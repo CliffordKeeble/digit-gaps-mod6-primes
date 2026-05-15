@@ -317,3 +317,31 @@ At 500k (phase boundary), z_AB collapses, consistent with Task 3's regime findin
 - `null-tests/results/shuffle_summary_per_scale.csv` (5 scale-summary rows)
 
 See findings.md §13.1.
+
+### Task B — merge_dist Sensitivity
+
+**Script:** `null-tests/merge_dist_sensitivity.py`
+**Run date:** 2026-05-15
+**Runtime:** 2.4s
+**Real primes only** (no null sampling); single sieve, parameter sweep on real data.
+**Params:** window=50, min_gaps=20 fixed; merge_dist ∈ {100, 250, 500, 1000, 2000, 5000}; scales 200k mandatory + 50k, 100k, 300k cross-scale.
+
+**Result at canonical 200k:**
+
+| merge_dist | n_clusters | β | R² |
+|---|---|---|---|
+| 100 | 17 | 0.097 | 0.012 |
+| 250 | 14 | 0.481 | 0.545 |
+| 500 | 13 | 0.637 | 0.979 ← canonical |
+| 1000 | 13 | 0.637 | 0.979 |
+| 2000 | 12 | 0.587 | 0.958 |
+| 5000 | 10 | 0.446 | 0.816 |
+
+**H_B0 fails** (R² not > 0.95 across the full sweep). **H_B1 verdict: R² > 0.95 over merge_dist ∈ [500, 2000].** Cross-scale confirms a similar plateau at 100k, 300k; the 50k scale has a wider plateau (smaller absolute scale, less merging needed).
+
+The headline R² result is robust over a ~4× merge_dist window. Tighter merges fragment clusters; looser merges over-merge them. Recommend Table 7a in v2.8 reporting the sweep explicitly.
+
+**Outputs:**
+- `null-tests/results/merge_dist_summary.csv` (24 rows: 4 scales × 6 merge_dist)
+
+See findings.md §13.2.
