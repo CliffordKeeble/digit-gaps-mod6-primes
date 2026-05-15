@@ -177,3 +177,33 @@ Both numbers in v2.6 §5.2 are correct under their respective parameter sets, bu
 **Note re Task 1 §5.4 mismatch:** not resolved here. Even merge_dist=2000 gives budget 10.28%, far from §5.4's headline ~6%. §5.4 uses a different metric. See findings.md §12.2.
 
 See findings.md §12.2.
+
+### Task 3 — R² vs Cumulative Scale (8 scales × 100 trials)
+
+**Script:** `null-tests/r2_vs_scale.py`
+**Run date:** 2026-05-15
+**Runtime:** 502.3s (~8.4 min)
+**Seeds:** trial * 137 + 42 + scale_offset; scale_offset = 0 for all scales (shared draws). Documented in script docstring.
+**Params:** window=50, min_gaps=20, merge_dist=500 (canonical).
+
+| Scale | n_cl real | R²_real | R²_null mean | R²_null std | z |
+|---|---|---|---|---|---|
+| 50,000 | 7 | 0.9840 | 0.3727 | 0.2315 | +2.64 |
+| 100,000 | 10 | 0.9859 | 0.4816 | 0.1968 | +2.56 |
+| 200,000 | 13 | 0.9792 | 0.5767 | 0.1833 | +2.20 |
+| 300,000 | 15 | 0.9786 | 0.5270 | 0.2164 | +2.09 |
+| 500,000 | 19 | 0.5955 | 0.5851 | 0.1874 | +0.06 |
+| 1,000,000 | 29 | 0.1960 | 0.5697 | 0.1976 | -1.89 |
+| 2,000,000 | 36 | 0.3502 | 0.5643 | 0.1976 | -1.08 |
+| 3,250,000 | 48 | 0.2264 | 0.2900 | 0.1928 | -0.33 |
+
+**200k headline reproduces exactly** under canonical merge_dist=500: R² = 0.9792, β = 0.6371 (paper: 0.979, 0.637). Confirms Task 2's canonical-parameter recommendation.
+
+**Trajectory:** clean phase boundary at ~300k → 500k. R² above null +2σ from 50k–300k, collapses at 500k, falls below null mean from 1M onward. The "200k regime" extends 50k–300k, not narrowly 200k.
+
+**Outputs:**
+- `null-tests/results/r2_vs_scale_per_trial.csv` (800 trial-rows + 8 real-prime rows)
+- `null-tests/results/r2_vs_scale_summary.csv` (8 scale-summary rows)
+- `figures/r2_vs_scale.png` and `figures/r2_vs_scale.svg`
+
+See findings.md §12.3.
