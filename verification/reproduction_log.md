@@ -345,3 +345,52 @@ The headline R² result is robust over a ~4× merge_dist window. Tighter merges 
 - `null-tests/results/merge_dist_summary.csv` (24 rows: 4 scales × 6 merge_dist)
 
 See findings.md §13.2.
+
+### Task C — Base Coprime to 6 (Base 5, Base 7)
+
+**Script:** `null-tests/base_coprime_to_6.py`
+**Run date:** 2026-05-15
+**Runtime:** 290.1s (~5 min)
+**Seeds:** trial * 137 + 42 + base_offset; base_offset = 0 (shared draws across bases).
+**Params (per base):** scale and window/merge_dist/step scaled by log_b(10); min_gaps=20 fixed.
+
+**Scale equivalents:**
+- base-10 (canonical): scale=200,000, window=50, merge_dist=500, step=10
+- base-5: scale=286,135, window=72, merge_dist=715, step=14
+- base-7: scale=236,659, window=59, merge_dist=592, step=12
+
+**Real-prime results:**
+
+| Base | n_cl | β_real | R²_real | |β−0.637| |
+|---|---|---|---|---|
+| base-10 | 13 | 0.6371 | 0.9792 | 0.0000 |
+| base-5  | 13 | 0.6338 | 0.9768 | 0.0033 |
+| base-7  | 13 | 0.6373 | 0.9788 | 0.0002 |
+
+**Null comparison and H_C0 check:**
+
+| Base | z(R²) | z(β) | #null ≥ real R² | H_C0 (β within ±0.02 AND zero null ≥ real R²)? |
+|---|---|---|---|---|
+| base-10 | +2.20 | +0.53 | 0/100 | ✓ |
+| base-5  | +2.24 | +0.52 | 0/100 | ✓ |
+| base-7  | +1.98 | +0.53 | 0/100 | ✓ |
+
+**Verdict: H_C0 PASSES at both bases coprime to 6.** Mr A's "factor-of-2 dependence" concern is empirically refuted. β values in bases 5 and 7 differ from base-10's 0.6371 by 0.0033 and 0.0002 respectively — an order of magnitude tighter than the brief's ±0.02 threshold. All three bases produce identical cluster count (13).
+
+**Combined five-base picture** (with v2.7 Task 4 base-2 and base-6):
+
+| Base | β | R² | |β−0.637| | Shares factor with 6? |
+|---|---|---|---|---|
+| 2 | 0.6173 | 0.9399 | 0.0198 | yes |
+| 5 | 0.6338 | 0.9768 | 0.0033 | **no** |
+| 6 | 0.6335 | 0.9765 | 0.0036 | yes |
+| 7 | 0.6373 | 0.9788 | 0.0002 | **no** |
+| 10 | 0.6371 | 0.9792 | 0.0000 | yes |
+
+Bases coprime to 6 give β CLOSER to base-10 than base-2 does. No factor-of-2 dependence visible. The largest β deviation is base-2 (right at the threshold).
+
+**Outputs:**
+- `null-tests/results/base_coprime_to_6_per_trial.csv` (303 rows: 100 trials × 3 bases + 3 real)
+- `null-tests/results/base_coprime_to_6_summary.csv` (3 base-summary rows)
+
+See findings.md §13.3.
