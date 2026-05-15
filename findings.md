@@ -782,6 +782,78 @@ Acceptance criterion #1 (deterministic under seed) and #3 (z ~ 0) are met. Accep
 
 *Pending.*
 
+### 12.5 §5.3 Alternation Statistic Pre-Registration (Task 5)
+
+**Question:** Was the §5.3 alternation statistic's prediction committed to git before the test was first computed?
+
+**Method.** Git archaeology — trace the earliest commit specifying the alternation statistic (paper prose, prediction note, or analysis script) and the earliest commit/run that computes it on real data.
+
+**Evidence.**
+
+| Artefact | Commit | Date (UTC+1) | Note |
+|---|---|---|---|
+| Earliest specification | `74b18be` | 2026-04-13 10:45:51 | Initial scaffold; `paper/Digit_Gaps_Mod6_v2_3.md` includes §5.3 with the 44% descriptive statistic and the named "JUMP/PAIR Heartbeat" pattern |
+| Earliest null-test computation | `314ab85` | 2026-04-13 10:58:41 | `null-tests/jump_pair_null.py`; commit message reads "JUMP/PAIR null test — pattern is small-sample artefact" — i.e. result is in the commit message |
+| First explicit pre-registration commit anywhere in repo | `06d7e6e` / `7fa5e38` | 2026-05-10 15:57:47 | "pre-register Paper 3 v4.2 brief". Pattern 19/27 pre-reg practice begins ~4 weeks after Paper 4 §5.3 was written. |
+
+**Specification predates first null-test computation by 13 minutes**, but the underlying 44% statistic was computed pre-repo (it appears in the v2.0 PDF appendix from which `full_null_model.py` was extracted). The paper §5.3 text was therefore written *after* the descriptive statistic was already known.
+
+**Crucially, the §5.3 paper text already disclaims confirmatory status.** Its title is "**The JUMP/PAIR Heartbeat (Observational, Pending Null Test)**" and its closing "Status" paragraph reads (verbatim):
+
+> "This observation has not yet been null-tested. Patterns of this kind are particularly susceptible to pattern-recognition artefacts (pareidolia) when extracted from stochastic-looking sequences. Accordingly, we present this as an empirical observation of potential interest, not as an established phenomenon."
+
+No separate prediction commit ("we predict the alternation will survive null with z >= X") exists anywhere in repo history for §5.3. The first quantitative null test (`314ab85`) found the alternation to be a small-sample artefact, and findings.md §3 records this as "pattern is small-sample artefact / verdict: PAREIDOLIA-PRONE."
+
+**Verdict: NOT PRE-REGISTERED.** §5.3 is exploratory observation. The v2.3 text is already honest about this (explicit "Observational, Pending Null Test" label).
+
+**Recommended §5.3 framing for v2.7.**
+1. Preserve the "Observational" label; do not promote to confirmatory.
+2. Acknowledge that the null test (findings §3) found the alternation to be a small-sample artefact at the 200k scale — the 44% rate is in-distribution under the null model.
+3. Either: (a) remove §5.3 from v2.7 entirely now that the null test has run and the result is generic; or (b) retain §5.3 as a worked example of "an observation we initially flagged for null testing, which the test deflated" — pedagogically useful, with the deflation acknowledged in §5.3 itself rather than only in findings.
+
+### 12.6 §6.2 Cluster-Count Direction Pre-Registration (Task 6)
+
+**Question:** Was the direction of the §6.2 cluster-count test pre-committed (one-tailed), or only a two-sided "different from null" test (two-tailed)?
+
+**Method.** Git archaeology — find the earliest commit specifying the cluster-count test including any directional prediction, and the first computation date.
+
+**Evidence.**
+
+| Artefact | Commit | Date (UTC+1) | Note |
+|---|---|---|---|
+| Earliest test definition (script) | `74b18be` | 2026-04-13 10:45:51 | `verification/full_null_model.py` — `find_clusters_fast` + computes z over null trials with no directional flag (two-sided by construction). Extracted from v2.0 PDF appendix. |
+| Earliest paper-text specification | `74b18be` | 2026-04-13 10:45:51 | Same commit; `paper/Digit_Gaps_Mod6_v2_3.md` §6.2 reports the test *and* its result (z = -2.04, "Real primes produce fewer, larger clusters") in one commit. |
+| First computation | `74b18be` | 2026-04-13 10:45:51 | The result z = -2.04 was already in the paper text at scaffold time; running `full_null_model.py` reproduces it (verified `858b97e` 2026-04-13 10:49:57 in `reproduction_log.md`). |
+| First pre-registration commit anywhere | `06d7e6e` / `7fa5e38` | 2026-05-10 15:57:47 | Pattern 19/27 practice begins ~4 weeks after §6.2 was written. |
+
+**Specification, computation, and result all arrive in the same commit.** The script defines a two-sided z-score; the paper text adds directional prose ("fewer, larger") *after* observing the result. There is no separate commit pre-committing the direction "we predict z < 0" before the test was run. The directional language in §6.2 is post-hoc descriptive, not a pre-registered one-tailed hypothesis.
+
+**Verdict: DIRECTION NOT PRE-COMMITTED. Two-tailed p-value required for v2.7.**
+
+**Corrected p-values.**
+
+| Source | n_trials | z (cluster count) | One-tailed p | Two-tailed p | Significant at α=0.05 (two-tailed)? |
+|---|---|---|---|---|---|
+| v2.3 §6.2 (paper headline) | 10 | -2.04 | 0.0207 | **0.0414** | Yes — just |
+| 100-trial follow-up (findings §7.2) | 100 | -1.37 | 0.0853 | **0.1707** | **No** |
+| 100-trial empirical (findings §7.2) | 100 | (4/100 ≤ real, one-tailed) | 0.04 | ≈ 0.08* | **No** |
+
+*Two-tailed empirical: count of |null_count − null_mean| ≥ |13 − 28.12| = 15.12, i.e. null trials with count ≤ 13 or count ≥ 43.24. Lower bound 0.08 from doubling the one-tailed tail (upper tail mass is non-zero given null max 60); exact two-tailed empirical can be recomputed from `null-tests/results/cluster_count_100_trials.csv` if v2.7 needs the precise number.
+
+**Implications for v2.7.**
+
+1. The v2.3/v2.6 headline z = -2.04 should not be reported as if from a one-tailed pre-registered test. Either:
+   - Report two-tailed p = 0.0414 alongside z = -2.04 and note the 10-trial std is an underestimate (per findings §7.2), or
+   - Lead with the 100-trial follow-up (z = -1.37, two-tailed p ≈ 0.17, empirical p ≈ 0.08).
+2. With the 100-trial follow-up applied two-tailed, the cluster-count separation is **no longer statistically significant at α = 0.05**.
+3. The R² result (findings §7.3) remains the cleanest surviving prime-specific claim — 0/100 null trials reach R² ≥ 0.979, robust to direction (R² is bounded above by 1, so the directionality question is structural rather than convention-dependent).
+
+**Recommended §6.2 framing for v2.7.**
+- Replace z = -2.04 headline with the 100-trial estimate.
+- Quote two-tailed p (≈ 0.17 from |z|, ≈ 0.08 empirical) rather than one-tailed p.
+- Re-position the cluster-count separation as suggestive/marginal, not as a primary headline.
+- Promote the R² result (§7.3) to the headline prime-specific finding instead; it survives the direction test (R² is one-sided by construction) and is robust to trial count.
+
 ---
 
-*Mr Code, May 12 2026 (Section 12 in progress)*
+*Mr Code, May 12-15 2026 (Section 12 in progress — Tasks 1, 5, 6 complete; Tasks 2, 3, 4 pending)*
