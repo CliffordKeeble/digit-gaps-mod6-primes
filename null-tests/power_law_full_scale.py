@@ -14,6 +14,27 @@ midpoint of the two clusters bounding each gap.
 
 Also: sensitivity to trimming extreme points, and null-model comparison
 at full scale (reusing the same null framework).
+
+----------------------------------------------------------------------
+Canonical cluster-detection parameter set (v2.6 -> v2.7 Task 2 finding)
+----------------------------------------------------------------------
+The `find_clusters` default below (window=50, min_gaps=20, merge_dist=500)
+is the canonical §5.2 parameter set, shared by every committed analysis
+script in this repo:
+    verification/full_null_model.py     (§6.2 200k cluster analysis)
+    null-tests/power_law_full_scale.py  (this script — §5.2 full-scale refit)
+    null-tests/cluster_count_100_trials.py  (100-trial null follow-up)
+    null-tests/synch_budget_null.py     (§5.4 budget null comparison)
+
+Under this parameter set at full scale, real primes produce 48 clusters
+(47 inter-cluster gaps). v2.6 §5.2 paragraph 3 reports this number.
+
+v2.6 §5.2 paragraph 1's "36 clusters" headline uses an undocumented
+merge_dist=2000 variant (window=50, min_gaps=20 unchanged). See
+findings.md §12.2 and `null-tests/cluster_count_reconcile.py` for the
+full sweep table. The 36-cluster figure is correct only under
+merge_dist=2000; it does NOT reproduce under the canonical merge_dist=500
+default used by every script in this repo.
 """
 import math, random, time, sys, csv, os
 

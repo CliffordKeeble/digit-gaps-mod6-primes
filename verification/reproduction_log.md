@@ -149,3 +149,31 @@ Corrected p-values (key numbers):
 With the 100-trial follow-up applied two-tailed, the cluster-count separation is no longer significant. The R² result (findings §7.3, 0/100 null trials reach R² ≥ 0.979) is robust to direction and remains the cleanest surviving prime-specific claim.
 
 See findings.md §12.6.
+
+### Task 2 — Cluster-Count Reconciliation (36 vs 47/48)
+
+**Script:** `null-tests/cluster_count_reconcile.py`
+**Run date:** 2026-05-15
+**Runtime:** 49.9s
+**Real primes only** (no null trials)
+
+Full-scale parameter sweep at window in {30, 40, 50, 60, 70}, min_gaps in {20, 22, 25, 28, 30, 35, 40}, merge_dist in {200, 500, 1000, 2000, 5000}.
+
+**Result.** The §5.2 discrepancy is purely a `merge_dist` parameter difference:
+
+| Parameter set | n_clusters | n_inter_gaps | budget% |
+|---|---|---|---|
+| window=50, min_gaps=20, merge_dist=500 (canonical) | 48 | 47 | 9.97% |
+| window=50, min_gaps=20, merge_dist=2000 | 36 | 35 | 10.28% |
+
+Both numbers in v2.6 §5.2 are correct under their respective parameter sets, but only merge_dist=500 is the script-level default used everywhere else in the repo. The 36-cluster headline uses an undocumented merge_dist=2000.
+
+**Determinism:** real-prime computation only; no random component; identical on re-run.
+
+**Auxiliary:** at window=50, min_gaps is redundant in [20, 35] — every coincident-only 50-window contains >= 35 coincident gaps at full scale.
+
+**Updates:** docstring of `null-tests/power_law_full_scale.py` now documents the canonical parameter set explicitly.
+
+**Note re Task 1 §5.4 mismatch:** not resolved here. Even merge_dist=2000 gives budget 10.28%, far from §5.4's headline ~6%. §5.4 uses a different metric. See findings.md §12.2.
+
+See findings.md §12.2.

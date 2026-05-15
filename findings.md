@@ -772,7 +772,52 @@ Acceptance criterion #1 (deterministic under seed) and #3 (z ~ 0) are met. Accep
 
 ### 12.2 Cluster-Count Reconciliation (Task 2)
 
-*Pending — investigation of 36 vs 47/48 discrepancy in section 5.2.*
+**Question:** v2.6 section 5.2 reports "36 clusters" (headline) and "47 inter-cluster gaps -> 48 clusters" (full-scale refit, three paragraphs later), both at full scale (3.25M digits). Source of the discrepancy?
+
+**Method.** Parameter sweep of cluster detection at full scale. Real primes only (no null trials needed). Grid: window in {30, 40, 50, 60, 70}, min_gaps in {20, 22, 25, 28, 30, 35, 40}, merge_dist in {200, 500, 1000, 2000, 5000}.
+
+**Script:** `null-tests/cluster_count_reconcile.py`. Runtime: 50s.
+
+**Result. Both numbers are correct under different merge_dist values, with all other parameters identical.**
+
+| Parameter set | n_clusters | n_inter_cluster_gaps | budget% | Matches paper passage |
+|---|---|---|---|---|
+| window=50, min_gaps=20, merge_dist=200  | 158 | 157 |  8.99% | — |
+| window=50, min_gaps=20, merge_dist=**500**  |  **48** |  **47** |  9.97% | **§5.2 paragraph 3 ("47 inter-cluster gaps")** |
+| window=50, min_gaps=20, merge_dist=1000 |  38 |  37 | 10.19% | — |
+| window=50, min_gaps=20, merge_dist=**2000** |  **36** |  **35** | 10.28% | **§5.2 paragraph 1 ("we identify 36 such clusters")** |
+| window=50, min_gaps=20, merge_dist=5000 |  34 |  33 | 10.49% | — |
+
+The headline figure uses **merge_dist=2000**; the full-scale refit uses **merge_dist=500**. Both at window=50, min_gaps=20. The numbers reconcile exactly with the paper's two passages.
+
+**Auxiliary finding — min_gaps is effectively redundant at window=50.** At full scale with window=50, the raw sync_starts count is invariant for min_gaps in [20, 35] (all give 13,112). Every coincident-only 50-window naturally contains >= 35 coincident gaps; tightening min_gaps below 40 changes nothing. Only the merge rule moves the cluster count.
+
+**Methodological note — merge_dist=500 is the script-level canonical.** Every committed analysis script defaults to merge_dist=500:
+
+- `verification/full_null_model.py` (§6.2 200k cluster analysis): merge_dist=500
+- `null-tests/power_law_full_scale.py` (§5.2 full-scale refit): merge_dist=500
+- `null-tests/cluster_count_100_trials.py` (100-trial null follow-up): merge_dist=500
+
+The merge_dist=2000 setting that produces the "36" headline is **not the default of any committed script**. It must have been computed ad hoc and quoted into §5.2 without the parameter being documented in either the script suite or the paper text.
+
+**Verdict and recommended §5.2 framing for v2.7.**
+
+The 36-vs-48 discrepancy is a parameter-disclosure failure, not a numerical error. Both numbers are correct under their respective parameter sets, but §5.2 reports them as if they were the same computation. Three options:
+
+1. **Standardise on merge_dist=500 (recommended).** Replace "36 clusters" in §5.2's headline with "48 clusters / 47 inter-cluster gaps at full scale". Single self-consistent number throughout. Aligns with every committed script and with the 200k §6.2 analysis.
+2. **Standardise on merge_dist=2000.** Replace "47 inter-cluster gaps" with "35 inter-cluster gaps" in §5.2's refit paragraph and re-run `power_law_full_scale.py` with merge_dist=2000. Requires a scientific justification for the wider merge (e.g., "2000 ≈ 40 windows captures larger-scale aggregation"); v2.6/v2.7 currently gives none.
+3. **Report both with explicit merge-rule sensitivity.** Add a sentence: "Under merge_dist=500 we identify 48 clusters; under merge_dist=2000 we identify 36 clusters; downstream power-law fits use merge_dist=500."
+
+The first option is cleanest and requires the least new prose. I recommend it.
+
+**§5.4 budget cross-check (Task 1 follow-up).** The Task 1 flag — `budget_real` = 9.97% under §5.2 defaults, not the §5.4 headline ~6% — is **not** resolved by this reconciliation. Across the full merge_dist sweep at window=50, min_gaps=20 the budget ranges 8.99% to 10.49%; even merge_dist=2000 (the parameter producing 36 clusters) gives 10.28%. Whatever metric §5.4 uses for "synchronisation budget" is not `sum(cluster.span) / max_d` under any swept (window, min_gaps, merge_dist) triple. §5.4 needs a separate investigation — its own definition committed to a script — before v2.7. Possible distinct metric: union coverage of raw 50-digit sync-windows pre-merge (likely ~4%) or a running cumulative average reported at a sub-full-scale convergence point.
+
+**Brief note for CinC — paper passages requiring update:**
+- v2.6 §5.2 paragraph 1: "we identify 36 such clusters" -> "we identify 48 such clusters" (under recommendation 1).
+- v2.6 §5.2 paragraph 3: numbers stand (47 inter-cluster gaps already correct under merge_dist=500).
+- v2.6 §5.4: ~6% claim still unresolved; recommend §5.4 author state the metric definition explicitly and supply (or commission) a script that computes it. Then re-check budget_real against null (Task 1 can re-run trivially once the metric is fixed).
+
+
 
 ### 12.3 R-squared vs Cumulative Scale (Task 3)
 
@@ -856,4 +901,4 @@ No separate prediction commit ("we predict the alternation will survive null wit
 
 ---
 
-*Mr Code, May 12-15 2026 (Section 12 in progress — Tasks 1, 5, 6 complete; Tasks 2, 3, 4 pending)*
+*Mr Code, May 12-15 2026 (Section 12 in progress — Tasks 1, 2, 5, 6 complete; Tasks 3, 4 pending)*
