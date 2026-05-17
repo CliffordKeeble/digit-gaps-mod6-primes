@@ -54,9 +54,10 @@ TASK5_CSV = os.path.join(RESULTS_DIR,
                          'task5_merged_regimes_detected.csv')
 
 SIEVE_LIMIT = 200_000
-N_MAX = 3500           # covers largest evaluation point n_5 = 3458
 BASELINE_LO = 200
 BASELINE_HI = 4000
+N_MAX = BASELINE_HI    # must cover both largest evaluation point (3458)
+                       # AND the baseline upper bound (4000)
 BASELINE_N = 1000
 BASELINE_SEED = 8088
 EXCLUSION_HALF = 50
