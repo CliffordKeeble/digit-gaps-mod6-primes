@@ -1,5 +1,6 @@
 import ast
 import random
+import re
 import sys
 from pathlib import Path
 
@@ -183,6 +184,41 @@ def test_float_trap_is_platform_independent():
     assert trap["float_mod_3"] in (0, 1, 2)
     for key in ("float_route", "exact", "difference"):
         assert isinstance(trap[key], str)
+
+
+DOCS = Path(__file__).resolve().parent.parent / "docs"
+
+
+def keys_listed_in_app_js(constant_name):
+    source = (DOCS / "app.js").read_text(encoding="utf-8")
+    match = re.search(rf"const {constant_name} = \[(.*?)\];", source, re.DOTALL)
+    assert match, f"app.js has no `const {constant_name} = [...]`"
+    return tuple(re.findall(r'"([^"]+)"', match.group(1)))
+
+
+def test_app_js_reads_the_keys_the_module_returns():
+    assert keys_listed_in_app_js("RESULT_KEYS") == RESULT_KEYS
+    assert keys_listed_in_app_js("TRAP_KEYS") == TRAP_KEYS
+
+
+def test_every_result_key_is_used_by_the_page():
+    app_source = (DOCS / "app.js").read_text(encoding="utf-8")
+    html_source = (DOCS / "index.html").read_text(encoding="utf-8")
+    for key in RESULT_KEYS:
+        if key in ("bound", "seconds_sieve", "seconds_multiply", "seconds_digit_count"):
+            continue  # carried in the reply; not shown as such
+        assert key in app_source or f'data-field="{key}"' in html_source, key
+
+
+def test_worker_pins_pyodide_and_never_a_moving_version():
+    worker_source = (DOCS / "worker.js").read_text(encoding="utf-8")
+    assert 'PYODIDE_VERSION = "314.0.7"' in worker_source
+    for moving in ("/latest/", "/dev/", "@latest"):
+        assert moving not in worker_source
+
+
+def test_pages_serves_the_files_as_committed():
+    assert (DOCS / ".nojekyll").is_file()
 
 
 def test_module_is_standard_library_only():

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chebyshev's bias, computed live</title>
+<meta name="description" content="Chebyshev's bias (1853) seen through the digit-lengths of two prime products, computed exactly in your browser with Python.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+
+<h1>Chebyshev's bias, computed live</h1>
+
+<p class="lede">
+This page takes the primes up to a bound in two classes, those of the form 6k+5 and
+those of the form 6k+1, multiplies each class into one enormous integer, and counts
+the decimal digits of each, exactly, with Python running in your browser.
+The 6k+5 product comes out the longer, because primes of that form are slightly more common.
+</p>
+
+<figure>
+  <img src="img/chebyshev_beat.png" alt="Two panels. Left: the lead of the 6k+5 primes over the 6k+1 primes, plotted against the digit-length of the product on a log axis; thirteen marked points, the synchronisation clusters, each sit where the lead is a whole number from 2 to 14. Right: the lead against digit-length on log axes, measured to primes of 10 to the 11, following the classical Chebyshev's-bias curve closely and the fixed-exponent power law less closely.">
+  <figcaption>Chebyshev's bias (1853), a classical effect, seen through the digit-lengths of two prime products. Nothing here is claimed as new.</figcaption>
+</figure>
+
+<noscript><p class="notice">The live panel below needs JavaScript. The figures on this page do not.</p></noscript>
+
+<section id="live" aria-labelledby="live-heading">
+  <h2 id="live-heading">Run it here</h2>
+  <p id="status" class="status" role="status">Loading Python (about 6 MB, once)…</p>
+  <p id="failure" class="failure" role="alert" hidden></p>
+
+  <label for="bound">Primes up to</label>
+  <select id="bound" disabled>
+    <option value="100000">10⁵</option>
+    <option value="1000000" selected>10⁶</option>
+    <option value="2000000">2 × 10⁶</option>
+    <option value="5000000">5 × 10⁶ (a phone may take tens of seconds)</option>
+    <option value="10000000">10⁷ (a phone may take tens of seconds)</option>
+  </select>
+
+  <div id="results" class="panel">
+    <p class="run-note">Waiting for Python…</p>
+    <table>
+      <thead>
+        <tr><th scope="col"></th><th scope="col">primes 6k+5</th><th scope="col">primes 6k+1</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">how many</th><td data-field="count_5_mod_6">…</td><td data-field="count_1_mod_6">…</td></tr>
+        <tr><th scope="row">digits in their product</th><td data-field="digits_5_mod_6">…</td><td data-field="digits_1_mod_6">…</td></tr>
+      </tbody>
+    </table>
+    <p>The 6k+5 product has <strong data-field="digit_difference">…</strong> more digits.
+       The larger product, compared exactly: <strong data-field="larger">…</strong>.</p>
+    <dl class="timings">
+      <dt>Python load</dt>
+      <dd><span data-field="load_time">…</span> on this device, from starting the worker to Python being ready, download included</dd>
+      <dt>Compute</dt>
+      <dd><span data-field="compute_time">…</span> on this device, Python's own time for the whole run above</dd>
+    </dl>
+  </div>
+</section>
+
+<section id="trap" aria-labelledby="trap-heading">
+  <h2 id="trap-heading">Why exact integers</h2>
+  <p>The float route to 10⁶¹ is the number you get from <code>floor(exp(61 · ln 10))</code>.
+     The exact route is the integer <code>10 ** 61</code>. Both are shown below, as Python computed them just now.</p>
+  <div id="trap-numbers" class="panel">
+    <div class="digits" aria-label="Exact 10 to the 61 above, float route below; the leading digits that agree are highlighted">…</div>
+    <p>exact above, float route below; the leading digits that agree are marked.
+       <strong data-field="leading_digits_agree">…</strong> leading digits agree.</p>
+    <p>Difference, exact minus float route: <code data-field="difference">…</code></p>
+    <p>Digits: float route <span data-field="float_digits">…</span>, exact <span data-field="exact_digits">…</span>.
+       Remainder mod 3: float route <span data-field="float_mod_3">…</span>, exact <span data-field="exact_mod_3">…</span>.</p>
+  </div>
+  <p>Floating point keeps about 16 significant digits, so the float route gets the length of 10⁶¹ right and every digit after the first fourteen or so wrong; anything that depends on the last digit, such as the remainder mod 3, is luck. Exact integers get every digit.</p>
+</section>
+
+<figure>
+  <img src="img/chebyshev_zeros.png" alt="Upper panel: the wobble of the lead about the smooth bias curve, as a percentage of the lead's size, against prime size from 10 to the 4 to 10 to the 12 on a log axis; the measured wobble follows the curve rebuilt from the 2,992 zeros of one L-function. Lower panel: measured minus rebuilt, in primes, staying within a few hundredths of a prime.">
+</figure>
+
+<section id="links" aria-labelledby="links-heading">
+  <h2 id="links-heading">Sources</h2>
+  <ul>
+    <li>OEIS <a href="https://oeis.org/A057130">A057130</a>: product of the first n primes of the form 6k−1 (the 6k+5 product above).
+        <a href="https://oeis.org/A121940">A121940</a>: product of the first n primes of the form 6k+1.</li>
+    <li>Andrew Granville and Greg Martin, <a href="https://doi.org/10.1080/00029890.2006.11920275">Prime number races</a>, American Mathematical Monthly 113 (2006), 1–33.</li>
+    <li>Carter Bays, Kevin Ford, Richard H. Hudson and Michael Rubinstein, <a href="https://doi.org/10.1006/jnth.2000.2601">Zeros of Dirichlet L-functions near the real axis and Chebyshev's bias</a>, Journal of Number Theory 87 (2001), 54–76.</li>
+    <li>This page's code, the tests and the scripts that drew the figures: <a href="https://github.com/cliffordkeeble/digit-gaps-mod6-primes">github.com/cliffordkeeble/digit-gaps-mod6-primes</a>.</li>
+  </ul>
+</section>
+
+</main>
+<footer>
+  <p>Clifford Keeble. Written with Claude Code to his specification; the Python this page runs is checked by the tests in this repository.</p>
+</footer>
+<script src="app.js" type="module"></script>
+</body>
+</html>
