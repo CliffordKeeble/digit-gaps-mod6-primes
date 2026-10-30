@@ -1,0 +1,5 @@
+np.longdouble: 64-bit storage, 53-bit mantissa
+primes <= 1e9: 50847534  7.0s
+5-series 25424819, 7-series 25422713
+digits reached: 217149125 and 217131884   9.1s
+elapsed 9.9s

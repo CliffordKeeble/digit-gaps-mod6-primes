@@ -1,0 +1,3 @@
+# The data here is read byte for byte against pinned hashes; never let git
+# decide an array is text.
+*.npy binary

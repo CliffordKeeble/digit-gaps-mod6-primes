@@ -1,0 +1,5 @@
+primes counted in (1e11, 1e12): 33489857205 ; pi(1e12) - pi(1e11) = 33489857205 ; AGREE
+starting values at 1e11, read from the sieve log: pi5 = 2059036143, pi7 = 2059018668, theta5 - theta7 = 411692.03
+every segment end (18,000 points, steps of 5e7): largest |measured - rebuilt| 0.0274, rms 0.0055
+the lead at 1e12: 3146.94
+elapsed 11 s

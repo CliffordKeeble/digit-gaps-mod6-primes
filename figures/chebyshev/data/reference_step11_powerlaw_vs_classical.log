@@ -1,0 +1,14 @@
+exponent of the lead under beta = ln2/ln3: 0.3691 ; fitted constant A = 0.15895
+  primes from .. to        digits to     lead rises   power law (1 const)  ratio   classical (0 const)  ratio
+  1e+04 .. 1.0e+05          21685       3.69          3.63          1.017         3.91          0.945
+  1e+05 .. 1.0e+06         216877       8.05          8.48          0.949         8.31          0.969
+  1e+06 .. 1.0e+07        2170971      18.73         19.85          0.943        18.86          0.993
+  1e+07 .. 1.0e+08       21713424      44.58         46.43          0.960        44.91          0.993
+  1e+08 .. 9.8e+08      212804436     110.56        107.21          1.031       109.32          1.011
+rms log-ratio over the five decades: power law 0.0426 ; classical 0.0299
+beyond the data (no measurement; the two predictions only):
+   to primes of 1e+10: power law predicts the lead rises by 2.555e+02, classical by 2.824e+02  (ratio 1.11)
+   to primes of 1e+11: power law predicts the lead rises by 8.498e+02, classical by 1.011e+03  (ratio 1.19)
+   to primes of 1e+12: power law predicts the lead rises by 2.240e+03, classical by 2.933e+03  (ratio 1.31)
+   to primes of 1e+15: power law predicts the lead rises by 3.090e+04, classical by 6.040e+04  (ratio 1.95)
+   to primes of 1e+20: power law predicts the lead rises by 2.177e+06, classical by 1.037e+07  (ratio 4.77)

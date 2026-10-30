@@ -1,0 +1,26 @@
+primes<=15e6: 970704  5-series: 485503  7-series: 485199
+max digit-length (min of the two series): 3254959
+gaps 5-series: 2769760 (85.09%)  7-series: 2769799 (85.09%)  coincident: 2355221 (72.36%)
+product of the two gap fractions (independence): 72.41%
+spacings: 2355220 {1: 1601275, 2: 608191, 3: 145749, 5: 3, 7: 1, 23: 1}
+in {1,2,3}: 99.9998%   s1 68.0% s2 25.8% s3 6.2%
+clusters to 200000: 13 ; fit: {'beta': np.float64(0.6371), 'r2': np.float64(0.9792), 'se': 0.0293, 'n': 12, 'A': 15.8506}
+   centre     671  span    60  [641, 701]
+   centre    2196  span   530  [1931, 2461]
+   centre    5276  span   130  [5211, 5341]
+   centre    9816  span   270  [9681, 9951]
+   centre   16286  span   310  [16131, 16441]
+   centre   26901  span   160  [26821, 26981]
+   centre   37211  span   680  [36871, 37551]
+   centre   55181  span   620  [54871, 55491]
+   centre   73041  span  1960  [72061, 74021]
+   centre   92916  span   930  [92451, 93381]
+   centre  126676  span  1450  [125951, 127401]
+   centre  155431  span   720  [155071, 155791]
+   centre  182481  span  5180  [179891, 185071]
+clusters to 3254959: 48 ; fit: {'beta': np.float64(0.3906), 'r2': np.float64(0.2264), 'se': 0.1076, 'n': 47, 'A': 185.7497}
+ln2/ln3 = 0.6309297535714574  elapsed 1.5s
+
+real	0m1.553s
+user	0m0.581s
+sys	0m1.068s
