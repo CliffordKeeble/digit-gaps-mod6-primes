@@ -1,0 +1,14 @@
+# Line endings, settled once. Added 21 September 2026 (E-18).
+# Store LF, check out LF, so a Windows shell and a Cowork Linux mount cannot
+# disagree about a file nobody edited. Without this, `git status` over the
+# mount reports tracked files as modified and buries real changes in CRLF noise.
+* text=auto eol=lf
+
+# Executed by Windows tooling, which wants CRLF.
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf
+
+# Named explicitly: a corrupted image is a silent failure. SVG is text.
+*.png   binary
+*.pdf   binary
