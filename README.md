@@ -1,14 +1,22 @@
 # Digit Gaps and Synchronisation Clusters in Mod-6 Prime Products
 
-Cumulative products of primes from the two residue classes modulo 6 (the 5-series and 7-series) exhibit digit gaps -- decimal scales at which no product exists. This repository accompanies the paper analysing these gaps across four orders of magnitude in digit-length (up to 3.25 million digits), with null-model verification distinguishing prime-specific structure from generic properties of logarithmic sequences.
+Cumulative products of primes from the two residue classes modulo 6 (primes of the form 6k+5, and of the form 6k+1) step over some decimal lengths: "digit gaps". This repository holds the paper that measured them (v2.3, May 2026), its verification code and its null-model tests, as filed.
 
-## What the paper finds
+**Live demo:** https://cliffordkeeble.github.io/digit-gaps-mod6-primes/ — the two products computed exactly in your browser, in Python.
 
-**Generic properties** (reproduced by random pseudo-primes with prime-number-theorem density): the spacing between coincident gaps lies in {1, 2, 3} for 99.9998% of 2.35 million spacings, with a distribution of approximately 68:26:6. These are properties of logarithmic accumulation, not of prime distribution.
+## What the digit gaps turned out to be
 
-**Prime-specific structure**: synchronisation clusters -- contiguous regions where both series gap at identical digits -- are fewer and larger for real primes than for random sequences (z = -2.04), and their spacing follows a power law with exponent beta = 0.637 +/- 0.029 (R^2 = 0.979), robust across all parameter choices. This exponent is numerically close to ln(2)/ln(3) = 0.6309; a derivation from prime-product considerations is an open question.
+The paper's computations reproduce independently. Its interpretation has been superseded. The 6k+5 product runs slightly ahead of the 6k+1 product at nearly every size because primes of the form 6k+5 are slightly more common: **Chebyshev's bias**, observed in 1853. The paper's synchronisation clusters sit where that lead is a whole number of primes. Classical theory (the contribution of the squares of primes, plus the zeros of one L-function, L(s, χ₋₃)) rebuilds the lead's rise, with nothing fitted, from primes of 10⁴ to 10¹², to within 0.03 of a prime. The power-law exponent the paper measured is what the full classical formula, zeros included, gives over the measured range (0.634 ± 0.031, against the paper's 0.637 ± 0.029); its closeness to ln 2/ln 3 is not a mechanism.
 
-**What is not claimed**: no factoring attack is proposed. The paper demonstrates structural order in the multiplicative landscape of primes at all scales and argues this merits further investigation.
+**Already in print:** Chebyshev's bias and its explicit formula (Granville and Martin 2006; Bays, Ford, Hudson and Rubinstein 2001); predicting the mod 3 race from L-function zeros (Bays et al. 2001); which digit-lengths the ordinary primorial skips (OEIS A067175, A385863). A literature search with stated gaps did not find this particular view, two residue classes' products compared by digit-length, in print. **Nothing here is claimed as new.**
+
+**What is not claimed:** no factoring attack, and no bearing on RSA or on post-quantum cryptography.
+
+## Run the demo and its tests
+
+Needs Python 3.11 or later and `pip install pytest`. `python -m pytest -q` runs the fast tests (a few seconds; `-m slow` adds the 10⁷ case). `python -m http.server -d docs`, then http://localhost:8000, serves the page locally; it loads Python from the jsDelivr CDN, so it needs internet access.
+
+**Measured** (filled in after the page is live: date, device, browser, Python load and compute time at 10⁶): desktop …; phone ….
 
 ## Reproduce in 32 seconds
 
@@ -32,6 +40,9 @@ null-tests/             New null-model tests for pending observations
   jump_pair_null.py          Section 5.3 JUMP/PAIR heartbeat
   results/                   Raw outputs
 findings.md             Top-level verification and null-test write-up
+docs/                   The live demo page (GitHub Pages)
+tests/                  pytest for the page's Python
+figures/chebyshev/      The two figures and the scripts that draw them
 ```
 
 ## Citation
