@@ -1,0 +1,13 @@
+[project]
+name = "digit-gaps-mod6-primes"
+version = "0"
+description = "The live Chebyshev's-bias demo page and its tests. Not a package."
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["docs/py"]
+testpaths = ["tests"]
+markers = ["slow: the 10^7 bound, about 6 s"]
+addopts = "-m 'not slow'"
+
+[tool.ruff]
