@@ -1,0 +1,11 @@
+scripts and data at commit 6e05973, 30 October 2026
+np.longdouble: 64-bit storage, 53-bit mantissa
+zeros of L(s, chi_-3) in the file: 2992, all below height 3000
+largest |measured - rebuilt|: to 1e9 0.0011, checkpoints 0.0028, decade 1e11 to 1e12 0.0274
+largest of the three 0.0274, printed on the figure as within 0.03
+the lead at 1e12: 3146.94, printed as 3,147
+checkpoints drawn: 19
+largest gap between the red line as drawn and the rebuilt value, over the 19 checkpoint sizes: 0.0018 (percentage points)
+largest gap between a checkpoint marker and the red line as drawn: 0.0019 (percentage points)
+prime size to digits: x / 4.6
+saved docs/img/chebyshev_zeros.png

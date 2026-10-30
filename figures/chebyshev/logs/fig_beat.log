@@ -1,0 +1,14 @@
+scripts and data at commit 6e05973, 30 October 2026
+np.longdouble: 64-bit storage, 53-bit mantissa
+A (fixed-exponent constant), fitted here: 0.15895 ; step 11 log of 7 October: 0.15895 ; AGREE to 5 decimal places
+the 13 cluster centres: [671, 2196, 5276, 9816, 16286, 26901, 37211, 55181, 73041, 92916, 126676, 155431, 182481]
+lead at the centres: [2.0014, 2.965, 3.9992, 4.9938, 6.0047, 6.9985, 8.0042, 9.0051, 9.9854, 11.0017, 11.9932, 12.9899, 14.0144]
+nearest whole numbers: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+largest distance from a whole number: 0.0350
+the classical curve's one starting value: lead 2.957 at primes of 1e4 (digit-length 2158)
+rise of the lead, primes 1e9 to 1e10, then 1e10 to 1e11: measured 285.17 and 745.35 ; classical 280.96 and 728.32 ; fixed exponent 254.07 and 594.33
+   measured: here 285.17 and 745.35 ; in the 7 October sieve log 285.17 and 745.35
+   classical: here 280.96 and 728.32 ; in the 7 October sieve log 280.96 and 728.32
+   fixed exponent: here 254.07 and 594.33 ; in the 7 October sieve log 254.07 and 594.33
+classical at 1e11 from the 1e4 start: 1199.0, measured 1220.9, fixed exponent 1038.4
+saved docs/img/chebyshev_beat.png
